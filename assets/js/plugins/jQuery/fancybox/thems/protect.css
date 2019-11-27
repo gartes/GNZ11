@@ -1,0 +1,67 @@
+/*
+ *  @copyright  2019.
+ *  @license  GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+ *  @author Gartes - Nikolaychok Oleg
+ *  Web application development.
+ *  Skype  : agroparknew
+ *  @version 1.0.0
+ *
+ *
+ */
+.fancybox-bg {
+    width: 100%;
+    height: 100%;
+}
+.question-w .fancybox-bg {
+    background: #fff;
+}
+.question-w-c.fancybox-content {
+    max-width: 420px;
+    overflow: visible;
+    padding: 50px 40px 19px;
+    box-shadow: 10px 10px 60px -25px;
+}
+.question-w-c.fancybox-content:before {
+    content: 'i';
+    position: absolute;
+    z-index: 1000;
+    font-size: 60px;
+    font-weight: 600;
+    font-family: fantasy;
+    text-shadow: 0px 1px 0px #5f5e5efa;
+    background: #fff;
+    border: 8px solid #b4d53e;
+    color: #b4d53e;
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    text-align: center;
+    line-height: 60px;
+    top: -43px;
+    left: 38.5%;
+    box-shadow: 0px 0px 3px 2px #5f5e5efa;
+}
+.question-w-cwrp {
+    line-height: 20px;
+
+    margin-top: 14px;
+}
+.question-w-cwrp h2 {
+    font-weight: 600;
+    font-size: 2rem;
+}
+.btn-grad .question-w-c p button {
+    /* position: absolute; */
+    background: #fba003;
+    background: -moz-linear-gradient(88deg,#fba003 18%,#ffbe00 51%);
+    background: -webkit-linear-gradient(88deg,#fba003 18%,#ffbe00 51%);
+    background: -o-linear-gradient(88deg,#fba003 18%,#ffbe00 51%);
+    background: -ms-linear-gradient(88deg,#fba003 18%,#ffbe00 51%);
+    background: linear-gradient(178deg,#fba003 18%,#ffbe00 51%);
+    border-bottom: 2px solid #ffbe01;
+    color: #575757;
+    font-weight: 600;
+}
+.btn-grad .question-w-c p button:hover{
+    border-bottom: 2px solid red;
+}
