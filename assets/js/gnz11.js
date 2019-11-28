@@ -213,14 +213,14 @@ var GNZ11 = function () {
             });
         }
     };
-
-
     this.getSpeechRecognition = function () {
         var $this = this ;
         var siteUrl = Joomla.getOptions('siteUrl') ;
-
-
     };
+
+
+
+
 
     /*
      * Загрузка css, img, js
@@ -377,6 +377,19 @@ var GNZ11 = function () {
                 })
             }
         },
+        Chosen : function () {
+            var $this = new GNZ11() ;
+            return new Promise(function (resolve, reject) {
+                Promise.all([
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/chosen/chosen.min.css'),
+                    $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/chosen/chosen.jquery.min.js'),
+                ]).then(function (a) {
+                    resolve(a);
+                });
+            })
+
+
+        }
 
     };
     this.loadJpro = function () {
@@ -461,6 +474,143 @@ var GNZ11 = function () {
             extension : filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)
         };
     }
+
+
+
+    // radio btn - init
+    this.checkBoxRadioInit = function  (){
+        var $=jQuery;
+        // Turn radios into btn-group
+        $('.radio.btn-group label').addClass('btn');
+
+        $('fieldset.btn-group').each(function() {
+            // Handle disabled, prevent clicks on the container, and add disabled style to each button
+            if ($(this).prop('disabled')) {
+                $(this).css('pointer-events', 'none').off('click');
+                $(this).find('.btn').addClass('disabled');
+            }
+        });
+
+        $(".btn-group label:not(.active)").click(function()
+        {
+            var label = $(this);
+            var input = $('#' + label.attr('for'));
+
+            if (!input.prop('checked')) {
+                label.closest('.btn-group').find("label")
+                    .removeClass('active btn-success btn-danger btn-primary');
+                if (input.val() === '') {
+                    label.addClass('active btn-primary');
+                } else if (input.val() === 0) {
+                    label.addClass('active btn-danger');
+                } else {
+                    label.addClass('active btn-success');
+                }
+                input.prop('checked', true);
+                input.trigger('change');
+            }
+        });
+        $(".btn-group input[checked=checked]").each(function()
+        {
+            if ($(this).val() === '') {
+                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
+            } else if ($(this).val() === 0) {
+                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
+            } else {
+                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
+            }
+        });
+    };
+
+    this.SHOWON = {
+        Init : function  (){
+            var $ = jQuery;
+            var self = new GNZ11();
+            $('[data-showon]').each(function() {
+                var target = $(this), jsondata = $(this).data('showon');
+
+                // Attach events to referenced element
+                $.each(jsondata, function(j, item) {
+                    var $fields = $('[name="' + jsondata[j]['field'] + '"], [name="' + jsondata[j]['field'] + '[]"]');
+                    // Attach events to referenced element
+                    $fields.each(function() {
+                        self.SHOWON.linkedoptions(target);
+                    }).bind('change', function() {
+                        // var self = new GNZ11();
+                        self.SHOWON.linkedoptions(target);
+                    });
+
+                });
+            });
+        },// end function
+        linkedoptions : function(target) {
+            var $ = jQuery;
+            var showfield = true, itemval, jsondata = target.data('showon');
+
+            // Check if target conditions are satisfied
+            $.each(jsondata, function(j, item) {
+                $fields = $('[name="' + jsondata[j]['field'] + '"], [name="' + jsondata[j]['field'] + '[]"]');
+                jsondata[j]['valid'] = 0;
+
+                // Test in each of the elements in the field array if condition is valid
+                $fields.each(function() {
+                    // If checkbox or radio box the value is read from proprieties
+                    if (['checkbox','radio'].indexOf($(this).attr('type')) !== -1)
+                    {
+                        itemval = $(this).prop('checked') ? $(this).val() : '';
+                    }
+                    else
+                    {
+                        itemval = $(this).val();
+                    }
+
+                    // Convert to array to allow multiple values in the field (e.g. type=list multiple) and normalize as string
+                    if (!(typeof itemval === 'object'))
+                    {
+                        itemval = JSON.parse('["' + itemval + '"]');
+                    }
+
+                    // Test if any of the values of the field exists in showon conditions
+                    for (var i in itemval)
+                    {
+                        if (jsondata[j]['values'].indexOf(itemval[i]) !== -1)
+                        {
+                            jsondata[j]['valid'] = 1;
+                        }
+                    }
+                });
+
+                // Verify conditions
+                // First condition (no operator): current condition must be valid
+                if (jsondata[j]['op'] === '')
+                {
+                    if (jsondata[j]['valid'] === 0)
+                    {
+                        showfield = false;
+                    }
+                }
+                // Other conditions (if exists)
+                else
+                {
+                    // AND operator: both the previous and current conditions must be valid
+                    if (jsondata[j]['op'] === 'AND' && jsondata[j]['valid'] + jsondata[j-1]['valid'] < 2)
+                    {
+                        showfield = false;
+                    }
+                    // OR operator: one of the previous and current conditions must be valid
+                    if (jsondata[j]['op'] === 'OR'  && jsondata[j]['valid'] + jsondata[j-1]['valid'] > 0)
+                    {
+                        showfield = true;
+                    }
+                }
+            });
+
+            // If conditions are satisfied show the target field(s), else hide
+            (showfield) ? target.slideDown() : target.slideUp();
+        },
+    }
+
+
 };
 
 /**
