@@ -176,27 +176,8 @@ var GNZ11 = function () {
      * @return {*}
      */
     this.getAjax = function () {
+        console.warn('GNZ11.getAjax is deprecated!!! Use GNZ11.getModul("Ajax")');
         return this.getModul('Ajax');
-/*
-        var $this = this ;
-        if ( typeof GNZ11Ajax !== 'function' ) {
-            return new Promise(function (resolve, reject) {
-                Promise.all([
-                    $this.load.js( $this.Options.gnzlib_path_modules+'/gnz11.Ajax.js')
-                ]).then(function (r) {
-                    var i = setInterval(function () {
-                        if (typeof GNZ11Ajax === 'function') {
-                            clearInterval(i);
-                            resolve(new GNZ11Ajax());
-                        }
-                    }, 1)
-                })
-            });
-        } else {
-            return new Promise(function (resolve, reject) {
-                resolve(new GNZ11Ajax());
-            });
-        }*/
     };
 
     this.getModul = function (moduleName , setting) {
