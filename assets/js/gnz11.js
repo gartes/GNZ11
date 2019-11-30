@@ -387,8 +387,24 @@ var GNZ11 = function () {
                     resolve(a);
                 });
             })
+        },
+        Ui:function () {
+            var $this = new GNZ11() ;
+            return new Promise(function (resolve, reject) {
+                Promise.all([
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.css'),
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.structure.css'),
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.theme.css'),
+                    $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.js'),
+                ]).then(function (a) {
+                    if (jQuery.ui) {
 
+                        resolve(a);
+                        // UI loaded
+                    }
 
+                });
+            })
         }
 
     };
