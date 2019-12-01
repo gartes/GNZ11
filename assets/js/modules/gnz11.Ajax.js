@@ -91,6 +91,7 @@ GNZ11Ajax = function () {
             }
             var admin = ( (typeof Options.Ajax.isClient !== 'undefined' && Options.Ajax.isClient ) ? 'administrator/' : '');
 
+           // admin = '';
 
             $.ajax({
                 type: paramsAjax.method,

@@ -220,7 +220,7 @@ class Address extends ApiModel
      */
     public static function getCities(MethodParameters $data = null)
     {
-        return self::sendData(__FUNCTION__, $data);
+    	return self::sendData(__FUNCTION__, $data);
     }
 
     /**
