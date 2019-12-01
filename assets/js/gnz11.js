@@ -310,19 +310,19 @@ var GNZ11 = function () {
             var setting = {};
             $.extend(  true , setting ,  NotySettingDefault  , param   );
 
-            console.log( setting )
+            console.log( setting );
 
             if ( typeof  Noty === 'undefined' ){
                 return new Promise(function (resolve, reject) {
                     Promise.all([
-                        $this.load.css('/libraries/zaz/Core/js/assets/lib/noty/noty.css'),
-                        $this.load.css('/libraries/zaz/Core/js/assets/lib/noty/themes/metroui.css'),
-                        $this.load.js('/libraries/zaz/Core/js/assets/lib/noty/noty.js'),
+                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/noty.css'),
+                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/themes/metroui.css'),
+                        $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/noty/noty.js'),
                     ]).then(function (a) {
                         var i = setInterval(function () {
                             if (typeof  Noty === 'function'){
                                 clearInterval(i);
-                                console.log( 'Noty - Loaded')
+                                console.log( 'Noty - Loaded');
                                 resolve(new Noty( setting ));
                             }
                         },1);
