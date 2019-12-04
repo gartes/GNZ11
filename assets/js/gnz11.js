@@ -158,15 +158,7 @@ var GNZ11 = function () {
     })();
     this.init = function () {};
 
-    /**
-     * получить строку между двумя символами
-     */
-    this.getBetween = function (str,start,finish ) {
-        return str.substring(
-            str.lastIndexOf(start) + 1,
-            str.lastIndexOf(finish)
-        )
-    };
+
 
 
 
@@ -489,7 +481,7 @@ var GNZ11 = function () {
             hash: parser.hash ,
             extension : filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)
         };
-    }
+    };
 
 
 
@@ -627,6 +619,27 @@ var GNZ11 = function () {
     }
 
 
+
+    /**
+     * получить строку между двумя символами
+     */
+    this.getBetween = function (str,start,finish ) {
+        return str.substring(
+            str.lastIndexOf(start) + 1,
+            str.lastIndexOf(finish)
+        )
+    };
+    /**
+     * Serializes - форм || элементов форм не вложенных в тег <form>
+     * Serializes form or any other element with jQuery.serialize
+     * @param el - <form> OR <div>
+     */
+    this.serialize = function(el) {
+        var serialized = $(el).serialize();
+        if (!serialized) // not a form
+            serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
+        return serialized;
+    }
 };
 
 /**
