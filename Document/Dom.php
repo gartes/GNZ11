@@ -4,6 +4,7 @@
 	
 	use DOMDocument;
 	use Exception;
+	use stdClass;
 	
 	/**
 	 * @since       3.9
@@ -66,6 +67,9 @@
 					case 'async' :
 						$thisAttr = self::testAttribute( $nodeElement , $attr );
 						break;
+					case 'defer' :
+						$thisAttr = self::testAttribute( $nodeElement , $attr );
+						break;
 					default :
 						$thisAttr = $nodeElement->getAttribute( $attr );
 				}#END SWITCH
@@ -85,7 +89,7 @@
 		 * @param $nodeElement
 		 * @param $attr
 		 *
-		 * @return bool
+		 * @return bool true если атребут присутствует
 		 *
 		 * @since version
 		 */
@@ -123,14 +127,31 @@
 		 * @author    Gartes
 		 *
 		 */
-		public static function writeBottomHeadTag ( $tag , $value , $attr=[]){
+		public static function writeBottomHeadTag ( $tag , $value , stdClass $attr = null , $params = [] ){
 			$app = \JFactory::getApplication() ;
 			
 			$body                = $app->getBody();
 			$dom = new self();
+			
+		    if( isset( $params['formatOutput'] ) && $params['formatOutput'] )
+			{
+				# форматирует вывод страницы добавляет знаки переноса строк к тегам
+				# TODO - Сделать зависимым от настроек компонента
+				# Форматирует вывод, добавляя отступы и дополнительные пробелы.
+				$dom->formatOutput = true;
+				# Указание не убирать лишние пробелы и отступы. По умолчанию TRUE
+				$dom->preserveWhiteSpace = false;
+			}#END IF
+			
+			
+			
 			$dom->loadHTML( $body );
 			$xpath = new \DomXPath($dom);
 			$parent = $xpath->query( '//head');
+			
+			
+			
+			
 			
 			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
 			
@@ -139,6 +160,9 @@
 			
 			
 			$parent->item(0)->appendChild( $newTag );
+			
+			
+			
 			$body =   $dom->saveHTML() ;
 			$app->setBody($body);
 		}#END FN
@@ -158,9 +182,14 @@
 			
 			if ( !count( (array)$attrs ) ) { return ; }
 			
+			
+			
+			
 			$log = [] ;
 			foreach ($attrs as $name => $attrVal  ){
 				if ( !in_array($name , self::$attrArrName) ) { continue ;  }
+				
+				
 				
 				switch ($name){
 					case 'id':
@@ -175,28 +204,19 @@
 					case 'defer':
 					
 					case 'crossorigin' :
-						
 						if ( !$attrVal ) { continue; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , false );
 						break ;
-					
-					
 					case 'type':
 						if ( $attrVal == 'text/javascript' ){ continue ;  }
 						$log[$name] = $attrVal ;
 						break ;
-					
 					default :
 						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
 						$log[$name] = $attrVal ;
 				}
 			}#END FOREACH
-			
-			
-			/*echo'<pre>';print_r( $log );echo'</pre>'.__FILE__.' '.__LINE__;
-			echo'<pre>';print_r( $elem );echo'</pre>'.__FILE__.' '.__LINE__;
-			die(__FILE__ .' '. __LINE__ );*/
 		}#END FN
 		
 		/**
@@ -212,9 +232,10 @@
 		 *
 		 * @copyright 01.12.18
 		 */
-		public static function AddAttribute($dom, &$element, $name, $value = '' ) {
-			$attr = $dom->createAttribute($name);
+		public static function AddAttribute($dom, &$element, $name, $value = null ) {
 			
+			$value = str_replace('&', "&amp;",  $value );
+			$attr = $dom->createAttribute($name);
 			if ($value)
 			{
 				$attr->value = $value;
