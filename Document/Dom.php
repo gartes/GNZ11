@@ -133,6 +133,10 @@
 			$body                = $app->getBody();
 			$dom = new self();
 			
+			
+			
+			
+			# TODO - Установить в метод перед рендингом страницы
 		    if( isset( $params['formatOutput'] ) && $params['formatOutput'] )
 			{
 				# форматирует вывод страницы добавляет знаки переноса строк к тегам
@@ -151,12 +155,12 @@
 			
 			
 			
-			
-			
 			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+			
 			
 			# Установка атрибутов узла
 			self::fetchAttr($dom ,$newTag , $attr );
+			
 			
 			
 			$parent->item(0)->appendChild( $newTag );
@@ -166,6 +170,42 @@
 			$body =   $dom->saveHTML() ;
 			$app->setBody($body);
 		}#END FN
+		
+		/**
+		 * Добавить тег в тело документа перед закрывающемся тегом </body>
+		 * @param       $tag
+		 * @param       $value
+		 * @param array $attr
+		 *
+		 * @throws \Exception
+		 * @author    Gartes
+		 *
+		 * @since     3.8
+		 * @copyright 02.01.19
+		 */
+		public  static function writeDownTag ( $tag , $value , $attr=[] ){
+			
+			$app = \JFactory::getApplication() ;
+			$body                = $app->getBody();
+			$dom = new self();
+			$dom->loadHTML( $body );
+			
+			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+			
+			# add class attribute
+			self::fetchAttr($dom ,$newTag , $attr );
+			
+			$xpath = new \DomXPath($dom);
+			$parent = $xpath->query( '//body');
+			
+			$parent->item(0)->appendChild( $newTag );
+			$body =   $dom->saveHTML() ;
+			
+			$app->setBody($body);
+			
+		}#END FN
+		
+		
 		
 		/**
 		 * Установка атрибутов узла
@@ -199,19 +239,21 @@
 						if ( !$attrVal ) {continue ; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , $attrVal );
-						break ;
+					break ;
+					
 					case 'async':
 					case 'defer':
-					
 					case 'crossorigin' :
 						if ( !$attrVal ) { continue; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , false );
-						break ;
+					break ;
+						
 					case 'type':
 						if ( $attrVal == 'text/javascript' ){ continue ;  }
 						$log[$name] = $attrVal ;
-						break ;
+					break ;
+					
 					default :
 						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
 						$log[$name] = $attrVal ;
@@ -242,10 +284,6 @@
 			}#END IF
 			$element->appendChild($attr);
 		}#END FN
-		
-		
-		
-		
 		
 		
 		public static function DOMinnerHTML ( $element )
