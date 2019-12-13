@@ -5,6 +5,7 @@
 	use DOMDocument;
 	use Exception;
 	use stdClass;
+	use DomXPath;
 	
 	/**
 	 * @since       3.9
@@ -150,7 +151,7 @@
 			
 			
 			$dom->loadHTML( $body );
-			$xpath = new \DomXPath($dom);
+			$xpath = new DomXPath($dom);
 			$parent = $xpath->query( '//head');
 			
 			
@@ -173,14 +174,15 @@
 		
 		/**
 		 * Добавить тег в тело документа перед закрывающемся тегом </body>
-		 * @param       $tag
-		 * @param       $value
-		 * @param array $attr
 		 *
-		 * @throws \Exception
+		 * @param   string  $tag    название тега
+		 * @param   string  $value  контент тега
+		 * @param   array   $attr   атребуты тега
+		 *
+		 * @throws Exception
+		 * @since     3.8
 		 * @author    Gartes
 		 *
-		 * @since     3.8
 		 * @copyright 02.01.19
 		 */
 		public  static function writeDownTag ( $tag , $value , $attr=[] ){
@@ -195,7 +197,7 @@
 			# add class attribute
 			self::fetchAttr($dom ,$newTag , $attr );
 			
-			$xpath = new \DomXPath($dom);
+			$xpath = new DomXPath($dom);
 			$parent = $xpath->query( '//body');
 			
 			$parent->item(0)->appendChild( $newTag );
@@ -203,6 +205,40 @@
 			
 			$app->setBody($body);
 			
+		}#END FN
+		
+		
+		
+		/**
+		 * Создание тегов в начале тега <head>
+		 *
+		 * @param       $tag
+		 * @param       $value
+		 * @param array $attr
+		 *
+		 * @throws Exception
+		 * @author    Gartes
+		 *
+		 * @since     3.8
+		 * @copyright 05.01.19
+		 */
+		public static function writeTopHeadTag ( $tag , $value , $attr=[]){
+			$app = \JFactory::getApplication() ;
+			$body                = $app->getBody();
+			$dom = new self();
+			$dom->loadHTML( $body );
+			
+			$xpath = new DomXPath($dom);
+			$parent = $xpath->query( '//head');
+			
+			$firstSibling = $parent->item(0)->firstChild;
+			
+			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+			# add class attribute
+			self::fetchAttr($dom ,$newTag , $attr );
+			$parent->item(0)->insertBefore( $newTag , $firstSibling ) ;
+			$body =   $dom->saveHTML() ;
+			$app->setBody($body);
 		}#END FN
 		
 		
@@ -252,18 +288,6 @@
 					case 'type':
 						if ( in_array( $attrVal , $exclTypeArr) || empty( $attrVal )  ) continue ;
 						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
-						
-						
-						// "https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"
-						
-						// var gnz11 = new GNZ11();
-					/*	gnz11.load[tag](url).then(function (a) {
-						resolve(a);
-					},function (err) {
-						reject(err)
-                 });*/
-						
-						
 						$log[$name] = $attrVal ;
 					break ;
 					
