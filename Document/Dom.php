@@ -222,12 +222,12 @@
 			
 			if ( !count( (array)$attrs ) ) { return ; }
 			
-			
+			$exclTypeArr = ['text/javascript','text/css'] ;
 			
 			
 			$log = [] ;
 			foreach ($attrs as $name => $attrVal  ){
-				if ( !in_array($name , self::$attrArrName) ) { continue ;  }
+				if ( !in_array($name , self::$attrArrName) )  continue ;
 				
 				
 				
@@ -250,7 +250,20 @@
 					break ;
 						
 					case 'type':
-						if ( $attrVal == 'text/javascript' ){ continue ;  }
+						if ( in_array( $attrVal , $exclTypeArr) || empty( $attrVal )  ) continue ;
+						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
+						
+						
+						// "https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"
+						
+						// var gnz11 = new GNZ11();
+					/*	gnz11.load[tag](url).then(function (a) {
+						resolve(a);
+					},function (err) {
+						reject(err)
+                 });*/
+						
+						
 						$log[$name] = $attrVal ;
 					break ;
 					
