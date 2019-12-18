@@ -172,6 +172,8 @@ var GNZ11 = function () {
         return this.getModul('Ajax');
     };
 
+
+
     this.getModul = function (moduleName , setting) {
 
         var $this = this ;
@@ -640,7 +642,12 @@ var GNZ11 = function () {
             serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
         return serialized;
     }
+
+
+
+
 };
+
 
 /**
  * Предварительная установка загрузки файла - до загрузки самой библиотеки GNZ11
