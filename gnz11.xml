@@ -8,7 +8,7 @@
     <license>GNU/GPLv3</license>
     <authorEmail>sad.net79@gmail.com</authorEmail>
     <authorUrl>https://ru.wikipedia.org/wiki/GN-z11</authorUrl>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
     <description>Library GN-z11 by Gartes</description>
 
     <files>
@@ -18,6 +18,21 @@
         <folder>Document</folder>
         <file>gnz11.xml</file> 
     </files>
+    <install> <!-- Runs on install -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+    <update> <!-- Runs on update; New since J2.5 -->
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
         <server type="extension" enabled="1" name="Lib GNZ11 Update Site">https://raw.githubusercontent.com/gartes/GNZ11/master/GNZ11_update_server.xml</server>
