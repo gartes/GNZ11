@@ -8,7 +8,7 @@
     <license>GNU/GPLv3</license>
     <authorEmail>sad.net79@gmail.com</authorEmail>
     <authorUrl>https://ru.wikipedia.org/wiki/GN-z11</authorUrl>
-    <version>0.0.7</version>
+    <version>0.0.8</version>
     <description>Library GN-z11 by Gartes</description>
 
     <files>
@@ -20,7 +20,7 @@
     </files>
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
-        <server type="extension" enabled="1" name="VirtueMart3 plg_vmshipment_nova_poshta Update Site">https://raw.githubusercontent.com/gartes/GNZ11/master/GNZ11_update_server.xml</server>
+        <server type="extension" enabled="1" name="Lib GNZ11 Update Site">https://raw.githubusercontent.com/gartes/GNZ11/master/GNZ11_update_server.xml</server>
     </updateservers>
 </extension>
 
