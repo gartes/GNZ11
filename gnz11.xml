@@ -16,7 +16,9 @@
         <folder>assets</folder>
         <folder>Core</folder>
         <folder>Document</folder>
-        <file>gnz11.xml</file> 
+        <folder>sql</folder>
+        <file>gnz11.xml</file>
+        <file>GNZ11_update_server.xml</file>
     </files>
     <install> <!-- Runs on install -->
         <sql>
