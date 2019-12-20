@@ -927,6 +927,7 @@ class InternetDocument extends ApiModel
      *
      * @param MethodParameters $data
      * @return \NovaPoshta\Models\DataContainerResponse
+     * @since 3.9 
      */
     public static function getDocumentPrice(MethodParameters $data = null)
     {
