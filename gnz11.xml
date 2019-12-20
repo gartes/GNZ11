@@ -37,7 +37,7 @@
     </update>
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
-        <server type="extension" enabled="1" name="Lib GNZ11 Update Site">https://raw.githubusercontent.com/gartes/GNZ11/master/GNZ11_update_server.xml</server>
+        <server type="library" enabled="1" name="Lib GNZ11 Update Site">https://raw.githubusercontent.com/gartes/GNZ11/master/GNZ11_update_server.xml</server>
     </updateservers>
 </extension>
 
