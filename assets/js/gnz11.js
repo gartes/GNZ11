@@ -404,6 +404,9 @@ var GNZ11 = function () {
     };
     this.loadJpro = function () {
         var optJpro = Joomla.getOptions('Jpro');
+
+        console.log(optJpro)
+
         if (typeof optJpro === 'undefined' || typeof  optJpro.load !== 'object') return ;
         optJpro.load.forEach(function(item, i, arr) {
             setTimeout(function () {

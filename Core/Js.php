@@ -142,6 +142,7 @@
 							Joomla = window.Joomla || {};
 							Jpro = window.Jpro || {};
 						    (function (Joomla , Jpro ) {
+						    
 						        Joomla.optionsStorage = Joomla.optionsStorage || null;
 						        Joomla.loadOptions = function( options ) {
 						            // Load form the script container
@@ -189,10 +190,8 @@
 						            if (typeof GNZ11 === 'undefined'){
 						                var opt = Joomla.getOptions('Jpro');
 						                var data = {
-						                    
 						                    'u':url ,
 						                    'c' : callback
-						                    
 						                };
 						                opt.load.push(data);
 						                Joomla.loadOptions({'Jpro':opt});
@@ -242,5 +241,15 @@
 			return $sriptLoader;
 		}
 		
+		public static function addTaskLazy(){
+			$doc = JFactory::getDocument();
+			$Jpro = $doc->getScriptOptions('Jpro') ;
+			$Jpro['load'][] = [
+				'u' => 'https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js' ,
+				't' => 'js' ,
+				'c' => 'onLazyIsLoad' ,
+			];
+			$doc->addScriptOptions('Jpro' , $Jpro ) ;
+		}
 		
 	}

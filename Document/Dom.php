@@ -57,18 +57,13 @@
 		public static function getAttrElement ( $nodeElement , $excludeAttr = [] )
 		{
 			$retAttr = [];
-			
 			foreach( self::$attrArrName as $attr )
 			{
-				
 				if( in_array( $attr , $excludeAttr ) ) continue; #END IF
-				
 				switch( $attr )
 				{
+					case 'defer':
 					case 'async' :
-						$thisAttr = self::testAttribute( $nodeElement , $attr );
-						break;
-					case 'defer' :
 						$thisAttr = self::testAttribute( $nodeElement , $attr );
 						break;
 					default :
