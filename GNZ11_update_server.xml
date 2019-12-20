@@ -15,6 +15,7 @@
         <php_minimum>5.3.10</php_minimum>
     </update>
     <update>
+
         <name>Lib GNZ11</name>
         <description>Lib GNZ11 Desc</description>
         <type>library</type>
