@@ -18,7 +18,9 @@
         <name>Lib GNZ11</name>
         <description>Lib GNZ11 Desc</description>
         <type>library</type>
+
 <!--        <folder>GNZ11</folder>-->
+
         <element>GNZ11</element>
         <version>0.1.1</version>
         <client>0</client>
