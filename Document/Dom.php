@@ -123,14 +123,11 @@
 		 * @author    Gartes
 		 *
 		 */
-		public static function writeBottomHeadTag ( $tag , $value , stdClass $attr = null , $params = [] ){
+		public static function writeBottomHeadTag ( $tag , $value ,  $attr = null , $params = [] ){
 			$app = \JFactory::getApplication() ;
 			
 			$body                = $app->getBody();
 			$dom = new self();
-			
-			
-			
 			
 			# TODO - Установить в метод перед рендингом страницы
 		    if( isset( $params['formatOutput'] ) && $params['formatOutput'] )
@@ -143,13 +140,9 @@
 				$dom->preserveWhiteSpace = false;
 			}#END IF
 			
-			
-			
 			$dom->loadHTML( $body );
 			$xpath = new DomXPath($dom);
 			$parent = $xpath->query( '//head');
-			
-			
 			
 			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
 			
@@ -202,6 +195,35 @@
 			
 		}#END FN
 		
+		/**
+		 * Добавить тег в тело документа перед закрывающемся тегом </noscript>
+		 *
+		 * @param   string  $tag    название тега
+		 * @param   string  $value  контент тега
+		 * @param   array   $attr   атребуты тега
+		 *
+		 * @throws Exception
+		 * @since 3.9
+		 */
+		public static function writeDownNosciptTag($tag , $value , $attr=[]){
+			$app = \JFactory::getApplication() ;
+			$body                = $app->getBody();
+			$dom = new self();
+			$dom->loadHTML( $body );
+			
+			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+			
+			# add class attribute
+			self::fetchAttr($dom ,$newTag , $attr );
+			
+			$xpath = new DomXPath($dom);
+			$parent = $xpath->query( '//noscript');
+			
+			$parent->item(0)->appendChild( $newTag );
+			$body =   $dom->saveHTML() ;
+			
+			$app->setBody($body);
+		}#END FN
 		
 		
 		/**
@@ -256,30 +278,36 @@
 			$exclTypeArr = ['text/javascript','text/css'] ;
 			
 			
+
 			$log = [] ;
 			foreach ($attrs as $name => $attrVal  ){
+				
+				
 				if ( !in_array($name , self::$attrArrName) )  continue ;
-				
-				
 				
 				switch ($name){
 					case 'id':
 					case 'class':
 					case 'media':
 					case 'as' :
+					case 'onload' :
 						if ( !$attrVal ) {continue ; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , $attrVal );
 					break ;
 					
+					case 'crossorigin' :
+						if ( !$attrVal ) { continue; }
+						self::AddAttribute($dom, $elem, ''.$name , 'anonymous' );
+						
+						break ;
+					
 					case 'async':
 					case 'defer':
-					case 'crossorigin' :
 						if ( !$attrVal ) { continue; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , false );
 					break ;
-						
 					case 'type':
 						if ( in_array( $attrVal , $exclTypeArr) || empty( $attrVal )  ) continue ;
 						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
@@ -287,8 +315,20 @@
 					break ;
 					
 					default :
-						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
+						
+						if( isset( $attrs->href ) && $name == 'onload'  )
+						{
+//							echo'<pre>';print_r( $name );echo'</pre>'.__FILE__.' '.__LINE__;
+//							echo'<pre>';print_r( $attrVal );echo'</pre>'.__FILE__.' '.__LINE__;
+//							echo'<pre>';print_r( $attrs );echo'</pre>'.__FILE__.' '.__LINE__;
+							
+							
+						}#END IF
+						
+						
+						self::AddAttribute($dom, $elem,    ''.$name ,$attrVal );
 						$log[$name] = $attrVal ;
+						
 				}
 			}#END FOREACH
 		}#END FN
@@ -308,12 +348,22 @@
 		 */
 		public static function AddAttribute($dom, &$element, $name, $value = null ) {
 			
+			
+			
 			$value = str_replace('&', "&amp;",  $value );
 			$attr = $dom->createAttribute($name);
 			if ($value)
 			{
 				$attr->value = $value;
 			}#END IF
+			
+			/*if( $name == 'onload' )
+			{
+				echo'<pre>';print_r( $attr );echo'</pre>'.__FILE__.' '.__LINE__;
+				echo'<pre>';print_r( $name );echo'</pre>'.__FILE__.' '.__LINE__;
+				echo'<pre>';print_r( $value );echo'</pre>'.__FILE__.' '.__LINE__;
+			}#END IF*/
+			
 			$element->appendChild($attr);
 		}#END FN
 		

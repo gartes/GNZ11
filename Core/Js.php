@@ -32,6 +32,9 @@
 			'gnzlib_path_plugins'=>'/libraries/GNZ11/assets/js/plugins' ,
 			'gnzlib_debug'=>false ,
 		] ;
+		
+		
+		
 		/**
 		 * helper constructor.
 		 * @throws Exception
@@ -47,6 +50,9 @@
 			
 			$this->paramsComponent = $params ;
 			$this->setConfig_GNZ11 ();
+			
+			
+			
 			return $this;
 		}#END FN
 		
