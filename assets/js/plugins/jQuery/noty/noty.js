@@ -1829,7 +1829,7 @@
                      An example real-world use case is implementing timeouts:
 
                      ```javascript
-                     Promise.race([ajax('foo.json'), timeout(5000)])
+                     Promise.race([ajax('inetglobal.json'), timeout(5000)])
                      ```
 
                      @method race

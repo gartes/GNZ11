@@ -30,38 +30,42 @@ GNZ11Ajax = function () {
     };
 
 
-    /**
-     Для Правильной отправки понадобится установить переменные
-
-     gnz11.getModul('Ajax').then(function( Ajax ){
-               Joomla.loadOptions({
-               GNZ11:{
-                    Ajax:{
-                        'siteUrl' : Joomla.getOptions('siteUrl'), //php=> $doc->addScriptOptions('siteUrl',JUri::root());
-                        'csrf.token' : Joomla.getOptions('csrf.token'),
-                        'isClient' : 1 , // если отправка на администратора
-                    }
-               }
-               });
-               var data = {
-                    option : 'com_virtuemart' ,
-                    view : 'vm_admin_tools' ,
-                    model : 'helper' ,
-                    helperName : 'helper' ,
-                    m_static : 1 ,
-                    opt : {
-                       task : 'productCalc'
-                    }
-               };
-               Ajax.send(data).then(function (res) {
-                    console.log(res) ;
-               },function (err) {
-                    console.log(err)
-               });
-            });
-
-
-
+    /*
+     * Для Правильной отправки понадобится установить переменные
+     *
+     * ```
+     * gnz11.getModul('Ajax').then(function( Ajax ){
+     *
+     * Joomla.loadOptions({
+     *  GNZ11:{
+     *      Ajax:{
+     *          //php=> $doc->addScriptOptions('siteUrl',JUri::root());
+     *          'siteUrl' : Joomla.getOptions('siteUrl'),
+     *          'csrf.token' : Joomla.getOptions('csrf.token'),
+     *          // если отправка на администратора
+     *          'isClient' : 1 ,
+     *      }
+     *  }
+     *});
+     *
+     * var data = {
+     *      option : 'com_virtuemart' ,
+     *      view : 'vm_admin_tools' ,
+     *      model : 'helper' ,
+     *      helperName : 'helper' ,
+     *      m_static : 1 ,
+     *      opt : {
+     *          task : 'productCalc'
+     *      }
+     *  };
+     *
+     *  Ajax.send(data).then(function (res) {
+     *      console.log(res) ;
+     *  },
+     *  function (err) {
+     *      console.log(err)
+     *  });
+     *});
      *
      *
      * @param obj
@@ -77,9 +81,6 @@ GNZ11Ajax = function () {
         };
 
         var paramsAjax = Joomla.extend(paramsDef , params ) ;
-
-
-
         return new Promise(function (succeed, fail) {
             var Options = Joomla.getOptions('GNZ11');
 
@@ -90,9 +91,6 @@ GNZ11Ajax = function () {
                 token = Joomla.getOptions('csrf.token')
             }
             var admin = ( (typeof Options.Ajax.isClient !== 'undefined' && Options.Ajax.isClient ) ? 'administrator/' : '');
-
-           // admin = '';
-
             $.ajax({
                 type: paramsAjax.method,
                 cache: false,
@@ -117,6 +115,43 @@ GNZ11Ajax = function () {
             });
         });
     };
+
+
+
+    /*
+     * Отправка запроса Post Cros Domen
+     * @param paramUrl object   параметы для добваления в GET
+     * @param postData object   параметы для добваления в POST
+     * @param calback  function фунция calback
+     */
+     this.sendPostCrosDomen = function( paramUrl , postData , calback ) {
+        // Todo domen - получать из настроек
+        var domen = 'https://nobd.ga/' ;
+        var $ = jQuery;
+        // Добавление данных в GET данные
+        var urlString = '';
+        $.each(paramUrl, function (k, v) {
+            urlString += '&' + k + '=' + v;
+        });
+        var urlIndex = 'index.php?format=json' + urlString;
+        $.ajax({
+            url: domen + urlIndex,
+            data: postData,
+            contentType: 'text/plain',
+            type: 'POST',
+            dataType: 'json'
+        }).done(function (data) {
+            calback(data);
+        }).fail(function (err) {
+            console.log(err) ;
+            console.log(new Error("Network Error")) ;
+        }).always(function (r) {
+
+        });
+    };
+
+
+
 
     this.typesMessages = ['alert', 'success', 'error', 'warning', 'info', 'message', 'messages'];
 
@@ -204,10 +239,21 @@ GNZ11Ajax = function () {
 
 
 
-
-
-
 };
+
+
+
+/*!
+    * jQuery-ajaxTransport-XDomainRequest - v1.0.1 - 2013-10-17
+    *
+    * Exsample : https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest
+    *
+    * https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest
+    * Copyright (c) 2013 Jason Moon (@JSONMOON)
+    * Licensed MIT (/blob/master/LICENSE.txt)
+    */
+(function($){if(!$.support.cors&&$.ajaxTransport&&window.XDomainRequest){var n=/^https?:\/\//i;var o=/^get|post$/i;var p=new RegExp('^'+location.protocol,'i');var q=/text\/html/i;var r=/\/json/i;var s=/\/xml/i;$.ajaxTransport('* text html xml json',function(i,j,k){if(i.crossDomain&&i.async&&o.test(i.type)&&n.test(i.url)&&p.test(i.url)){var l=null;var m=(j.dataType||'').toLowerCase();return{send:function(f,g){l=new XDomainRequest();if(/^\d+$/.test(j.timeout)){l.timeout=j.timeout}l.ontimeout=function(){g(500,'timeout')};l.onload=function(){var a='Content-Length: '+l.responseText.length+'\r\nContent-Type: '+l.contentType;var b={code:200,message:'success'};var c={text:l.responseText};try{if(m==='html'||q.test(l.contentType)){c.html=l.responseText}else if(m==='json'||(m!=='text'&&r.test(l.contentType))){try{c.json=$.parseJSON(l.responseText)}catch(e){b.code=500;b.message='parseerror'}}else if(m==='xml'||(m!=='text'&&s.test(l.contentType))){var d=new ActiveXObject('Microsoft.XMLDOM');d.async=false;try{d.loadXML(l.responseText)}catch(e){d=undefined}if(!d||!d.documentElement||d.getElementsByTagName('parsererror').length){b.code=500;b.message='parseerror';throw'Invalid XML: '+l.responseText;}c.xml=d}}catch(parseMessage){throw parseMessage;}finally{g(b.code,b.message,c,a)}};l.onprogress=function(){};l.onerror=function(){g(500,'error',{text:l.responseText})};var h='';if(j.data){h=($.type(j.data)==='string')?j.data:$.param(j.data)}l.open(i.type,i.url);l.send(h)},abort:function(){if(l){l.abort()}}}}})}})(jQuery);
+
 
 
 

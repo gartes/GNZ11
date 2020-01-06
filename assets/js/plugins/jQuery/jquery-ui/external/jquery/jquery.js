@@ -1484,7 +1484,7 @@ Sizzle.attr = function( elem, name ) {
 	}
 
 	var fn = Expr.attrHandle[ name.toLowerCase() ],
-		// Don't get fooled by Object.prototype properties (jQuery #13807)
+		// Don't get inetgloballed by Object.prototype properties (jQuery #13807)
 		val = fn && hasOwn.call( Expr.attrHandle, name.toLowerCase() ) ?
 			fn( elem, name, !documentIsHTML ) :
 			undefined;
@@ -4436,7 +4436,7 @@ var rscriptType = ( /^$|\/(?:java|ecma)script/i );
 var rleadingWhitespace = ( /^\s+/ );
 
 var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|" +
-		"details|dialog|figcaption|figure|footer|header|hgroup|main|" +
+		"details|dialog|figcaption|figure|inetglobalter|header|hgroup|main|" +
 		"mark|meter|nav|output|picture|progress|section|summary|template|time|video";
 
 
@@ -4541,7 +4541,7 @@ var wrapMap = {
 // Support: IE8-IE9
 wrapMap.optgroup = wrapMap.option;
 
-wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+wrapMap.tbody = wrapMap.tinetglobalt = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
 
@@ -4648,7 +4648,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 					elem = tag === "table" && !rtbody.test( elem ) ?
 						tmp.firstChild :
 
-						// String was a bare <thead> or <tfoot>
+						// String was a bare <thead> or <tinetglobalt>
 						wrap[ 1 ] === "<table>" && !rtbody.test( elem ) ?
 							tmp :
 							0;
@@ -5155,7 +5155,7 @@ jQuery.event = {
 				// Don't do default actions on window, that's where global variables be (#6170)
 				if ( ontype && elem[ type ] && !jQuery.isWindow( elem ) ) {
 
-					// Don't re-trigger an onFOO event when we call its FOO() method
+					// Don't re-trigger an onINETGLOBAL event when we call its INETGLOBAL() method
 					tmp = elem[ ontype ];
 
 					if ( tmp ) {

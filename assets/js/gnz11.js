@@ -139,14 +139,26 @@ var GNZ11_defSetting = {
  * @constructor
  */
 var GNZ11 = function () {
-    var $=jQuery ;
-    (function () { })();
+    var $ ;
+    (function () {
+        if ( typeof jQuery === "undefined" ) {
+
+        }else{
+            $=jQuery
+        }
+
+    })();
 
     this._siteUrl = null ;
 
     this.set_siteUrl = function (Url) {
         this._siteUrl = Url ;
-        Joomla.loadOptions({ 'siteUrl' : Url })
+        Joomla.loadOptions({ 'siteUrl' : Url });
+
+        var GNZ11_Options = Joomla.getOptions('GNZ11');
+        GNZ11_Options.Ajax = GNZ11_Options.Ajax || {};
+        GNZ11_Options.Ajax.siteUrl = Url+'/';
+        Joomla.loadOptions({ 'GNZ11' : GNZ11_Options })
     };
 
     this.Options = (function () {
@@ -157,11 +169,6 @@ var GNZ11 = function () {
         return Joomla.getOptions('GNZ11')
     })();
     this.init = function () {};
-
-
-
-
-
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /**
      * Загрузка Ajax модуля (GNZ11Ajax)
@@ -171,9 +178,12 @@ var GNZ11 = function () {
         console.warn('GNZ11.getAjax is deprecated!!! Use GNZ11.getModul("Ajax")');
         return this.getModul('Ajax');
     };
-
-
-
+    /**
+     * GNZ11.getModul("Ajax").th
+     * @param moduleName
+     * @param setting
+     * @returns {Promise<unknown>}
+     */
     this.getModul = function (moduleName , setting) {
 
         var $this = this ;
@@ -207,6 +217,9 @@ var GNZ11 = function () {
             });
         }
     };
+    /**
+     * Распзнование речи
+     */
     this.getSpeechRecognition = function () {
         var $this = this ;
         var siteUrl = Joomla.getOptions('siteUrl') ;
@@ -222,10 +235,8 @@ var GNZ11 = function () {
      */
     this.load = (function () {
         var LIB = this;
-
         // Function which returns a function: https://davidwalsh.name/javascript-functions
         function _load(tag) {
-
             return function (url) {
 
                 // This promise will be used by Promise.all to determine success or failure
@@ -243,7 +254,8 @@ var GNZ11 = function () {
                     // console.log( url )
 
 
-                    if ( $.inArray(url, window.GNZ11_isLoad[tag]) !== -1 )  return resolve( url );
+                    if ( window.GNZ11_isLoad[tag].indexOf (url)!== -1 )  return resolve( url );
+                    // if ( $.inArray(url, window.GNZ11_isLoad[tag]) !== -1 )  return resolve( url );
                     window.GNZ11_isLoad[tag].push( url );
 
                     var element = document.createElement(tag);
@@ -276,12 +288,22 @@ var GNZ11 = function () {
 
         return {
             css: _load('link'),
+            link: _load('link'),
             js: _load('script'),
             script: _load('script'),
-            img: _load('img')
+            img: _load('img'),
         };
     })();
 
+    /**
+     * тесты - для сайта = inetglobal.papamoney.com.ua
+     * @param TaskName
+     * @constructor
+     */
+    this.TaskLoad = function (TaskName) {
+        var taskUrl = this._siteUrl + '/libraries/GNZ11/assets/js/tasks/'+TaskName+'.js';
+        this.load.js([taskUrl]);
+    };
     /*
      * Load  module
      *
@@ -485,8 +507,6 @@ var GNZ11 = function () {
         };
     };
 
-
-
     // radio btn - init
     this.checkBoxRadioInit = function  (){
         var $=jQuery;
@@ -619,9 +639,6 @@ var GNZ11 = function () {
             (showfield) ? target.slideDown() : target.slideUp();
         },
     }
-
-
-
     /**
      * получить строку между двумя символами
      */
@@ -630,6 +647,14 @@ var GNZ11 = function () {
             str.lastIndexOf(start) + 1,
             str.lastIndexOf(finish)
         )
+    };
+    /**
+     * проверки объекта|массива на пустоту
+     * @param object array|object
+     * @returns {boolean} TRUE - если пустой
+     */
+    this.isEmpty = function(object) {
+        return JSON.stringify(object) === "{}";
     };
     /**
      * Serializes - форм || элементов форм не вложенных в тег <form>
@@ -642,10 +667,6 @@ var GNZ11 = function () {
             serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
         return serialized;
     }
-
-
-
-
 };
 
 
@@ -664,8 +685,18 @@ var GNZ11 = function () {
  */
 (function () {
     gnz11 = new GNZ11();
-    gnz11.loadJpro();
-    document.dispatchEvent(new Event('GNZ11Loaded'))
+    if ( typeof jQuery === "undefined" ) {
+        gnz11.load.js(['https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js']).then(function () {
+            onStart()
+        })
+    }else{
+        onStart()
+    }
+    function onStart(){
+        gnz11.loadJpro();
+        document.dispatchEvent(new Event('GNZ11Loaded'))
+    }
+
 })();
 
 

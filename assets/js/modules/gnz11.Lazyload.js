@@ -339,8 +339,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var onEnter = function onEnter(element, entry, instance) {
 
-        alert('onEnter')
-        console.log(element);
+
+        // console.log(element);
 
         var settings = instance._settings;
         safeCallback(settings.callback_enter, element, entry, instance);
@@ -357,7 +357,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         var observer = instance._observer;
 
-        console.log(element);
+        // console.log(element);
 
         revealElement(element, instance);
 

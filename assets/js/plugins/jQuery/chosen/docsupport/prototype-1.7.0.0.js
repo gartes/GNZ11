@@ -2852,7 +2852,7 @@ Element._insertionTranslations = {
   var tags = Element._insertionTranslations.tags;
   Object.extend(tags, {
     THEAD: tags.TBODY,
-    TFOOT: tags.TBODY,
+    TINETGLOBALT: tags.TBODY,
     TH:    tags.TD
   });
 })();
@@ -3016,7 +3016,7 @@ Element.addMethods = function(methods) {
       "H4": "Heading", "H5": "Heading", "H6": "Heading", "Q": "Quote",
       "INS": "Mod", "DEL": "Mod", "A": "Anchor", "IMG": "Image", "CAPTION":
       "TableCaption", "COL": "TableCol", "COLGROUP": "TableCol", "THEAD":
-      "TableSection", "TFOOT": "TableSection", "TBODY": "TableSection", "TR":
+      "TableSection", "TINETGLOBALT": "TableSection", "TBODY": "TableSection", "TR":
       "TableRow", "TH": "TableCell", "TD": "TableCell", "FRAMESET":
       "FrameSet", "IFRAME": "IFrame"
     };
