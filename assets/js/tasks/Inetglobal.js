@@ -1,171 +1,255 @@
 Inetglobal = window.Inetglobal || {};
-Inetglobal.Seting = Inetglobal.Seting || {} ;
+Inetglobal.Seting = Inetglobal.Seting || {};
+
+/**
+ *  Целевой домен
+ */
+Inetglobal.TargetDomen ;
+// формат даты
+Inetglobal._f = "YYYY-MM-DD HH:mm:ss";
+
+/**
+ * Таймаут до возвращения на главную
+ * @type {number}
+ */
+Inetglobal.return_wait = 30 ;
+
+/**
+ * Таймаут перед отправкой формы с заказои
+ * @type {number}
+ */
+Inetglobal.apply_order_wait = 10 ;
+
 /**
  * Количество попыток получения настроек
  * @type {number}
- * @private
+ * @protected
  */
-Inetglobal._getSettingCount = 0 ;
+Inetglobal._getSettingCount = 0;
+
 /**
  * Объект библиотеки GNZ11
  * @type {GNZ11}
  */
-Inetglobal.gnz11 = new  GNZ11();
+Inetglobal.gnz11 = new GNZ11();
 /**
  * object   параметы для добваления в GET метода
  * @type {{plugin: string, option: string, group: string}}
  */
-Inetglobal.paramUrl = { option: 'com_ajax', group: 'system', plugin: 'inetglobal', };
-
-
+Inetglobal.paramUrl = {option: 'com_ajax', group: 'system', plugin: 'inetglobal',};
 
 
 Inetglobal.TargetFormSelector = 'div.form:first > form';
 Inetglobal.TargetNameSelector = '[name="name"]';
 Inetglobal.TargetPhoneSelector = '[name="phone"]';
 
-
-
+/**
+ * Инициалазация задания
+ * @constructor
+ */
 Inetglobal.Init = function () {
 
+    Inetglobal.TargetDomen = window.location.host
 
-    if ( Inetglobal.gnz11.isEmpty(Inetglobal.Seting) && !Inetglobal._getSettingCount ){
+
+    if (Inetglobal.gnz11.isEmpty(Inetglobal.Seting) && !Inetglobal._getSettingCount) {
         Inetglobal.getSetting();
-        return ;
+        return;
     }
-    Inetglobal.getNewName()
+    var pathname = window.location.pathname ;
+
+    if (window.location.host === Inetglobal.TargetDomen ){
+        switch (pathname) {
+            case '/' :
+                Inetglobal.getNewName() ;
+                break ;
+            case '/send.php' :
+                Inetglobal.GoToFront();
+                break ;
+        }
+    }
+};
+
+Inetglobal.StartReload = function(){
+    setTimeout(function () {
+        window.location.reload();
+    },120000)
+};
 
 
+/**
+ * Возващение на страницу заказа
+ * @constructor
+ */
+Inetglobal.GoToFront = function(){
+    var wt = Inetglobal.return_wait + Inetglobal.Seting.ofset ;
+    console.clear();
+    setInterval(function () {
+
+        console.clear();
+        console.log( '%c\n\n\nЩа вернемся прямо через ' + wt + ' секунд!\n\n\n' , "color:green; font-size: 20px"  )
+        wt--;
+    },1000)
+    setTimeout(function () {
+        window.location.href = 'http://'+Inetglobal.TargetDomen+'/?fbclid=IwAR11lTCTY1cYYx5zgZ0MHMIZxu_Q3IB6tYxIGlS_fy5NS_i5J5Up-tXMmSY' ;
+    } , wt * 1000 );
 
 };
+
+
+
+
+Inetglobal.Seting = {};
+
+
+
+
 /**
  * Установка настройки для задания
  * @param data
  */
-Inetglobal.setSetting = function(data){
-    Inetglobal.Seting = data ;
+Inetglobal.setSetting = function (data) {
+    Inetglobal.Seting = data;
     Inetglobal.Init();
-
 };
 /**
  * Получить настройки для задания
  */
-Inetglobal.getSetting = function() {
-    Inetglobal.getSetting_count +=1;
+Inetglobal.getSetting = function () {
+    Inetglobal.getSetting_count += 1;
     var postData = {
         model: '\\Setting',
-        task: 'getSetting' ,
+        task: 'getSetting',
     };
-    Inetglobal.gnz11.getModul('Ajax').then(function () {
-        Ajax = new GNZ11Ajax();
-        Ajax.sendPostCrosDomen( Inetglobal.paramUrl, postData , Inetglobal.setSetting   );
-    });
+    Inetglobal.Ajax.sendPostCrosDomen(Inetglobal.paramUrl, postData, Inetglobal.setSetting);
 };
-
-Inetglobal.setShoper = function(data){
-    var $ = jQuery ;
-    var $form = $( Inetglobal.TargetFormSelector );
+/**
+ * Установка Данных в форму
+ * @param data
+ */
+Inetglobal.setShoper = function (data) {
+    var $ = jQuery;
+    var $form = $(Inetglobal.TargetFormSelector);
     $form.find(Inetglobal.TargetNameSelector).val(data.last_name);
     $form.find(Inetglobal.TargetPhoneSelector).val(data.phone_1);
 
     // Если ручное выполнение
-    if (!Inetglobal.Seting.send_auto_form) return ;
+    if (!Inetglobal.Seting.send_auto_form) return;
 
-    // Если автоматическое выполнение и время позволяет
-    if ( Inetglobal.Seting.send_auto_form && Inetglobal.checkTime() ){
-        // устанавливаем свежу дату
-        Inetglobal.Seting.last_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        Inetglobal.updatePluginSetting( Inetglobal.Seting )
+    // Если автоматическое выполнение
+    if (Inetglobal.Seting.send_auto_form) {
+
+        new Promise(function (resolve, reject) {
+            Inetglobal.checkTime().then(function (res) {
+                console.log(res)
+
+                // Получить сегодняшнюю дату в формате
+                Inetglobal.Seting.last_time = moment().utcOffset(120).format(Inetglobal._f);
+
+                // Inetglobal.Seting.count ++ ;
+                console.log( Inetglobal.Seting ) ;
+
+                // Обновить настройки плагина
+                Inetglobal.updatePluginSetting(Inetglobal.Seting);
+
+                setTimeout(function () {
+                    window.location.reload();
+                }, 6000);
+
+                // Показать Лого!!!
+                getLogoSUBMIT_FORM();
+
+                // Отправить форму
+                 $form.submit();
 
 
+                // resolve('End');
+            });
+        })
 
 
-
-        console.log( Inetglobal.Seting );
-        //  $form.submit();
-    }else{
-       setTimeout(function () {
+    } else {
+        setTimeout(function () {
             ////////
-       },11)
+        }, 11)
     }
 };
 /**
  * Проверка времени возможености выполнения задачи
  * @returns {boolean}
  */
-Inetglobal.checkTime = function(){
+Inetglobal.checkTime = function () {
+    var previous,
 
-    if (!Inetglobal.Seting.last_time) return true ;
+        // Пауза между выполнениями
+        pause = +Inetglobal.Seting.automatic_pause,
 
-    var now = new Date();
-    var today = new Date( Inetglobal.Seting.last_time );
-
-
-
-
+        // Получить сегодняшнюю дату в формате
+        now = moment().utcOffset(120).format(Inetglobal._f);
 
 
+    return new Promise(function (resolve, reject) {
+        if (!Inetglobal.Seting.last_time) resolve(true);
+        var today = new Date(Inetglobal.Seting.last_time);
+
+        // предыдущая дата
+        previous = Inetglobal.Seting.last_time;
+
+        // var utcMoment = moment.utc();
+
+        /*console.log( utcMoment )
+        console.log( new Date() )
+        console.log( now )
+        console.log( previous )*/
+
+        // Получить объект MOMENT сегодняшней даты
+        var a = moment(now, Inetglobal._f);
+        // Получить объект MOMENT предыдущий даты
+        var b = moment(previous, Inetglobal._f);
+        // Получить продолжительность между предыдущий и сегодняшней даты
+        var duration = a.diff(b, 'seconds');
 
 
-    var tD = now - today;
+        console.log( duration )
+        console.log( pause )
 
-    var pause = new Date( 0 , 0 , 0, 0 , 0 , 100 );
+        if (duration > pause) {
+            resolve(true);
+            return;
+        }
 
-    olddates = Inetglobal.Seting.last_time // прошедшая дата на английском
-    d0 = new Date(olddates);
-    d1 = new Date();
-    dt = (d1.getTime() - d0.getTime()) / (1000*60*60); // *24
-    document.write(''
-        +   '<br />Последнее действие ' + d0
-        +   '<br />Сейчас___________ ' + d1
-        +   '<br />Количество секунд  ' + dt * 1000
-        +   '<br />Количество мин___  ' + dt * 1000 / 60
-        +   '<br />Количество час___  ' + dt * 1000 / 60 / 60
-        +   '<br />'
-        +   '<br />Стартовая дата - <B>' + olddates + '</B> <br />'
-        +   'От начала стартовой даты уже наступил <B>' + ( Math.round(dt  ) )  + '</B> день ' +dt   );
+        var t = pause - duration;
 
+        var wt = t;
 
-    console.log(   new Date( ( new Date() ).toDateString() ) )
+        var I = setInterval(function () {
 
-    console.log( tD/1000 )
+            console.clear();
+            console.log('До выполнения задания - ' + wt + ' секунд.');
+            wt--;
+        }, 1000);
 
 
+        delay(t * 1000).then(function (e) {});
 
+        function delay(ms) {
+            return new Promise(function (resolveWait, rejectWait) {
+                setTimeout(function () {
+                    clearInterval(I);
+                    resolve(true);
+                    return resolveWait(true);
+                }, ms);
+            });
+        }
 
-    // return true ;
-
-    return  false
-
-    var delta = ( today.getTime() ) - ( now.getTime() );
-
-    //  Inetglobal.Seting.automatic_pause * 1000
-
-    console.log( delta )
-    console.log( today.getTime() )
-    console.log( now.getTime() )
-    console.log( now.getTime() - Inetglobal.Seting.automatic_pause * 10000  )
-
-    console.log( typeof now.getTime() )
-
-    // var pause = new Date()
-
-   //  console.log(   Inetglobal.Seting.automatic_pause.getTime()    )
-    console.log( today < now - Inetglobal.Seting.automatic_pause * 1000 )
+        /*setTimeout(function () {
 
 
 
-    //  if ( today < now - Inetglobal.Seting.automatic_pause * 1000 ) return true ;
-    //
+            Inetglobal.checkTime();
 
-
-
-
-    console.log( Inetglobal.Seting ) ;
-    console.log( now ) ;
-    console.log( today ) ;
-    console.log( today < now - Inetglobal.Seting.automatic_pause * 1000 ) ;
-
+        } , 1000 );*/
+    });
 
 
 };
@@ -174,16 +258,13 @@ Inetglobal.checkTime = function(){
  * Обновление параметров плагина
  * @param PluginSetting
  */
-Inetglobal.updatePluginSetting = function ( PluginSetting ) {
+Inetglobal.updatePluginSetting = function (PluginSetting) {
     var postData = {
         model: '\\Setting',
-        task: 'updatePluginSetting' ,
-        setting: PluginSetting ,
+        task: 'updatePluginSetting',
+        setting: PluginSetting,
     };
-    Inetglobal.gnz11.getModul('Ajax').then(function () {
-        Ajax = new GNZ11Ajax();
-        Ajax.sendPostCrosDomen( Inetglobal.paramUrl, postData , Inetglobal.setSetting   );
-    });
+    Inetglobal.Ajax.sendPostCrosDomen(Inetglobal.paramUrl, postData, Inetglobal.setSetting);
 
 
 
@@ -198,17 +279,43 @@ Inetglobal.getNewName = function () {
 
     var postData = {
         model: '\\People',
-        task: 'getPeople' ,
+        task: 'getPeople',
     };
-
-    Inetglobal.gnz11.getModul('Ajax').then(function () {
-        Ajax = new GNZ11Ajax();
-        Ajax.sendPostCrosDomen( Inetglobal.paramUrl, postData , Inetglobal.setShoper   );
-    });
+    Inetglobal.Ajax.sendPostCrosDomen(Inetglobal.paramUrl, postData, Inetglobal.setShoper);
 };
 
-
+/*####################################################################################################################*/
+/**
+ * ВХОД В ПРОЦЕДУРУ
+ */
 (function () {
     console.clear();
-    Inetglobal.Init();
+    Promise.all([
+        Inetglobal.gnz11.load.js('https://nobd.ga/libraries/GNZ11/assets/js/libraries/moment/node_modules/moment/moment.js'),
+        Inetglobal.gnz11.load.js('https://nobd.ga/libraries/GNZ11/assets/js/modules/gnz11.Ajax.js'),
+
+    ]).then(function () {
+
+        Inetglobal.Ajax = new GNZ11Ajax();
+
+        console.log(Inetglobal.Ajax)
+
+        Inetglobal.Init();
+    });
+
 })();
+
+
+/**
+ * Создание Логотипа перед отпракой формы
+ */
+function getLogoSUBMIT_FORM() {
+    console.clear();
+    var Str;
+    Str = "%c\n\n\nSUBMIT A FORM (ツ)╭∩╮ \n"
+        + "=======>🅴🅽🅳<=======\n"
+        + "              ᴳᵃʳᵗᵉˢ@\n\n\n\n\n";
+    console.log(Str, "color:green; font-size: 20px");
+}
+
+
