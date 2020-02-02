@@ -7,13 +7,7 @@
 	 * @copyright   A copyright
 	 * @license     A "Slug" license name e.g. GPL2
 	 */
-	
-	
-	 
-	
-	
-	
-	
+
 	use Exception;
 	use JFactory;
 	use JSession;
@@ -256,6 +250,24 @@
 				'c' => 'onLazyIsLoad' ,
 			];
 			$doc->addScriptOptions('Jpro' , $Jpro ) ;
+		}
+
+		/**
+		 * создать загрузчик javascript файла
+		 *
+		 * @param $file string - ссылка на javascript файл
+		 *
+		 * 02.02.2020
+		 * @return string - wgnz11.load.js('/modules/mod_gj_contact_phones/assets/js/mod_.js')
+		 * @throws Exception
+		 * @since 3.9
+		 */
+		public static function getLoadJs( $file ){
+			if( self::$instance === null )
+			{
+				self::$instance = new self();
+			}
+			return "wgnz11.load.js('$file')" ;
 		}
 		
 	}

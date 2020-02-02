@@ -158,10 +158,6 @@ var GNZ11 = function () {
     })();
     this.init = function () {};
 
-
-
-
-
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /**
      * Загрузка Ajax модуля (GNZ11Ajax)
@@ -416,7 +412,7 @@ var GNZ11 = function () {
                 }
 
 
-                gnz11.load[item.t](item.u).then(function (a) {
+                wgnz11.load[item.t](item.u).then(function (a) {
                     /*if ( item.u  === '/modules/mod_virtuemart_zif_filter/assets/js/mod_virtuemart_zif_filter.js' ){
                         console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
                         console.log(parseResult)
@@ -663,8 +659,8 @@ var GNZ11 = function () {
  *
  */
 (function () {
-    gnz11 = new GNZ11();
-    gnz11.loadJpro();
+    window.wgnz11 = new GNZ11();
+    window.wgnz11.loadJpro();
     document.dispatchEvent(new Event('GNZ11Loaded'))
 })();
 

@@ -173,21 +173,28 @@
 		 *
 		 * @copyright 02.01.19
 		 */
-		public  static function writeDownTag ( $tag , $value , $attr=[] ){
+		public static function writeDownTag ( $tag , $value , $attr=[] ){
 			
 			$app = \JFactory::getApplication() ;
 			$body                = $app->getBody();
 			$dom = new self();
 			$dom->loadHTML( $body );
 			
-			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
 			
+			
+			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+
+
 			# add class attribute
 			self::fetchAttr($dom ,$newTag , $attr );
-			
+
+
+
 			$xpath = new DomXPath($dom);
 			$parent = $xpath->query( '//body');
-			
+
+
+
 			$parent->item(0)->appendChild( $newTag );
 			$body =   $dom->saveHTML() ;
 			
