@@ -1,0 +1,18 @@
+[name=description] .schedule:after{
+    background-position: -295px -128px;
+    top: -8px;
+    left: -6px;
+    background-color: #fff;
+}
+
+span.np-sprite:after {
+    content: " ";
+    display: block;
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    background: url(../img/novaposhta_spr_icons.png) 0 0 no-repeat;
+    left: 0;
+    /* top: 50%; */
+    /* margin-top: -8.5px; */
+}

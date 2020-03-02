@@ -1,0 +1,374 @@
+@font-face {
+    font-family: Muemo;
+    src: url('https://apimgmtstorelinmtekiynqw.blob.core.windows.net/content/MediaLibrary/Font/museo_sans_cyrillic_500.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+#npw-map-wrapper {
+    padding: 0px;
+    width: 95vw;
+    height: 100%;
+    max-height: 90vh;
+    max-width: 100%;
+    /* display: none; */
+    /* width: 900px; */
+    /* height: 600px; */
+    /* position: absolute; */
+    /* top: 50%; */
+    /* left: 50%; */
+    /* box-shadow: 0 0 30px 0 rgba(51, 51, 51, 0.55); */
+    /* z-index: 50; */
+    /* background-color: #fff; */
+    overflow: hidden;
+    /* border-top: none; */
+    /* font-family: Muemo, sans-serif; */
+    /* box-sizing: border-box; */
+    /* z-index: 9999; */
+}
+
+body .map_ShipmentNovaPoshta.fancybox-container {
+    /* height: 75% !important; */
+    /* width: 80% !important; */
+    z-index: 9999999 !important;
+}
+
+.fancybox-is-open .fancybox-stage {}
+
+#npw-map {
+    height: 100%;
+    width: 70%;
+    float: left;
+}
+
+
+
+#npw-map-sidebar-header {
+    width: 100%;
+    height: 48px;
+    padding: 10px 13px;
+    box-sizing: border-box;
+    background-color: #ed1c23;
+}
+
+div#npw-map-state-list {
+    height: calc(100% - 50px);
+    max-height: 100%;
+    overflow: hidden;
+    float: left;
+    width: 100%;
+}
+
+#npw-map-logo {
+    background: url("../img/np-logo-white.png") no-repeat;
+    width: 100%;
+    height: 20px;
+    margin: 4px 0 0 9px;
+    float: left;
+    text-align: left;
+    font-size: 2.6em;
+    font-weight: 600;
+    color: #fff;
+    padding-left: 30px;
+    line-height: 18px;
+    text-transform: uppercase;
+}
+
+#npw-map-back {
+    display: none;
+    width: 20px;
+    height: 20px;
+    margin: 4px 0 0 14px;
+    background: url("https://apimgmtstorelinmtekiynqw.blob.core.windows.net/content/MediaLibrary/Widget/img/np-back.png") no-repeat;
+    float: left;
+}
+
+#npw-map-back:hover {
+    opacity: 0.7;
+}
+
+#npw-map-close-button {
+    background: url("https://apimgmtstorelinmtekiynqw.blob.core.windows.net/content/MediaLibrary/Widget/img/map-close-button-sprite.png") 0 0 no-repeat;
+    width: 45px;
+    height: 45px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 20;
+}
+
+#npw-map-close-button:hover {
+    background-position: 0 -46px;
+    cursor: pointer;
+}
+
+#npw-map-back:hover {
+    cursor: pointer;
+}
+
+#npw-map-sidebar input,
+#npw-map-sidebar select
+{
+    border-radius: 4px;
+    color: #6c737b;
+    line-height: 17px;
+    font-size: 13px;
+    padding: 0 10px 2px 10px;
+    background: #fbfbfb;
+    height: 38px;
+    border: 1px solid #e0e0e0;
+    box-sizing: border-box;
+    outline: none;
+    font-family: Muemo, sans-serif;
+}
+
+#npw-map-sidebar #npw-map-sidebar-search {
+    height: 28px;
+}
+
+#npw-map-sidebar input {
+    width: 80%;
+    float: right;
+}
+
+#npw-map-sidebar select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+#npw-map-state-details {
+    display: none;
+    margin: 7px;
+    font-size: 12px;
+    line-height: 20px;
+    border: 1px solid #e7e9eb;
+    border-radius: 2px;
+    padding: 26px 12px 2px 12px;
+    color: #6c737b;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    text-align: left;
+}
+
+#npw-map-state-details div {
+    margin-bottom: 9px;
+}
+
+#npw-map-state-details a {
+    display: block;
+    font-size: 12px;
+    color: #c1c2c2;
+    text-decoration: underline;
+    padding: 12px 0 5px 0;
+    margin-top: 12px;
+    border-top: 1px solid #e7e9eb;
+}
+
+#npw-map-state-details a:hover {
+    text-decoration: none;
+}
+
+
+.npw-list-city {
+    font-size: 14px;
+}
+.npw-list-warehouse {
+    font-size: 16px;
+    border-bottom: 1px solid #e7e9eb;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+.npw-list-address {
+    font-size: 12px;
+    color: #b1b9c1;
+}
+
+.npw-details-title {
+    font-size: 18px;
+    color: #f63743;
+    border-bottom: 1px solid #e7e9eb;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+#npw-map-sidebar ul li:hover {
+    cursor: pointer;
+}
+
+.npw-display-block {
+    display: block !important;
+}
+
+#npw-map-open-button {
+    width: 200px;
+    height: 38px;
+    outline: none;
+    border-radius: 4px;
+    border: solid 1px #ef232b;
+    color: #fff;
+    font-size: 11px;
+    font-style: normal;
+    text-align: right;
+    padding-right: 21px;
+    background: url('https://apimgmtstorelinmtekiynqw.blob.core.windows.net/content/MediaLibrary/Widget/img/np-logo-white.png') no-repeat #ed1c23 10px;
+    background-size: 20px;
+    font-family: Muemo, sans-serif;
+    /*position: relative;*/
+}
+
+#npw-map-open-button.npw-map-open-button-opened {
+    background-color: #b1b9c1 !important;
+    border: 1px solid transparent;
+}
+
+#npw-map-open-button:hover,
+#npw-map-open-button:focus,
+#npw-map-open-button:active
+{
+    cursor: pointer;
+    outline: none;
+}
+
+/*=========================== NEW =============================================================*/
+div#npMapsCanv {
+    width: 80%;
+    height: 100vh;
+    float: right;
+    /* z-index: 10000; */
+}
+
+
+#npw-map-sidebar ul {
+    padding: 0 7px;
+    margin: 0;
+    overflow: auto;
+    height: 498px;
+    height: 100%;
+}
+
+
+
+
+
+
+
+
+
+/*------------------------------------------------------------------*/
+/* элементы окна */
+.shipment_maps .fancybox-slide--html .fancybox-close-small{
+    background: #00000063;
+}
+.shipment_maps .gm-style-iw-a .popup-map-baloon-number{
+    font-size: 0.7em;
+    font-weight: 600;
+}
+.shipment_maps .gm-style-iw-a .popup-map-baloon-number:after{
+    content:'Выбран!';
+    position: absolute;
+    z-index: 9999999999;
+    top: 7px;
+    right: 19px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1em;
+    color: #277b08;
+    padding: 3px;
+    border: 1px solid;
+    border-radius: 3px;
+}
+.shipment_maps .gm-style-iw-a .popup-map-baloon-address{
+    margin-bottom: 0;
+    font-size: 0.9em;
+}
+/* Скролл Списка отделений */
+.shipment_maps ul#npw-map-sidebar-ul::-webkit-scrollbar-thumb {
+    background: #a1a0a0;
+    border-radius: 3px;
+    width: 6px;
+    height: 25%;
+}
+.shipment_maps ul#npw-map-sidebar-ul::-webkit-scrollbar {
+    width: 6px;
+}
+/* Спсисок отделений */
+.shipment_maps #npw-map-sidebar {
+    height: 100%;
+    width: 20%;
+    float: left;
+}
+/* Блок с отделением */
+.shipment_maps #npw-map-sidebar ul li {
+    display: block;
+    float: left;
+    margin-bottom: 8px;
+    list-style-type: none;
+    font-size: 16px;
+    line-height: 20px;
+    border: 1px solid #e7e9eb;
+    border-radius: 2px;
+    padding: 12px;
+    color: #6c737b;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.06);
+    text-align: left;
+    width: 100%;
+}
+
+.shipment_maps #npw-map-sidebar ul li:hover {
+    border: solid 1px #b1b9c1;
+    background-color: #fbfbfb;
+}
+.shipment_maps #npw-map-sidebar ul li.selected{
+    color: #277b08;
+    background: #cccccc63;
+    border: 1px solid #a9a8a8;
+}
+.shipment_maps #npw-map-sidebar ul li div {
+    line-height: 5px;
+    margin-bottom: 6px;
+    float: left;
+    /* width: 100%; */
+    font-size: 0.9em;
+}
+
+.shipment_maps ul#npw-map-sidebar-ul li address{
+    /* display: block; */
+    float: left;
+    margin: 0;
+    font-size: 0.8em;
+    line-height: 17px;
+}
+.shipment_maps ul#npw-map-sidebar-ul li .popup-map-baloon-text {
+    height: 0px;
+    display: block;
+    overflow: hidden;
+}
+
+
+/*---- MAP MEDIA ---------------*/
+@media (max-width: 610px) {
+    #npw-map-logo{
+        font-size: 14px;
+    }
+}
+@media (min-width: 549px) {
+    .shipment_maps #npw-map-sidebar {
+        width: 35vw;
+    }
+    .shipment_maps #npMapsCanv{
+        width: 60vw;
+    }
+}
+@media (max-width: 550px) {
+    .shipment_maps #npw-map-sidebar {
+        display: none;
+    }
+    .shipment_maps #npMapsCanv{
+        width: 100%;
+    }
+}
+
+
+ 

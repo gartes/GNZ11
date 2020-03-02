@@ -1,0 +1,1975 @@
+/**
+ * IE9+
+ * You can polyfill the CustomEvent() constructor functionality in Internet Explorer 9 and higher with the following code:
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+ */
+(function () {
+    if ( typeof window.CustomEvent === "function" ) return false;
+    function CustomEvent ( event, params ) {
+        params = params || { bubbles: false, cancelable: false, detail: null };
+        var evt = document.createEvent( 'CustomEvent' );
+        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+        return evt;
+    }
+    window.CustomEvent = CustomEvent;
+})();
+
+// TODO Добавить for ES6-style Promises
+// https://github.com/stefanpenner/es6-promise
+//
+// ES6 Promise polyfill
+// Browser Support IE8+, Chrome, Firefox, IOS 4+, Safari 5+, Opera
+// https://www.npmjs.com/package/promise-polyfill
+
+
+Joomla = window.Joomla || {};
+Jpro = window.Jpro || {};
+(function (Joomla , Jpro ) {
+    /**
+     * Get script(s) options
+     *
+     * @param  {String}  key  Name in Storage
+     * @param  {mixed}   def  Default value if nothing found
+     *
+     * @return {mixed}
+     *
+     * @since 3.7.0
+     */
+    Joomla.getOptions = function( key, def ) {
+        // Load options if they not exists
+        if (!Joomla.optionsStorage) {
+            Joomla.loadOptions();
+        }
+
+        return Joomla.optionsStorage[key] !== undefined ? Joomla.optionsStorage[key] : def;
+    };
+    Joomla.optionsStorage = Joomla.optionsStorage || null;
+    Joomla.loadOptions = function( options ) {
+        // Load form the script container
+        if (!options) {
+            var elements = document.querySelectorAll('.joomla-script-options.new'),
+                str,
+                element,
+                option,
+                counter = 0;
+
+            for (var i = 0, l = elements.length; i < l; i++) {
+                element = elements[i];
+                str     = element.text || element.textContent;
+                option  = JSON.parse(str);
+
+                if (option) {
+                    Joomla.loadOptions(option);
+                    counter++;
+                }
+                element.className = element.className.replace(' new', ' loaded');
+            }
+
+            if (counter) {
+                return;
+            }
+        }
+        // Initial loading
+        if (!Joomla.optionsStorage) {
+            Joomla.optionsStorage = options || {};
+        }
+        // Merge with existing
+        else if ( options ) {
+            for (var p in options) {
+                if (options.hasOwnProperty(p)) {
+                    Joomla.optionsStorage[p] = options[p];
+                }
+            }
+        }
+    };
+    /**
+     * Метод объеденения двух объектов
+     * Возвращает первый
+     * Method to Extend Objects
+     *
+     * @param  {Object}  destination
+     * @param  {Object}  source
+     *
+     * @return Object    destination
+     */
+    Joomla.extend = function (destination, source) {
+        for (var p in source) {
+            if (source.hasOwnProperty(p)) {
+                destination[p] = source[p];
+            }
+        }
+
+        return destination;
+    };
+    Joomla.loadOptions();
+
+
+    Jpro.load = function ( url ,  callback  ) {
+
+        if (typeof GNZ11 === 'undefined'){
+            var opt = Joomla.getOptions('Jpro');
+            var data = {
+
+                'u':url ,
+                'c' : callback
+
+            };
+            opt.load.push(data);
+            Joomla.loadOptions({'Jpro':opt});
+        }else{
+            var gnz11 = new GNZ11();
+            gnz11.load[tag](url).then(function (a) {
+                if (typeof callback !== 'function') return ;
+                callback(a)
+            });
+        }
+
+    }
+})(Joomla , Jpro);
+
+var GNZ11_defSetting = {
+    debug: false ,
+    gnzlib_path_file_corejs: "/libraries/GNZ11/assets/js/gnz11.js",
+    gnzlib_path_file_corejs_min: "/libraries/GNZ11/assets/js/gnz11.min.js",
+    gnzlib_path_modules: "/libraries/GNZ11/assets/js/modules",
+    gnzlib_path_plugins: "/libraries/GNZ11/assets/js/plugins",
+};
+
+/**
+ * @constructor
+ */
+var GNZ11 = function (options_setting) {
+    var $=jQuery ;
+    var self = this ;
+    /**
+     * Хранение конфигурации библиотеки GNZ11
+     * @type {{}}
+     */
+    this.WGNZ11INIT_OPTS = {
+        PATH_API : null
+    } ;
+    this._defaults = {
+        PATH_API: '/libraries/GNZ11/Api'
+
+    };
+
+    this.WGNZ11INIT = function () {
+        if ( typeof options_setting === 'undefined') options_setting = {} ;
+        self.WGNZ11INIT_OPTS = Object.assign({}  , self._defaults , options_setting  );
+    };
+
+    (function () { })();
+
+    this._siteUrl = null ;
+
+    this.set_siteUrl = function (Url) {
+        this._siteUrl = Url ;
+        Joomla.loadOptions({ 'siteUrl' : Url })
+    };
+
+    this.Options = (function () {
+        var opt = Joomla.getOptions('GNZ11')
+        if ( typeof opt === 'undefined'){
+            Joomla.loadOptions({ 'GNZ11' : GNZ11_defSetting })
+        }
+        return Joomla.getOptions('GNZ11')
+    })();
+    this.init = function () {};
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /**
+     * Загрузка Ajax модуля (GNZ11Ajax)
+     * @return {*}
+     */
+    this.getAjax = function () {
+        console.warn('GNZ11.getAjax is deprecated!!! Use GNZ11.getModul("Ajax")');
+        return this.getModul('Ajax');
+    };
+    /*
+     * Загрузка css, img, js
+     * @type {{css, img, js}}
+     */
+    this.load = (function () {
+        var LIB = this;
+        // Function which returns a function: https://davidwalsh.name/javascript-functions
+        function _load(tag) {
+            return function (url) {
+                // This promise will be used by Promise.all to determine success or failure
+                return new Promise(function(resolve, reject) {
+                    if (typeof window.GNZ11_isLoad === 'undefined'){
+                        window.GNZ11_isLoad = {
+                            script: [],
+                            link: [],
+                            img: []
+                        };
+                    }
+
+
+                    // console.log( url )
+
+
+                    if ( $.inArray(url, window.GNZ11_isLoad[tag]) !== -1 )  return resolve( url );
+                    window.GNZ11_isLoad[tag].push( url );
+
+                    var element = document.createElement(tag);
+                    var parent = 'body';
+                    var attr = 'src';
+
+
+                    // Important success and error for the promise
+                    element.onload = function() { resolve(url);  };
+                    element.onerror = function() { reject(url); };
+
+                    // Need to set different attributes depending on tag type
+                    switch( tag ) {
+                        case 'script':
+                            element.async = true;
+                            break;
+
+                        case 'link':
+                            element.type = 'text/css';
+                            element.rel = 'stylesheet';
+                            attr = 'href';
+                            parent = 'head';
+                    }
+                    // Inject into document to kick off loading
+                    element[attr] = url;
+                    document[parent].appendChild(element);
+                });
+            };
+        }
+
+        return {
+            css: _load('link'),
+            js: _load('script'),
+            script: _load('script'),
+            img: _load('img')
+        };
+    })();
+    /**
+     * Звгрузка модулей GNZ11
+     * @param moduleName
+     * @param setting
+     * @returns {Promise<unknown>}
+     */
+    this.getModul = function (moduleName , setting) {
+
+        var $this = this ;
+        var siteUrl = Joomla.getOptions('siteUrl' , '' ) ;
+
+        var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
+        var Module = 'GNZ11'+moduleName ;
+        var returnModule ;
+        // console.log( typeof Module );
+
+        // Если модуль еще не был загружен
+        if ( typeof Module !== 'function' ) {
+
+            return new Promise(function (resolve, reject) {
+                console.log(pathModules +'/gnz11.'+moduleName+'.js');
+                Promise.all([
+                    $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
+                ]).then(function (r) {
+                    console.log( typeof Module );
+                    var i = setInterval(function () {
+                        if (typeof window[Module] === 'function') {
+                            clearInterval(i);
+                            returnModule = new window[Module]();
+                            if ( typeof setting === 'undefined' ) resolve(returnModule);
+                            returnModule.setConfig(setting) ;
+                            resolve(returnModule);
+                        }
+                    }, 300)
+                })
+            });
+        }else {
+            return new Promise(function (resolve, reject) {
+                resolve(new window[Module]());
+            });
+        }
+    };
+    /**
+     * Загрузка елементов API
+     * @param nameApi str Имя API  e.t. NovaPoshta
+     * @param options obj ?????
+     */
+    this.getApi = function ( classApi , nameApi , options ) {
+        const _JS_ = '/assets/js' ;
+        var file = self.WGNZ11INIT_OPTS.PATH_API+'/'+classApi+'/'+nameApi + _JS_ +'/'+nameApi+'.js' ;
+        wgnz11.load.js( file ) ;
+    }
+    /**
+     * Загрузка плагинов библиотеки GNZ11
+     *
+     * @param pluginName    str - Имя плагина
+     * @param setting       obj - Объект с конфигурацией плагина
+     */
+    this.getPlugin = function (pluginName , setting) {
+       this.__loadModul[pluginName](setting)
+    }
+    /*
+     * Load  module
+     *
+     * var gnz11 = new gn_z11;
+     *
+     * gnz11.__loadModul.Noty().then(function(a){})
+     * gnz11.__loadModul.Fancybox().then(function(a){})
+     * gnz11.__loadModul.Bootstrap().then(function(a){})
+     *
+     *
+     * @type {{Noty: gn_z11.__loadModul.Noty, Fancybox: gn_z11.__loadModul.Fancybox}}
+     * @private
+     */
+    this.__loadModul = {
+        Inputmask : function(param){
+            if ( typeof  Inputmask === 'undefined' ){
+                return new Promise(function (resolve, reject) {
+                    Promise.all([
+                        wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css'),
+                        wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js'),
+                        wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.js'),
+                    ]).then(function (a) {
+                        console.info( 'Inputmask loaded' )
+                        var $ =jQuery ;
+                        var elSelector = param.element ;
+                        Inputmask.Inint( elSelector , param );
+
+                        /*function Inint (elSelector , Settings){
+                            var wrp = $('<div />' , {
+                                class : 'wrapMaskPhone'
+                            });
+                            $(elSelector)
+                                .attr('placeholder' , Settings.mask)
+                                .wrap( wrp )
+                        }*/
+
+                        /*$( elSelector ).mask(Settings.mask ,{
+                            onKeyPress:function(v,event,currentField,options){
+                                _setOperatorIcon( Settings , currentField )
+                            },
+                            onChange: function(cep){
+                                console.log('cep changed! ', cep);
+                            },
+                        });*/
+
+
+                    })
+                })
+            }
+
+        },
+        Noty :  function (param) {
+            //
+            var $this = new GNZ11();
+            var NotySettingDefault = $this.Options.Noty ;
+            var setting = {};
+            $.extend(  true , setting ,  NotySettingDefault  , param   );
+
+            console.log( setting );
+
+            if ( typeof  Noty === 'undefined' ){
+                return new Promise(function (resolve, reject) {
+                    Promise.all([
+                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/noty.css'),
+                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/themes/metroui.css'),
+                        $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/noty/noty.js'),
+                    ]).then(function (a) {
+                        var i = setInterval(function () {
+                            if (typeof  Noty === 'function'){
+                                clearInterval(i);
+                                console.log( 'Noty - Loaded');
+                                resolve(new Noty( setting ));
+                            }
+                        },1);
+                    })
+                })
+            }else {
+                return new Promise(function (resolve, reject) {
+                    resolve(new Noty( setting ));
+                })
+            }
+        },
+        Bootstrap:function(){
+
+            if ( typeof $().emulateTransitionEnd == 'function' ){
+                return new Promise(function (resolve, reject) {
+                    resolve( true );
+                })
+            }else{
+                return new Promise(function (resolve, reject) {
+                    Promise.all([
+                        zazLA.js('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'),
+                    ]).then(function (a) {
+                        resolve( true );
+                    })
+                })
+            }
+        },
+        Fancybox : function () {
+            var $this = new GNZ11() ;
+            if (  typeof $.fancyboxqqq === 'undefined' ) {
+                return new Promise(function (resolve, reject) {
+                    Promise.all([
+                        $this.load.css('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css'),
+                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/fancybox/thems/protect.css'),
+                        $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/fancybox/jquery.fancybox.js'),
+                    ]).then(function (a) {
+                        var css = '.fancybox-content {' +
+                            //   'min-width: 100%;' +
+                            //    'min-height: 250px;' +
+                            'background: url(/templates/t3_bs3_blank/images/logos/logo_benks.png) no-repeat;' +
+                            'background-color: #fff;' +
+                            'background-position: 10px 10px;' +
+                            'background-size: 80px 25px;' +
+                            '}';
+                        // $this.__addCss(css);
+                        resolve($.fancyboxqqq);
+                    });
+                })
+            }else{
+                return new Promise(function (resolve, reject) {
+                    resolve( $.fancyboxqqq );
+                })
+            }
+        },
+        Chosen : function () {
+            var $this = new GNZ11() ;
+            return new Promise(function (resolve, reject) {
+                Promise.all([
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/chosen/chosen.min.css'),
+                    $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/chosen/chosen.jquery.min.js'),
+                ]).then(function (a) {
+                    resolve(a);
+                });
+            })
+        },
+        Ui:function () {
+            var $this = new GNZ11() ;
+            return new Promise(function (resolve, reject) {
+                Promise.all([
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.css'),
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.structure.css'),
+                    $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.theme.css'),
+                    $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery-ui.js'),
+                ]).then(function (a) {
+                    if (jQuery.ui) {
+
+                        resolve(a);
+                        // UI loaded
+                    }
+
+                });
+            })
+        }
+
+    };
+    this.loadJpro = function () {
+        var optJpro = Joomla.getOptions('Jpro');
+        if (typeof optJpro === 'undefined' || typeof  optJpro.load !== 'object') return ;
+        optJpro.load.forEach(function(item, i, arr) {
+            setTimeout(function () {
+
+
+                if (typeof item.t === 'undefined' ){
+                    var parseResult = gnz11.parseURL(item.u  );
+                    item.t = parseResult.extension;
+
+                }
+
+
+                wgnz11.load[item.t](item.u).then(function (a) {
+                    /*if ( item.u  === '/modules/mod_virtuemart_zif_filter/assets/js/mod_virtuemart_zif_filter.js' ){
+                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+                        console.log(parseResult)
+                        console.log(item )
+                        console.log(item.t)
+                        console.log(item.u)
+                        console.log(item.c)
+                        console.log(typeof window[item.c])
+                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+                    }*/
+                    // Если fnCallback - не функция создаем событие fnCallback
+                    if (typeof window[item.c] !== 'function') {
+                        // Create the event
+                        var event = new CustomEvent(item.c, {'file': a});
+                        console.log( event )
+                        document.dispatchEvent(event);
+                    }else {
+                        window[item.c](a);
+                    }
+
+                });
+            },500)
+        });
+    };
+
+    this.debug=function ( value , namespase ) {
+        if (!this.Options.debug) return ;
+        if (typeof namespase === 'undefined' ){
+            console.log( value );
+            return;
+        }
+        console.groupCollapsed(namespase);
+        console.log( value );
+        console.groupEnd();
+
+    };
+    /**
+     * Парсинг Url Строки
+     * @param url
+     * @returns {{searchObject: *, protocol: *, hostname: *, search: *, extension: *, port: *, host: *, hash: *, pathname: *}}
+     */
+    this.parseURL = function(url) {
+        var parser = document.createElement('a'),
+            searchObject = {},
+            queries, split, i;
+        // Let the browser do the work
+        parser.href = url;
+        // Convert query string to object
+        queries = parser.search.replace(/^\?/, '').split('&');
+        for( i = 0; i < queries.length; i++ ) {
+            split = queries[i].split('=');
+            searchObject[split[0]] = split[1];
+        }
+        var filename = parser.pathname ;
+        return {
+            protocol: parser.protocol,
+            host: parser.host,
+            hostname: parser.hostname,
+            port: parser.port,
+            pathname: parser.pathname,
+            search: parser.search,
+            searchObject: searchObject,
+            hash: parser.hash ,
+            extension : filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)
+        };
+    };
+     // radio btn - init
+    this.checkBoxRadioInit = function  (){
+        var $=jQuery;
+        // Turn radios into btn-group
+        $('.radio.btn-group label').addClass('btn');
+
+        $('fieldset.btn-group').each(function() {
+            // Handle disabled, prevent clicks on the container, and add disabled style to each button
+            if ($(this).prop('disabled')) {
+                $(this).css('pointer-events', 'none').off('click');
+                $(this).find('.btn').addClass('disabled');
+            }
+        });
+
+        $(".btn-group label:not(.active)").click(function()
+        {
+            var label = $(this);
+            var input = $('#' + label.attr('for'));
+
+            if (!input.prop('checked')) {
+                label.closest('.btn-group').find("label")
+                    .removeClass('active btn-success btn-danger btn-primary');
+                if (input.val() === '') {
+                    label.addClass('active btn-primary');
+                } else if (input.val() === 0) {
+                    label.addClass('active btn-danger');
+                } else {
+                    label.addClass('active btn-success');
+                }
+                input.prop('checked', true);
+                input.trigger('change');
+            }
+        });
+        $(".btn-group input[checked=checked]").each(function()
+        {
+            if ($(this).val() === '') {
+                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
+            } else if ($(this).val() === 0) {
+                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
+            } else {
+                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
+            }
+        });
+    };
+    /**
+     * Обработчик форм SHOWON
+     * @type {{Init: GNZ11.SHOWON.Init, linkedoptions: GNZ11.SHOWON.linkedoptions}}
+     */
+    this.SHOWON = {
+        Init : function  (){
+            var $ = jQuery;
+            var self = new GNZ11();
+            $('[data-showon]').each(function() {
+                var target = $(this), jsondata = $(this).data('showon');
+
+                // Attach events to referenced element
+                $.each(jsondata, function(j, item) {
+                    var $fields = $('[name="' + jsondata[j]['field'] + '"], [name="' + jsondata[j]['field'] + '[]"]');
+                    // Attach events to referenced element
+                    $fields.each(function() {
+                        self.SHOWON.linkedoptions(target);
+                    }).bind('change', function() {
+                        // var self = new GNZ11();
+                        self.SHOWON.linkedoptions(target);
+                    });
+
+                });
+            });
+        },// end function
+        linkedoptions : function(target) {
+            var $ = jQuery;
+            var showfield = true, itemval, jsondata = target.data('showon');
+
+            // Check if target conditions are satisfied
+            $.each(jsondata, function(j, item) {
+                $fields = $('[name="' + jsondata[j]['field'] + '"], [name="' + jsondata[j]['field'] + '[]"]');
+                jsondata[j]['valid'] = 0;
+
+                // Test in each of the elements in the field array if condition is valid
+                $fields.each(function() {
+                    // If checkbox or radio box the value is read from proprieties
+                    if (['checkbox','radio'].indexOf($(this).attr('type')) !== -1)
+                    {
+                        itemval = $(this).prop('checked') ? $(this).val() : '';
+                    }
+                    else
+                    {
+                        itemval = $(this).val();
+                    }
+
+                    // Convert to array to allow multiple values in the field (e.g. type=list multiple) and normalize as string
+                    if (!(typeof itemval === 'object'))
+                    {
+                        itemval = JSON.parse('["' + itemval + '"]');
+                    }
+
+                    // Test if any of the values of the field exists in showon conditions
+                    for (var i in itemval)
+                    {
+                        if (jsondata[j]['values'].indexOf(itemval[i]) !== -1)
+                        {
+                            jsondata[j]['valid'] = 1;
+                        }
+                    }
+                });
+
+                // Verify conditions
+                // First condition (no operator): current condition must be valid
+                if (jsondata[j]['op'] === '')
+                {
+                    if (jsondata[j]['valid'] === 0)
+                    {
+                        showfield = false;
+                    }
+                }
+                // Other conditions (if exists)
+                else
+                {
+                    // AND operator: both the previous and current conditions must be valid
+                    if (jsondata[j]['op'] === 'AND' && jsondata[j]['valid'] + jsondata[j-1]['valid'] < 2)
+                    {
+                        showfield = false;
+                    }
+                    // OR operator: one of the previous and current conditions must be valid
+                    if (jsondata[j]['op'] === 'OR'  && jsondata[j]['valid'] + jsondata[j-1]['valid'] > 0)
+                    {
+                        showfield = true;
+                    }
+                }
+            });
+
+            // If conditions are satisfied show the target field(s), else hide
+            (showfield) ? target.slideDown() : target.slideUp();
+        },
+    }
+    /**
+     * получить строку между двумя символами
+     */
+    this.getBetween = function (str,start,finish ) {
+        return str.substring(
+            str.lastIndexOf(start) + 1,
+            str.lastIndexOf(finish)
+        )
+    };
+    /**
+     * Serializes - форм || элементов форм не вложенных в тег <form>
+     * Serializes form or any other element with jQuery.serialize
+     * @param el - <form> OR <div>
+     */
+    this.serialize = function(el) {
+        var serialized = $(el).serialize();
+        if (!serialized) // not a form
+            serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
+        return serialized;
+    }
+};
+
+
+/**
+ * Предварительная установка загрузки файла - до загрузки самой библиотеки GNZ11
+ * var fnCallback = function(a){
+ *      // метод в файле
+ *      alertTast.Init();
+ *      };
+ *
+ *
+ * param fnCallback - function OR trigger event window
+ *
+ * Jpro.load('/libraries/GNZ11/assets/js/alert_test.js'  , fnCallback );
+ *
+ */
+(function () {
+    window.wgnz11 = new GNZ11();
+    wgnz11.WGNZ11INIT();
+
+    window.wgnz11.loadJpro();
+    document.dispatchEvent(new Event('GNZ11Loaded'))
+})();
+
+
+
+
+
+
+
+
+
+
+
+/****
+ *
+ *
+ *
+ *
+ *
+ *
+ * @param obj
+ * @returns {*|{}}
+ * @constructor
+ */
+
+;function $defined(obj) {
+    return (obj != undefined)
+}
+;function $type(obj) {
+    if (!$defined(obj))
+        return false;
+    if (obj.htmlElement)
+        return 'element';
+    var type = typeof obj;
+    if (type == 'object' && obj.nodeName) {
+        switch (obj.nodeType) {
+            case 1:
+                return 'element';
+            case 3:
+                return (/\S/).test(obj.nodeValue) ? 'textnode' : 'whitespace'
+        }
+    }
+    if (type == 'object' || type == 'function') {
+        switch (obj.constructor) {
+            case Array:
+                return 'array';
+            case RegExp:
+                return 'regexp';
+            case Class:
+                return 'class'
+        }
+        if (typeof obj.length == 'number') {
+            if (obj.item)
+                return 'collection';
+            if (obj.callee)
+                return 'arguments'
+        }
+    }
+    return type
+}
+;function $merge() {
+    var mix = {};
+    for (var i = 0; i < arguments.length; i++) {
+        for (var property in arguments[i]) {
+            var ap = arguments[i][property];
+            var mp = mix[property];
+            if (mp && $type(ap) == 'object' && $type(mp) == 'object')
+                mix[property] = $merge(mp, ap);
+            else
+                mix[property] = ap
+        }
+    }
+    return mix
+};
+
+var $extend = function() {
+    var args = arguments;
+    if (!args[1])
+        args = [this, args[0]];
+    for (var property in args[1]) {
+        if (window.opera) {
+            try {
+                args[0][property] = args[1][property]
+            } catch (e) {
+                console.log()
+            }
+        } else {
+            args[0][property] = args[1][property]
+        }
+    }
+    return args[0]
+};
+var $native = function() {
+    for (var i = 0, l = arguments.length; i < l; i++) {
+        arguments[i].extend = function(props) {
+            for (var prop in props) {
+                if (!this.prototype[prop])
+                    this.prototype[prop] = props[prop];
+                if (!this[prop])
+                    this[prop] = $native.generic(prop)
+            }
+        }
+    }
+};
+$native.generic = function(prop) {
+    return function(bind) {
+        return this.prototype[prop].apply(bind, Array.prototype.slice.call(arguments, 1))
+    }
+};
+$native(Function, Array, String, Number);
+var Abstract = function(obj) {
+    obj = obj || {};
+    obj.extend = $extend;
+    return obj
+};
+var Window = new Abstract(window);
+var Document = new Abstract(document);
+
+if (window.ie6) try {
+        document.execCommand("BackgroundImageCache", false, true)
+    } catch (e) {} ;
+
+var Class = function(properties) {
+    var klass = function() {
+        return (arguments[0] !== null && this.initialize && $type(this.initialize) == 'function') ? this.initialize.apply(this, arguments) : this
+    };
+    $extend(klass, this);
+    klass.prototype = properties;
+    klass.constructor = Class;
+    return klass
+};
+Class.empty = function() {}
+Class.prototype = {
+    extend: function(properties) {
+        var proto = new this(null);
+        for (var property in properties) {
+            var pp = proto[property];
+            proto[property] = Class.Merge(pp, properties[property])
+        }
+        return new Class(proto)
+    },
+    implement: function() {
+        for (var i = 0, l = arguments.length; i < l; i++)
+            $extend(this.prototype, arguments[i])
+    }
+};
+Class.Merge = function(previous, current) {
+    if (previous && previous != current) {
+        var type = $type(current);
+        if (type != $type(previous))
+            return current;
+        switch (type) {
+            case 'function':
+                var merged = function() {
+                    this.parent = arguments.callee.parent;
+                    return current.apply(this, arguments)
+                };
+                merged.parent = previous;
+                return merged;
+            case 'object':
+                return $merge(previous, current)
+        }
+    }
+    return current
+}
+/* var Chain = new Class */
+var Events = new Class({
+    addEvent: function(type, fn) {
+        if (fn != Class.empty) {
+            var match_values = type.match(/^([^:]+)(?::(.*))?$/i);
+            type = match_values[1];
+            var pseudo_part = match_values[2];
+            if (pseudo_part && pseudo_part.length) {
+                var match_result = pseudo_part.match(/^([A-z]+)(?:\(([^\(\)]+)\))?$/i);
+                if (match_result) {
+                    var pseudo_name = match_result[1];
+                    var pseudo_params_str = match_result[2];
+                    if (pseudo_name === 'pause') {
+                        var duration = 250;
+                        if (pseudo_params_str) {
+                            var params = pseudo_params_str.match(/^\d+$/i);
+                            if (!params) {
+                                throw Error('Неверные параметры для псевдо события  "' + pseudo_name + '": "' + type + '"')
+                            }
+                            duration = parseInt(params[0])
+                        }
+                        fn._pause_duration = duration
+                    } else {
+                        throw Error('Неизвестный тип псевдо события  "' + pseudo_name + '" в "' + type + '"')
+                    }
+                } else {
+                    throw Error('Ошибка в имени события "' + type + '"')
+                }
+            }
+            this.$events = this.$events || {};
+            this.$events[type] = this.$events[type] || [];
+            this.$events[type].include(fn)
+        }
+        return this
+    },
+    fireEvent: function(type, args, delay) {
+        if (this.$events && this.$events[type]) {
+            this.$events[type].each(function(fn) {
+                fn.create({
+                    'bind': this,
+                    'delay': delay,
+                    'arguments': args
+                })()
+            }, this)
+        }
+        return this
+    },
+    removeEvent: function(type, fn) {
+        if (this.$events && this.$events[type])
+            this.$events[type].remove(fn);
+        return this
+    },
+    clearEvents: function() {
+        this.$events = {};
+        return this
+    }
+});
+
+function $(el) {
+    if (!el)
+        return null;
+    if (el.htmlElement)
+        return Garbage.collect(el);
+    if ([window, document].contains(el))
+        return el;
+    var type = $type(el);
+    if (type == 'string') {
+        el = document.getElementById(el);
+        type = (el) ? 'element' : false
+    }
+    if (type != 'element')
+        return null;
+    if (el.htmlElement)
+        return Garbage.collect(el);
+    if (['object', 'embed'].contains(el.tagName.toLowerCase()))
+        return el;
+    $extend(el, Element.prototype);
+    el.htmlElement = function() {}
+    ;
+    return Garbage.collect(el)
+};
+var Element = new Class({
+    initialize: function(el, props) {
+        if ($type(el) == 'string') {
+            if (window.ie && props && (props.name || props.type) && window.ieversion < 9) {
+                var name = (props.name) ? ' name="' + props.name + '"' : '';
+                var type = (props.type) ? ' type="' + props.type + '"' : '';
+                delete props.name;
+                delete props.type;
+                el = '<' + el + name + type + '>'
+            }
+            el = document.createElement(el)
+        }
+        el = $(el);
+        return (!props || !el) ? el : el.set(props)
+    }
+});
+var Elements = new Class({
+    initialize: function(elements) {
+        return (elements) ? $extend(elements, this) : this
+    }
+});
+Element.extend = function(properties) {
+    for (var property in properties) {
+        HTMLElement.prototype[property] = properties[property];
+        Element.prototype[property] = properties[property];
+        Element[property] = $native.generic(property);
+        var elementsProperty = (Array.prototype[property]) ? property + 'Elements' : property;
+        Elements.prototype[elementsProperty] = Elements.Multi(property)
+    }
+};
+Elements.extend = function(props) {
+    for (var prop in props) {
+        this.prototype[prop] = props[prop];
+        this[prop] = $native.generic(prop)
+    }
+};
+function $(el) {
+    if (!el)
+        return null;
+    if (el.htmlElement)
+        return Garbage.collect(el);
+    if ([window, document].contains(el))
+        return el;
+    var type = $type(el);
+    if (type == 'string') {
+        el = document.getElementById(el);
+        type = (el) ? 'element' : false
+    }
+    if (type != 'element')
+        return null;
+    if (el.htmlElement)
+        return Garbage.collect(el);
+    if (['object', 'embed'].contains(el.tagName.toLowerCase()))
+        return el;
+    $extend(el, Element.prototype);
+    el.htmlElement = function() {}
+    ;
+    return Garbage.collect(el)
+};
+document.getElementsBySelector = document.getElementsByTagName;
+function $$() {
+    var elements = [];
+    for (var i = 0, j = arguments.length; i < j; i++) {
+        var selector = arguments[i];
+        switch ($type(selector)) {
+            case 'element':
+                elements.push(selector);
+            case 'boolean':
+                break;
+            case false:
+                break;
+            case 'string':
+                selector = document.getElementsBySelector(selector, true);
+            default:
+                elements.extend(selector)
+        }
+    }
+    return $$.unique(elements)
+};
+$$.unique = function(array) {
+    var elements = [];
+    for (var i = 0, l = array.length; i < l; i++) {
+        if (array[i].$included)
+            continue;
+        var element = $(array[i]);
+        if (element && !element.$included) {
+            element.$included = true;
+            elements.push(element)
+        }
+    }
+    for (var n = 0, d = elements.length; n < d; n++)
+        elements[n].$included = null;
+    return new Elements(elements)
+};
+
+
+Elements.Multi = function(property) {
+    return function() {
+        var args = arguments;
+        var items = [];
+        var elements = true;
+        for (var i = 0, j = this.length, returns; i < j; i++) {
+            returns = this[i][property].apply(this[i], args);
+            if ($type(returns) != 'element')
+                elements = false;
+            items.push(returns)
+        }
+        ;return (elements) ? $$.unique(items) : items
+    }
+};
+
+Element.Methods = {
+    Listeners: {
+        addListener: function(type, fn) {
+            if (this.addEventListener)
+                this.addEventListener(type, fn, false);
+            else
+                this.attachEvent('on' + type, fn);
+            return this
+        },
+        removeListener: function(type, fn) {
+            if (this.removeEventListener)
+                this.removeEventListener(type, fn, false);
+            else
+                this.detachEvent('on' + type, fn);
+            return this
+        }
+    }
+};
+
+Element.extend({
+    set: function(props) {
+        for (var prop in props) {
+            var val = props[prop];
+            switch (prop) {
+                case 'styles':
+                    this.setStyles(val);
+                    break;
+                case 'events':
+                    if (this.addEvents)
+                        this.addEvents(val);
+                    break;
+                case 'properties':
+                    this.setProperties(val);
+                    break;
+                default:
+                    this.setProperty(prop, val)
+            }
+        }
+        return this
+    },
+    inject: function(el, where) {
+        el = $(el);
+        switch (where) {
+            case 'before':
+                el.parentNode.insertBefore(this, el);
+                break;
+            case 'after':
+                var next = el.getNext();
+                if (!next)
+                    el.parentNode.appendChild(this);
+                else
+                    el.parentNode.insertBefore(this, next);
+                break;
+            case 'top':
+                var first = el.firstChild;
+                if (first) {
+                    el.insertBefore(this, first);
+                    break
+                }
+            default:
+                el.appendChild(this)
+        }
+        return this
+    },
+    injectBefore: function(el) {
+        return this.inject(el, 'before')
+    },
+    injectAfter: function(el) {
+        return this.inject(el, 'after')
+    },
+    injectInside: function(el) {
+        return this.inject(el, 'bottom')
+    },
+    injectTop: function(el) {
+        return this.inject(el, 'top')
+    },
+    adopt: function() {
+        var elements = [];
+        $each(arguments, function(argument) {
+            elements = elements.concat(argument)
+        });
+        $$(elements).inject(this);
+        return this
+    },
+    remove: function() {
+        if (this.parentNode) {
+            return this.parentNode.removeChild(this)
+        } else if (window.ie) {
+            return this.removeNode()
+        }
+    },
+    clone: function(contents) {
+        var el = $(this.cloneNode(contents !== false));
+        if (!el.$events)
+            return el;
+        el.$events = {};
+        for (var type in this.$events)
+            el.$events[type] = {
+                'keys': $A(this.$events[type].keys),
+                'values': $A(this.$events[type].values)
+            };
+        return el.removeEvents()
+    },
+    replaceWith: function(el) {
+        el = $(el);
+        this.parentNode.replaceChild(el, this);
+        return el
+    },
+    appendText: function(text) {
+        this.appendChild(document.createTextNode(text));
+        return this
+    },
+    hasClass: function(className) {
+        return this.className.contains(className, ' ')
+    },
+    addClass: function(className) {
+        if (!this.hasClass(className))
+            this.className = (this.className + ' ' + className).clean();
+        return this
+    },
+    removeClass: function(className) {
+        this.className = this.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)'), '$1').clean();
+        return this
+    },
+    toggleClass: function(className) {
+        return this.hasClass(className) ? this.removeClass(className) : this.addClass(className)
+    },
+    setStyle: function(property, value) {
+        switch (property) {
+            case 'opacity':
+                return this.setOpacity(parseFloat(value));
+            case 'float':
+                property = (window.ie) ? 'styleFloat' : 'cssFloat'
+        }
+        property = property.camelCase();
+        switch ($type(value)) {
+            case 'number':
+                if (!['zIndex', 'zoom'].contains(property))
+                    value += 'px';
+                break;
+            case 'array':
+                value = 'rgb(' + value.join(',') + ')'
+        }
+        this.style[property] = value;
+        return this
+    },
+    setStyles: function(source) {
+        switch ($type(source)) {
+            case 'object':
+                Element.setMany(this, 'setStyle', source);
+                break;
+            case 'string':
+                this.style.cssText = source
+        }
+        return this
+    },
+    setOpacity: function(opacity) {
+        if (opacity == 0) {
+            if (this.style.visibility != "hidden")
+                this.style.visibility = "hidden"
+        } else {
+            if (this.style.visibility != "visible")
+                this.style.visibility = "visible"
+        }
+        if (!this.currentStyle || !this.currentStyle.hasLayout)
+            this.style.zoom = 1;
+        if (window.ie)
+            this.style.filter = (opacity == 1) ? '' : "alpha(opacity=" + opacity * 100 + ")";
+        this.style.opacity = this.$tmp.opacity = opacity;
+        return this
+    },
+    getStyle: function(property) {
+        property = property.camelCase();
+        var result = this.style[property];
+        if (!$chk(result)) {
+            if (property == 'opacity')
+                return this.$tmp.opacity;
+            result = [];
+            for (var style in Element.Styles) {
+                if (property == style) {
+                    Element.Styles[style].each(function(s) {
+                        var style = this.getStyle(s);
+                        result.push(parseInt(style) ? style : '0px')
+                    }, this);
+                    if (property == 'border') {
+                        var every = result.every(function(bit) {
+                            return (bit == result[0])
+                        });
+                        return (every) ? result[0] : false
+                    }
+                    return result.join(' ')
+                }
+            }
+            if (property.contains('border')) {
+                if (Element.Styles.border.contains(property)) {
+                    return ['Width', 'Style', 'Color'].map(function(p) {
+                        return this.getStyle(property + p)
+                    }, this).join(' ')
+                } else if (Element.borderShort.contains(property)) {
+                    return ['Top', 'Right', 'Bottom', 'Left'].map(function(p) {
+                        return this.getStyle('border' + p + property.replace('border', ''))
+                    }, this).join(' ')
+                }
+            }
+            if (document.defaultView)
+                result = document.defaultView.getComputedStyle(this, null).getPropertyValue(property.hyphenate());
+            else if (this.currentStyle)
+                result = this.currentStyle[property]
+        }
+        if (window.ie)
+            result = Element.fixStyle(property, result, this);
+        if (result && property.test(/color/i) && result.contains('rgb')) {
+            return result.split('rgb').splice(1, 4).map(function(color) {
+                return color.rgbToHex()
+            }).join(' ')
+        }
+        return result
+    },
+    getStyles: function() {
+        return Element.getMany(this, 'getStyle', arguments)
+    },
+    walk: function(brother, start) {
+        brother += 'Sibling';
+        var el = (start) ? this[start] : this[brother];
+        while (el && $type(el) != 'element')
+            el = el[brother];
+        return $(el)
+    },
+    getPrevious: function() {
+        return this.walk('previous')
+    },
+    getNext: function() {
+        return this.walk('next')
+    },
+    getFirst: function() {
+        return this.walk('next', 'firstChild')
+    },
+    getLast: function() {
+        return this.walk('previous', 'lastChild')
+    },
+    getParent: function() {
+        return $(this.parentNode)
+    },
+    getChildren: function() {
+        return $$(this.childNodes)
+    },
+    hasChild: function(el) {
+        return !!$A(this.getElementsByTagName('*')).contains(el)
+    },
+    getProperty: function(property) {
+        var index = Element.Properties[property];
+        if (index)
+            return this[index];
+        var flag = Element.PropertiesIFlag[property] || 0;
+        var msie = navigator.userAgent.toLowerCase().match(/msie\s+(\d)/);
+        if (!window.ie || flag || msie && msie[1] >= 7)
+            return this.getAttribute(property, flag);
+        var node = this.attributes[property];
+        return (node) ? node.nodeValue : null
+    },
+    removeProperty: function(property) {
+        var index = Element.Properties[property];
+        if (index)
+            this[index] = '';
+        else
+            this.removeAttribute(property);
+        return this
+    },
+    getProperties: function() {
+        return Element.getMany(this, 'getProperty', arguments)
+    },
+    setProperty: function(property, value) {
+        var index = Element.Properties[property];
+        if (index)
+            this[index] = value;
+        else
+            this.setAttribute(property, value);
+        return this
+    },
+    setProperties: function(source) {
+        return Element.setMany(this, 'setProperty', source)
+    },
+    setHTML: function() {
+        this.innerHTML = $A(arguments).join('');
+        return this
+    },
+    setText: function(text) {
+        var tag = this.getTag();
+        if (['style', 'script'].contains(tag)) {
+            if (window.ie) {
+                if (tag == 'style')
+                    this.styleSheet.cssText = text;
+                else if (tag == 'script')
+                    this.setProperty('text', text);
+                return this
+            } else {
+                this.removeChild(this.firstChild);
+                return this.appendText(text)
+            }
+        }
+        this[$defined(this.innerText) ? 'innerText' : 'textContent'] = text;
+        return this
+    },
+    getText: function() {
+        var tag = this.getTag();
+        if (['style', 'script'].contains(tag)) {
+            if (window.ie) {
+                if (tag == 'style')
+                    return this.styleSheet.cssText;
+                else if (tag == 'script')
+                    return this.getProperty('text')
+            } else {
+                return this.innerHTML
+            }
+        }
+        return ($pick(this.innerText, this.textContent))
+    },
+    getTag: function() {
+        return this.tagName.toLowerCase()
+    },
+    empty: function() {
+        Garbage.trash(this.getElementsByTagName('*'));
+        return this.setHTML('')
+    }
+});
+Element.fixStyle = function(property, result, element) {
+    if ($chk(parseInt(result)))
+        return result;
+    if (['height', 'width'].contains(property)) {
+        var values = (property == 'width') ? ['left', 'right'] : ['top', 'bottom'];
+        var size = 0;
+        values.each(function(value) {
+            size += element.getStyle('border-' + value + '-width').toInt() + element.getStyle('padding-' + value).toInt()
+        });
+        return element['offset' + property.capitalize()] - size + 'px'
+    } else if (property.test(/border(.+)Width|margin|padding/)) {
+        return '0px'
+    }
+    return result
+};
+Element.Styles = {
+    'border': [],
+    'padding': [],
+    'margin': []
+};
+
+Element.borderShort = ['borderWidth', 'borderStyle', 'borderColor'];
+Element.getMany = function(el, method, keys) {
+    var result = {};
+    $each(keys, function(key) {
+        result[key] = el[method](key)
+    });
+    return result
+}
+Element.setMany = function(el, method, pairs) {
+    for (var key in pairs)
+        el[method](key, pairs[key]);
+    return el
+};
+Element.Properties = new Abstract({
+    'class': 'className',
+    'for': 'htmlFor',
+    'colspan': 'colSpan',
+    'rowspan': 'rowSpan',
+    'accesskey': 'accessKey',
+    'tabindex': 'tabIndex',
+    'maxlength': 'maxLength',
+    'readonly': 'readOnly',
+    'frameborder': 'frameBorder',
+    'value': 'value',
+    'disabled': 'disabled',
+    'checked': 'checked',
+    'multiple': 'multiple',
+    'selected': 'selected'
+});
+Element.PropertiesIFlag = {
+    'href': 2,
+    'src': 2
+};
+
+var Event = new Class({
+    initialize: function(event) {
+        if (event && event.$extended)
+            return event;
+        this.$extended = true;
+        event = event || window.event;
+        this.event = event;
+        this.type = event.type;
+        this.target = event.target || event.srcElement;
+        if (this.target.nodeType == 3)
+            this.target = this.target.parentNode;
+        this.shift = event.shiftKey;
+        this.control = event.ctrlKey;
+        this.alt = event.altKey;
+        this.meta = event.metaKey;
+        if (['DOMMouseScroll', 'mousewheel'].contains(this.type)) {
+            this.wheel = (event.wheelDelta) ? event.wheelDelta / 120 : -(event.detail || 0) / 3
+        } else if (this.type.contains('key')) {
+            this.code = event.which || event.keyCode;
+            for (var name in Event.keys) {
+                if (Event.keys[name] == this.code) {
+                    this.key = name;
+                    break
+                }
+            }
+            if (this.type == 'keydown') {
+                var fKey = this.code - 111;
+                if (fKey > 0 && fKey < 13)
+                    this.key = 'f' + fKey
+            }
+            this.key = this.key || String.fromCharCode(this.code).toLowerCase()
+        } else if (this.type.test(/(click|mouse|menu)/)) {
+            this.page = {
+                'x': event.pageX || event.clientX + document.documentElement.scrollLeft,
+                'y': event.pageY || event.clientY + document.documentElement.scrollTop
+            };
+            this.client = {
+                'x': event.pageX ? event.pageX - window.pageXOffset : event.clientX,
+                'y': event.pageY ? event.pageY - window.pageYOffset : event.clientY
+            };
+            this.rightClick = (event.which == 3) || (event.button == 2);
+            switch (this.type) {
+                case 'mouseover':
+                    this.relatedTarget = event.relatedTarget || event.fromElement;
+                    break;
+                case 'mouseout':
+                    this.relatedTarget = event.relatedTarget || event.toElement
+            }
+            this.fixRelatedTarget()
+        }
+        return this
+    },
+    stop: function() {
+        return this.stopPropagation().preventDefault()
+    },
+    stopPropagation: function() {
+        if (this.event.stopPropagation)
+            this.event.stopPropagation();
+        else
+            this.event.cancelBubble = true;
+        return this
+    },
+    preventDefault: function() {
+        if (this.event.preventDefault)
+            this.event.preventDefault();
+        else
+            this.event.returnValue = false;
+        return this
+    }
+});
+Event.fix = {
+    relatedTarget: function() {
+        if (this.relatedTarget && this.relatedTarget.nodeType == 3)
+            this.relatedTarget = this.relatedTarget.parentNode
+    },
+    relatedTargetGecko: function() {
+        try {
+            Event.fix.relatedTarget.call(this)
+        } catch (e) {
+            this.relatedTarget = this.target
+        }
+    }
+};
+Event.prototype.fixRelatedTarget = (window.gecko) ? Event.fix.relatedTargetGecko : Event.fix.relatedTarget;
+Event.keys = new Abstract({
+    'enter': 13,
+    'up': 38,
+    'down': 40,
+    'left': 37,
+    'right': 39,
+    'esc': 27,
+    'space': 32,
+    'backspace': 8,
+    'tab': 9,
+    'delete': 46
+});
+Element.Methods.Events = {
+    addEvent: function(type, fn) {
+        this.$events = this.$events || {};
+        this.$events[type] = this.$events[type] || {
+            'keys': [],
+            'values': []
+        };
+        if (this.$events[type].keys.contains(fn))
+            return this;
+        this.$events[type].keys.push(fn);
+        var realType = type;
+        var custom = Element.Events[type];
+        if (custom) {
+            if (custom.add)
+                custom.add.call(this, fn);
+            if (custom.map)
+                fn = custom.map;
+            if (custom.type)
+                realType = custom.type
+        }
+        if (!this.addEventListener)
+            fn = fn.create({
+                'bind': this,
+                'event': true
+            });
+        this.$events[type].values.push(fn);
+        return (Element.NativeEvents.contains(realType)) ? this.addListener(realType, fn) : this
+    },
+    removeEvent: function(type, fn) {
+        if (!this.$events || !this.$events[type])
+            return this;
+        var pos = this.$events[type].keys.indexOf(fn);
+        if (pos == -1)
+            return this;
+        var key = this.$events[type].keys.splice(pos, 1)[0];
+        var value = this.$events[type].values.splice(pos, 1)[0];
+        var custom = Element.Events[type];
+        if (custom) {
+            if (custom.remove)
+                custom.remove.call(this, fn);
+            if (custom.type)
+                type = custom.type
+        }
+        return (Element.NativeEvents.contains(type)) ? this.removeListener(type, value) : this
+    },
+    addEvents: function(source) {
+        return Element.setMany(this, 'addEvent', source)
+    },
+    removeEvents: function(type) {
+        if (!this.$events)
+            return this;
+        if (!type) {
+            for (var evType in this.$events)
+                this.removeEvents(evType);
+            this.$events = null
+        } else if (this.$events[type]) {
+            this.$events[type].keys.each(function(fn) {
+                this.removeEvent(type, fn)
+            }, this);
+            this.$events[type] = null
+        }
+        return this
+    },
+    fireEvent: function(type, args, delay) {
+        if (this.$events && this.$events[type]) {
+            this.$events[type].keys.each(function(fn) {
+                fn.create({
+                    'bind': this,
+                    'delay': delay,
+                    'arguments': args
+                })()
+            }, this)
+        }
+        return this
+    },
+    cloneEvents: function(from, type) {
+        if (!from.$events)
+            return this;
+        if (!type) {
+            for (var evType in from.$events)
+                this.cloneEvents(from, evType)
+        } else if (from.$events[type]) {
+            from.$events[type].keys.each(function(fn) {
+                this.addEvent(type, fn)
+            }, this)
+        }
+        return this
+    }
+};
+
+window.extend(Element.Methods.Listeners);
+document.extend(Element.Methods.Listeners);
+Element.extend(Element.Methods.Listeners);
+Element.Events = new Abstract({
+    'mouseenter': {
+        type: 'mouseover',
+        map: function(event) {
+            event = new Event(event);
+            if (event.relatedTarget != this && !this.hasChild(event.relatedTarget))
+                this.fireEvent('mouseenter', event)
+        }
+    },
+    'mouseleave': {
+        type: 'mouseout',
+        map: function(event) {
+            event = new Event(event);
+            if (event.relatedTarget != this && !this.hasChild(event.relatedTarget))
+                this.fireEvent('mouseleave', event)
+        }
+    },
+    'mousewheel': {
+        type: (window.gecko) ? 'DOMMouseScroll' : 'mousewheel'
+    }
+});
+Element.NativeEvents = ['click', 'dblclick', 'mouseup', 'mousedown', 'mousewheel', 'DOMMouseScroll', 'mouseover', 'mouseout', 'mousemove', 'keydown', 'keypress', 'keyup', 'load', 'unload', 'beforeunload', 'resize', 'move', 'focus', 'blur', 'change', 'submit', 'reset', 'select', 'error', 'abort', 'contextmenu', 'scroll'];
+
+
+
+var Garbage = {
+    elements: [],
+    collect: function(el) {
+        if (!el.$tmp) {
+            Garbage.elements.push(el);
+            el.$tmp = {
+                'opacity': 1
+            }
+        }
+        return el
+    },
+    trash: function(elements) {
+        for (var i = 0, j = elements.length, el; i < j; i++) {
+            if (!(el = elements[i]) || !el.$tmp)
+                continue;
+            if (el.$events)
+                el.fireEvent('trash').removeEvents();
+            for (var p in el.$tmp)
+                el.$tmp[p] = null;
+            for (var d in Element.prototype)
+                el[d] = null;
+            Garbage.elements[Garbage.elements.indexOf(el)] = null;
+            el.htmlElement = el.$tmp = el = null
+        }
+        Garbage.elements.remove(null)
+    },
+    empty: function() {
+        Garbage.collect(window);
+        Garbage.collect(document);
+        Garbage.trash(Garbage.elements)
+    }
+};
+window.addListener('beforeunload', function() {
+    window.addListener('unload', Garbage.empty);
+    if (window.ie)
+        window.addListener('unload', CollectGarbage)
+});
+
+Array.extend({
+    forEach: function(fn, bind) {
+        for (var i = 0, j = this.length; i < j; i++)
+            fn.call(bind, this[i], i, this)
+    },
+    filter: function(fn, bind) {
+        var results = [];
+        for (var i = 0, j = this.length; i < j; i++) {
+            if (fn.call(bind, this[i], i, this))
+                results.push(this[i])
+        }
+        return results
+    },
+    map: function(fn, bind) {
+        var results = [];
+        for (var i = 0, j = this.length; i < j; i++)
+            results[i] = fn.call(bind, this[i], i, this);
+        return results
+    },
+    every: function(fn, bind) {
+        for (var i = 0, j = this.length; i < j; i++) {
+            if (!fn.call(bind, this[i], i, this))
+                return false
+        }
+        return true
+    },
+    some: function(fn, bind) {
+        for (var i = 0, j = this.length; i < j; i++) {
+            if (fn.call(bind, this[i], i, this))
+                return true
+        }
+        return false
+    },
+    indexOf: function(item, from) {
+        var len = this.length;
+        for (var i = (from < 0) ? Math.max(0, len + from) : from || 0; i < len; i++) {
+            if (this[i] === item)
+                return i
+        }
+        return -1
+    },
+    copy: function(start, length) {
+        start = start || 0;
+        if (start < 0)
+            start = this.length + start;
+        length = length || (this.length - start);
+        var newArray = [];
+        for (var i = 0; i < length; i++)
+            newArray[i] = this[start++];
+        return newArray
+    },
+    remove: function(item) {
+        var i = 0;
+        var len = this.length;
+        while (i < len) {
+            if (this[i] === item) {
+                this.splice(i, 1);
+                len--
+            } else {
+                i++
+            }
+        }
+        return this
+    },
+    contains: function(item, from) {
+        return this.indexOf(item, from) != -1
+    },
+    associate: function(keys) {
+        var obj = {}
+            , length = Math.min(this.length, keys.length);
+        for (var i = 0; i < length; i++)
+            obj[keys[i]] = this[i];
+        return obj
+    },
+    extend: function(array) {
+        for (var i = 0, j = array.length; i < j; i++)
+            this.push(array[i]);
+        return this
+    },
+    merge: function(array) {
+        for (var i = 0, l = array.length; i < l; i++)
+            this.include(array[i]);
+        return this
+    },
+    include: function(item) {
+        if (!this.contains(item))
+            this.push(item);
+        return this
+    },
+    getRandom: function() {
+        return this[$random(0, this.length - 1)] || null
+    },
+    getLast: function() {
+        return this[this.length - 1] || null
+    },
+    inArray: function(comparer) {
+        for (var i = 0; i < this.length; i++) {
+            if (comparer(this[i])) {
+                return true
+            }
+        }
+        return false
+    },
+    pushIfNotExist: function(element, comparer) {
+        var result = false;
+        if (!this.inArray(comparer)) {
+            this.push(element);
+            result = true
+        }
+        return result
+    }
+});
+Array.prototype.each = Array.prototype.forEach;
+Array.each = Array.forEach;
+['Top', 'Right', 'Bottom', 'Left'].each(function(direction) {
+    for (var style in Element.Styles)
+        Element.Styles[style].push(style + direction)
+});
+
+function $A(array) {
+    return Array.copy(array)
+};
+function $each(iterable, fn, bind) {
+    if (iterable && typeof iterable.length == 'number' && $type(iterable) != 'object') {
+        Array.forEach(iterable, fn, bind)
+    } else {
+        for (var name in iterable)
+            fn.call(bind || iterable, iterable[name], name)
+    }
+};
+Array.prototype.test = Array.prototype.contains;
+
+/**
+ * Загрузка Ресурсов
+ * @type {*|{}}
+ */
+var Asset = new Abstract({
+    javascript: function(source, properties) {
+        properties = $merge({
+            'onload': Class.empty
+        }, properties);
+        var script = new Element('script',{
+            'src': source
+        }).addEvents({
+            'load': properties.onload,
+            'error': properties.onerror || function() {} ,
+            'readystatechange': function() {
+                if (this.readyState == 'complete')
+                    this.fireEvent('load')
+            }
+        });
+        delete properties.onload;
+        delete properties.onerror;
+        return script.setProperties(properties).inject(document.head)
+    },
+    css: function(source, properties) {
+        return new Element('link',$merge({
+            'rel': 'stylesheet',
+            'media': 'screen',
+            'type': 'text/css',
+            'href': source
+        }, properties)).inject(document.head)
+    },
+    image: function(source, properties) {
+        properties = $merge({
+            'onload': Class.empty,
+            'onabort': Class.empty,
+            'onerror': Class.empty
+        }, properties);
+        var image = new Image();
+        image.src = source;
+        var element = new Element('img',{
+            'src': source
+        });
+        ['load', 'abort', 'error'].each(function(type) {
+            var event = properties['on' + type];
+            delete properties['on' + type];
+            element.addEvent(type, function() {
+                this.removeEvent(type, arguments.callee);
+                event.call(this)
+            })
+        });
+        if (image.width && image.height)
+            element.fireEvent('load', element, 1);
+        return element.setProperties(properties)
+    },
+    images: function(sources, options) {
+        options = $merge({
+            onComplete: Class.empty,
+            onProgress: Class.empty
+        }, options);
+        if (!sources.push)
+            sources = [sources];
+        var images = [];
+        var counter = 0;
+        sources.each(function(source) {
+            var img = new Asset.image(source,{
+                'onload': function() {
+                    options.onProgress.call(this, counter);
+                    counter++;
+                    if (counter == sources.length)
+                        options.onComplete()
+                }
+            });
+            images.push(img)
+        });
+        return new Elements(images)
+    }
+});
+
+
+
+var App , App_class
+App_class = new Class({
+
+    _images_src: {},
+    /**
+     * История загруженных скриптов
+     */
+    _loaded_scripts: {},
+    /**
+     * Погрузка Js айлов
+     * @param path
+     * @param callback_onload
+     * @param callback_onerror
+     */
+    loadScript: function(path, callback_onload, callback_onerror) {
+        if (!this._loaded_scripts[path]) {
+            Asset.javascript(path, {
+                'onload': function() {
+                    this._loaded_scripts[path] = true;
+                    callback_onload && callback_onload()
+                }
+                    .bind(this),
+                'onerror': callback_onerror,
+                async: true
+            })
+        } else {
+            callback_onload && callback_onload()
+        }
+    },
+
+
+
+
+});
+
+App_class.implement(new Events());
+App = new App_class();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

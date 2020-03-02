@@ -138,8 +138,27 @@ var GNZ11_defSetting = {
 /**
  * @constructor
  */
-var GNZ11 = function () {
+var GNZ11 = function (options_setting) {
     var $=jQuery ;
+    var self = this ;
+    self.DEBAG = true ;
+    /**
+     * Хранение конфигурации библиотеки GNZ11
+     * @type {{}}
+     */
+    this.WGNZ11INIT_OPTS = {
+        PATH_API : null
+    } ;
+    this._defaults = {
+        PATH_API: '/libraries/GNZ11/Api'
+
+    };
+
+    this.WGNZ11INIT = function () {
+        if ( typeof options_setting === 'undefined') options_setting = {} ;
+        self.WGNZ11INIT_OPTS = Object.assign({}  , self._defaults , options_setting  );
+    };
+
     (function () { })();
 
     this._siteUrl = null ;
@@ -157,7 +176,6 @@ var GNZ11 = function () {
         return Joomla.getOptions('GNZ11')
     })();
     this.init = function () {};
-
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /**
      * Загрузка Ajax модуля (GNZ11Ajax)
@@ -167,66 +185,17 @@ var GNZ11 = function () {
         console.warn('GNZ11.getAjax is deprecated!!! Use GNZ11.getModul("Ajax")');
         return this.getModul('Ajax');
     };
-
-
-
-    this.getModul = function (moduleName , setting) {
-
-        var $this = this ;
-        var siteUrl = Joomla.getOptions('siteUrl') ;
-        var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
-        var Module = 'GNZ11'+moduleName ;
-        var returnModule ;
-        // console.log( typeof Module );
-        if ( typeof Module !== 'function' ) {
-
-            return new Promise(function (resolve, reject) {
-                console.log(pathModules +'/gnz11.'+moduleName+'.js');
-                Promise.all([
-                    $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
-                ]).then(function (r) {
-                    console.log( typeof Module );
-                    var i = setInterval(function () {
-                        if (typeof window[Module] === 'function') {
-                            clearInterval(i);
-                            returnModule = new window[Module]();
-                            if ( typeof setting === 'undefined' ) resolve(returnModule);
-                            returnModule.setConfig(setting) ;
-                            resolve(returnModule);
-                        }
-                    }, 300)
-                })
-            });
-        }else {
-            return new Promise(function (resolve, reject) {
-                resolve(new window[Module]());
-            });
-        }
-    };
-    this.getSpeechRecognition = function () {
-        var $this = this ;
-        var siteUrl = Joomla.getOptions('siteUrl') ;
-    };
-
-
-
-
-
     /*
      * Загрузка css, img, js
      * @type {{css, img, js}}
      */
     this.load = (function () {
         var LIB = this;
-
         // Function which returns a function: https://davidwalsh.name/javascript-functions
         function _load(tag) {
-
             return function (url) {
-
                 // This promise will be used by Promise.all to determine success or failure
                 return new Promise(function(resolve, reject) {
-
                     if (typeof window.GNZ11_isLoad === 'undefined'){
                         window.GNZ11_isLoad = {
                             script: [],
@@ -234,19 +203,12 @@ var GNZ11 = function () {
                             img: []
                         };
                     }
-
-
                     // console.log( url )
-
-
                     if ( $.inArray(url, window.GNZ11_isLoad[tag]) !== -1 )  return resolve( url );
                     window.GNZ11_isLoad[tag].push( url );
-
                     var element = document.createElement(tag);
                     var parent = 'body';
                     var attr = 'src';
-
-
                     // Important success and error for the promise
                     element.onload = function() { resolve(url);  };
                     element.onerror = function() { reject(url); };
@@ -277,7 +239,86 @@ var GNZ11 = function () {
             img: _load('img')
         };
     })();
+    /**
+     * Звгрузка модулей GNZ11
+     * @param moduleName
+     * @param setting
+     * @returns {Promise<unknown>}
+     */
+    this.getModul = function (moduleName , setting) {
 
+        var $this = this ;
+        var siteUrl = Joomla.getOptions('siteUrl' , '' ) ;
+
+        var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
+        var Module = 'GNZ11'+moduleName ;
+        var returnModule ;
+        // console.log( typeof Module );
+
+        // Если модуль еще не был загружен
+        if ( typeof Module !== 'function' ) {
+
+            return new Promise(function (resolve, reject) {
+                console.log(pathModules +'/gnz11.'+moduleName+'.js');
+                Promise.all([
+                    $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
+                ]).then(function (r) {
+                    console.log( typeof Module );
+                    var i = setInterval(function () {
+                        if (typeof window[Module] === 'function') {
+                            clearInterval(i);
+                            returnModule = new window[Module](  );
+                            if ( typeof setting === 'undefined' ) resolve(returnModule);
+                            if ( typeof returnModule.setConfig !== 'undefined' ) returnModule.setConfig(setting) ;
+                            resolve(returnModule);
+                        }
+                    }, 300)
+                })
+            });
+        }else {
+            return new Promise(function (resolve, reject) {
+                resolve(new window[Module]());
+            });
+        }
+    };
+    /**
+     * Загрузка елементов API
+     * @param nameApi str Имя API  e.t. NovaPoshta
+     * @param options obj ?????
+     */
+    this.getApi = function ( classApi , nameApi , options ) {
+        const _JS_ = '/assets/js' ;
+        var file = self.WGNZ11INIT_OPTS.PATH_API+'/'+classApi+'/'+nameApi + _JS_ +'/'+nameApi+'.js' ;
+        return new Promise(function (resolve, reject) {
+            Promise.all([
+                wgnz11.load.js( file ),
+            ]).then(function (a) {
+                resolve( true );
+            },function (reject) {
+                reject();
+            })
+        })
+
+
+
+        /*return new Promise(function(resolve, reject) {
+            return wgnz11.load.js( file ).then( function (res) {
+                return resolve ;
+            },function (err) {
+                return reject ;
+            }) ;
+        });*/
+
+    }
+    /**
+     * Загрузка плагинов библиотеки GNZ11
+     *
+     * @param pluginName    str - Имя плагина
+     * @param setting       obj - Объект с конфигурацией плагина
+     */
+    this.getPlugin = function (pluginName , setting) {
+       this.__loadModul[pluginName](setting)
+    }
     /*
      * Load  module
      *
@@ -292,7 +333,43 @@ var GNZ11 = function () {
      * @private
      */
     this.__loadModul = {
+        Inputmask : function(param){
+            if ( typeof  Inputmask === 'undefined' ){
+                return new Promise(function (resolve, reject) {
+                    Promise.all([
+                        wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css'),
+                        wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js'),
+                        wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.js'),
+                    ]).then(function (a) {
+                        console.info( 'Inputmask loaded' )
+                        var $ =jQuery ;
+                        var elSelector = param.element ;
+                        Inputmask.Inint( elSelector , param );
 
+                        /*function Inint (elSelector , Settings){
+                            var wrp = $('<div />' , {
+                                class : 'wrapMaskPhone'
+                            });
+                            $(elSelector)
+                                .attr('placeholder' , Settings.mask)
+                                .wrap( wrp )
+                        }*/
+
+                        /*$( elSelector ).mask(Settings.mask ,{
+                            onKeyPress:function(v,event,currentField,options){
+                                _setOperatorIcon( Settings , currentField )
+                            },
+                            onChange: function(cep){
+                                console.log('cep changed! ', cep);
+                            },
+                        });*/
+
+
+                    })
+                })
+            }
+
+        },
         Noty :  function (param) {
             //
             var $this = new GNZ11();
@@ -326,14 +403,14 @@ var GNZ11 = function () {
         },
         Bootstrap:function(){
 
-            if ( typeof $().emulateTransitionEnd == 'function' ){
+            if ( typeof $().emulateTransitionEnd === 'function' ){
                 return new Promise(function (resolve, reject) {
                     resolve( true );
                 })
             }else{
                 return new Promise(function (resolve, reject) {
                     Promise.all([
-                        zazLA.js('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'),
+                        wgnz11.load.js('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'),
                     ]).then(function (a) {
                         resolve( true );
                     })
@@ -480,10 +557,7 @@ var GNZ11 = function () {
             extension : filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)
         };
     };
-
-
-
-    // radio btn - init
+     // radio btn - init
     this.checkBoxRadioInit = function  (){
         var $=jQuery;
         // Turn radios into btn-group
@@ -527,7 +601,10 @@ var GNZ11 = function () {
             }
         });
     };
-
+    /**
+     * Обработчик форм SHOWON
+     * @type {{Init: GNZ11.SHOWON.Init, linkedoptions: GNZ11.SHOWON.linkedoptions}}
+     */
     this.SHOWON = {
         Init : function  (){
             var $ = jQuery;
@@ -615,9 +692,6 @@ var GNZ11 = function () {
             (showfield) ? target.slideDown() : target.slideUp();
         },
     }
-
-
-
     /**
      * получить строку между двумя символами
      */
@@ -638,10 +712,6 @@ var GNZ11 = function () {
             serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
         return serialized;
     }
-
-
-
-
 };
 
 
@@ -660,17 +730,40 @@ var GNZ11 = function () {
  */
 (function () {
     window.wgnz11 = new GNZ11();
+    wgnz11.WGNZ11INIT();
+
     window.wgnz11.loadJpro();
     document.dispatchEvent(new Event('GNZ11Loaded'))
 })();
-
-
-
-
-
-
-
-
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*//*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*//*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*//*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
+/*===========================================================*/
 
 
 

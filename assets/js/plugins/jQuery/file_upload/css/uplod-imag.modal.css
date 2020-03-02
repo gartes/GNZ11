@@ -1,0 +1,144 @@
+.wrp__heading {
+    padding: 0 16px;
+    /* margin: 10px 0px; */
+    /* border-bottom: 1px solid #ccc; */
+    background-color: #f9f9f9;
+    color: #8a8a8a;
+}
+h3.fileupload__heading {
+    margin: 0;
+    padding: 10px 5px;
+    color: black;
+    /* -webkit-text-stroke: 1px rgb(88, 88, 88); */
+    /* -webkit-text-fill-color: rgba(142, 0, 0, 0.1); */
+}
+#html-Upload_Modal-index .panel-body {
+    padding: 0px 0 0 15px;
+    width: 55rem;
+}
+.add-photos__form {
+    margin: 0;
+    padding: 35px;
+    -ms-flex-negative: 0;
+    /* flex-shrink: 0; */
+    /* margin-right: 16px; */
+    fill: #a6a5a5;
+    border: 0;
+}
+form#fileupload.empty {
+    height: auto;
+}
+#html-Upload_Modal-index .panel-body .add-photos__caption {
+    font-size: 1.7rem;
+    color: #797878;
+}
+.add-photos__label {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    /* display: flex; */
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    /* flex-direction: row; */
+    /* margin-right: 16px; */
+    /* margin-bottom: 16px; */
+    padding: 35px;
+    border: 1px solid #e9e9e9;
+}
+form#fileupload.empty+.add-photos__form {
+    display: block;
+}
+
+form#fileupload+.add-photos__form {
+    display: none;
+}
+
+
+/*---------------- Button Bar ---------------------------------------------------*/
+.row.fileupload-buttonbar {
+    /* margin-top: -30px; */
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    left: 15px;
+    padding: 10px 0;
+    min-height: 70px;
+    background: #ccc;
+}
+
+/**
+------------------------------------------------------------------------------------------------
+ */
+@media (max-width: 767px){
+    .fancybox-container.Upload_Modal{
+        width: 100%;
+    }
+    .fancybox-container.Upload_Modal .fancybox-slide{
+        padding: 3px;
+    }
+    h3.fileupload__heading, #html-Upload_Modal-index .panel-body .add-photos__caption{
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+    }
+    #html-Upload_Modal-index .add-photos__form svg{
+        /* display: none; */
+    }
+    #html-Upload_Modal-index .panel-body{
+        width: auto;
+    }
+    .row.fileupload-buttonbar{
+        min-height: auto;
+        padding: 5px 0;
+    }
+}
+@media (max-width: 767px){
+
+}
+@media (max-width: 425px){
+    .wrp__heading{
+        
+    }
+
+    .add-photos__form{
+
+    }
+    span.btn.btn-success.fileinput-button {
+        width: 49%;
+    }
+    .fileupload-buttonbar button.btn.btn-primary.start {
+        width: 49%;
+        float: right;
+    }
+    .fileupload-buttonbar button.btn.btn-warning.cancel {
+        width: 100%;
+    }
+}
+@media (max-width: 320px){
+    .add-photos__form{
+        padding: 10px;
+        }
+    #fileupload button[type="reset"]{
+        width: 100%;
+    }
+    span.btn.btn-success.fileinput-button {
+        width: 60%;
+    }
+
+    button.btn.btn-primary.start {
+        float: right;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
