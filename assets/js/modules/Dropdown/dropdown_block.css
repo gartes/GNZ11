@@ -1,0 +1,32 @@
+.suggestions-ul,
+.suggestions {
+    position: relative;
+    min-width: 297px;
+    max-height: 312px;
+    box-sizing: border-box;
+    padding: 2px 0 2px 8px;
+    margin-top: 5px;
+    border: 1px solid #a8cbeb;
+    background-color: #fff;
+    box-shadow: 0 0 13px 0 rgba(0,0,0,.4);
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 10;
+}
+.suggestions-ul-li , 
+.suggestion-i {
+    padding: 9px 9px 9px 0;
+    font-size: 13px;
+    line-height: 16px;
+    border-bottom: 1px solid #eaeaea;
+    color: #3e77aa;
+    word-break: break-word;
+    cursor: pointer;
+}
+
+.suggestions-ul-li.active ,
+.suggestions-ul-li.active *,
+.suggestion-i.active {
+    background: #fcfcee;
+    color: #ff7878;
+}

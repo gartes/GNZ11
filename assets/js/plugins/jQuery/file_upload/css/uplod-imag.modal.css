@@ -1,3 +1,11 @@
+button.btn.btn-success.exit {
+    position: fixed;
+    right: 60px;
+    top: 0.3rem;
+}
+button.btn.btn-success.exit span {
+    margin-left: 9px;
+}
 .wrp__heading {
     padding: 0 16px;
     /* margin: 10px 0px; */
@@ -107,7 +115,7 @@ form#fileupload+.add-photos__form {
         width: 49%;
     }
     .fileupload-buttonbar button.btn.btn-primary.start {
-        width: 49%;
+        width: 37%;
         float: right;
     }
     .fileupload-buttonbar button.btn.btn-warning.cancel {
@@ -115,6 +123,9 @@ form#fileupload+.add-photos__form {
     }
 }
 @media (max-width: 320px){
+    button.btn.btn-success.exit{
+        right: 48px;
+    }
     .add-photos__form{
         padding: 10px;
         }
@@ -122,12 +133,13 @@ form#fileupload+.add-photos__form {
         width: 100%;
     }
     span.btn.btn-success.fileinput-button {
-        width: 60%;
+        width: 54%;
     }
 
     button.btn.btn-primary.start {
         float: right;
     }
+
 }
 
 

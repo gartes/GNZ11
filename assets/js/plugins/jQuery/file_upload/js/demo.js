@@ -98,11 +98,15 @@ $(function () {
                 productId : window.parent.product_id ,
             } ;
         })
+        /**
+         * Окончание закрузки файла FILEUPLOAD
+         */
         .on('fileuploadstopped', function (e, data) {
             console.log('EVT-fileuploadstopped',data)
 
             addFormEmptyClass(true,'EVT-fileuploadstopped');
-
+            // Проверить если все файлы загружены подсказка для выхода!
+            checkTemplateUpload();
 
 
         })
@@ -149,9 +153,6 @@ $(function () {
             console.log('EVT-fileuploaddrop' , data)
         })
 
-
-
-
         .on('fileuploadprocessalways', function (e, data) {
             data.formData = {
                 productId : window.parent.product_id ,
@@ -159,23 +160,41 @@ $(function () {
             console.log('EVT-fileuploadprocessalways',data)
         });
 
+    /**
+     * Проверить если все файлы загружены подсказка для выхода!
+     */
+    function checkTemplateUpload() {
+        var $= jQuery ;
+        var $form = $('#fileupload');
+        var $fileLine = $('#fileupload').find('tr.template-upload');
+        var $wrpHeading = $('.wrp__heading');
+        var $btn = $('<button />',{
+            type : 'button' ,
+            class : 'btn btn-success exit' ,
+            html : ' <i class="glyphicon glyphicon-ok"></i><span> Готово!</span>',
+        }).on('click' , function () {
+            $(window.parent.document)
+                .find('.fancybox-container.Upload_Modal .fancybox-button--close')
+                .trigger('click');
+        });
+        if ( $fileLine.length ) return ;
+        $wrpHeading.append($btn);
 
-    function addFormDropClass(toggle, trigger) {
+        console.log('FN-checkTemplateUpload',  $fileLine );
 
-    }
+    };
 
+    function addFormDropClass(toggle, trigger) { }
+
+    /**
+     * Если в форме нет файлов - вывод описания для формы
+     * @param toggle
+     * @param trigger
+     */
     function addFormEmptyClass(toggle, trigger) {
         var $ = jQuery;
         var $form = $('#fileupload');
         var $fileLine = $('#fileupload').find('tr.template-upload , tr.template-download');
-
-        console.log('toggle', toggle)
-        console.log('trigger', trigger)
-        console.log('typeof toggle', typeof toggle !== 'undefined')
-        console.log('$form', $form)
-        console.log('$fileLine', $fileLine)
-
-
         if (typeof toggle !== 'undefined' && toggle) {
             $form.removeClass('empty');
             return;

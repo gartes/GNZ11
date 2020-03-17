@@ -80,7 +80,7 @@ this.GeolocationDataSet = function (event) {
     var locality = $( event.detail.locality ) ;
 }
 ```
-### DropdownInput
+### Dropdown
 Вызвать : 
 ```javascript
 options = {
@@ -92,6 +92,7 @@ wgnz11.getModul('DropdownInput' , options ).then(function (Dropdown) {
 }) ;
 ```
 События
+* onAfterDropDownBlur потеря фокуса на элементе DropInput
 * onBeforeSetTextToInput - Выбор ГОРОДА из списка
 * onBeforeSetTextToLink
 * onAfterDestroyDropLink

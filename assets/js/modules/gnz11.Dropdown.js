@@ -1,14 +1,202 @@
-var GNZ11DropdownInput = function ( elSelector , Settings ) {
-    var $ = jQuery ;
-
-
+var GNZ11Dropdown = function ( elSelector , Settings ) {
     var self = this;
-
     /**
      * Отладка --------
      * @type {boolean}
      */
     self.DEBAG = true ;
+    var $ = jQuery ;
+
+    this.param = {
+        get _classUl(){
+            return self._ulClassPrefix+'-ul' ;
+        },
+        get _classLi(){
+            return self._ulClassPrefix+'-ul-li' ;
+        }
+    }
+
+    /**
+     * Префикс класса для elements списка UL
+     * @type {string}
+     * @private
+     */
+    this._ulClassPrefix = 'suggestions';
+    /*----------------------------------------------------------------*/
+    /**
+     * Перегрузить Елемент DropDownLink
+     * Используется при пересоздании выподающего списка
+     * устанавливает приглашение выбрать из списка пр.: "Выберите подходящее отделение"
+     * создает событие: "onAfterDestroyDropLink"
+     * @constructor
+     */
+    this.DestroyDropLink = function () {
+        var evt ;
+        // [name="pickups_drop_link"]
+        var $link = $(this.opts.$el);
+        // Выберите подходящее отделение
+        var txt = this.opts.$placeholder ;
+        $link.text(txt);
+        evt = new CustomEvent('onAfterDestroyDrop', {  'detail': { elem: $link , name:this.name } });
+        document.dispatchEvent(evt);
+    };
+    /**
+     * Очистить  Dropdown List
+     */
+    this.emptyDropdownList = function () {
+        this._hideDropDownHiddenBlock();
+        var $ul = this.opts.$dropdownHiddenBlock.find('.'+this._ulClassPrefix+'-ul');
+        $ul.empty();
+    }
+    /**
+     * Установить элнменты Dropdown списка
+     * @param content
+     * @private
+     */
+    this._AppendToDropdown = function (content) {
+        this.DestroyDropLink();
+        this.emptyDropdownList();
+        var $ul = this.opts.$dropdownHiddenBlock.find( '.'+this._ulClassPrefix+'-ul');
+        var li ;
+        content.forEach(function( item , i , arr ){
+            var htmlLi = item[0]
+            var text = htmlLi.text
+            li = $('<li />' , {
+                class : self._ulClassPrefix+'-ul-li' ,
+                html : htmlLi ,
+                attr : {
+                    text : htmlLi.text
+                }
+            });
+            $ul.append( li ) ;
+        });
+
+    }
+    /*----------------------------------------------------------------*/
+    /**
+     * Показать раскрывающийся список
+     * @param event
+     * @private
+     */
+    this._showDropDownHiddenBlock = function (event) {
+        var self
+        event.preventDefault();
+        self = event.data.self ;
+        var $dropdownHiddenBlock = self.opts.$dropdownHiddenBlock;
+        $dropdownHiddenBlock.removeClass('hidden')
+        var el = $dropdownHiddenBlock[0] ;
+        // if ( el.style.display !== 'none'  ) return ;
+        el.style.display = '' ;
+    }
+    /**
+     * Скрыть раскрывающийся список
+     * @param event
+     * @private
+     */
+    this._hideDropDownHiddenBlock = function (event) {
+        var self , el ;
+
+        if ( typeof event === 'undefined'){
+            self = this ;
+        }else{
+            self = event.data.self ;
+        }
+        el = self.opts.$dropdownHiddenBlock[0] ;
+        //if ( el.style.display === 'none'  ) return ;
+        el.style.display = 'none' ;
+
+    }
+    /**
+     * Показать || скрыть раскрывающийся список
+     * @private
+     */
+    this._toggleDropDownHiddenBlock = function () {
+        this.opts.$dropdownHiddenBlock[0].style.display = this.opts.$dropdownHiddenBlock[0].style.display === 'none' ? '' : 'none';
+    }
+    /**
+     * Инициализация элементов списка - UL .
+     * Добавить класс для  UL
+     * Добавить класс для UL > LI
+     * Добавить обработчик события Hover нв элемент LI
+     * @private
+     */
+    this._initUlLiDropElement = function () {
+
+        var self = this ;
+        var $ul = this.opts.$dropdownHiddenBlock.find('ul')
+        var _classUl = self.param._classUl ;
+        var _classLi = self.param._classLi ;
+        var idElement = this.opts.idElement ;
+
+        if (idElement) $ul.attr('id' , idElement )
+
+        $ul.addClass( _classUl )
+            .on('mousedown.'+this.name, 'li' , {self:self} ,   this._liClick);
+
+        $ul.children().addClass(_classLi);
+
+        /**
+         * Hover на елементе выпадающего спискаHover на елементе выпадающего списка
+         */
+        this._initHoverSuggestion();
+    };
+    /**
+     * Клик на элементе списка
+     * @param event
+     * @private
+     */
+    this._liClick = function (event) {
+        var self ,  $li , _class , $target , text , evt , evtName;
+        self = event.data.self;
+        _class = self.param._classLi ;
+
+        $target = $(event.target);
+        $li = $target ;
+        if (!$target.hasClass(_class)){
+            $li = $target.closest('.'+_class )
+        }
+        var attrText = $li.attr('text');
+        text = (attrText.length ? attrText : $li.text());
+        if ($li.hasClass('another')) text = null ;
+
+        switch (self.name) {
+            case 'DropLink' :
+                evt = new CustomEvent('onBeforeSetTextToLink',{'detail':{$elem:$(this),name:self.name}});
+                document.dispatchEvent(evt);
+
+                self.opts.$el.text(text);
+
+                break ;
+            case 'DropInput':
+                evt = new CustomEvent('onBeforeSetTextToInput',{'detail':{$elem:$(this),name:self.name}});
+                document.dispatchEvent(evt);
+                self.opts.$el.val(text);
+
+                break ;
+        }
+        self._hideDropDownHiddenBlock()
+
+        /**
+         * Скрыть раскрывающийся список
+         */
+        //self._hideDropDownHiddenBlock()
+    }
+    /**
+     * Hover на елементе выпадающего списка
+     * @private
+     */
+    this._initHoverSuggestion = function () {
+        var $hiddenBlock = this.opts.$dropdownHiddenBlock ;
+        $hiddenBlock.on('hover.'+this.name , '.'+this._ulClassPrefix+'-ul > li:not(.not-found)' , function () {
+            $(this).parent().find('.active').removeClass('active')
+            $(this).addClass('active');
+        });
+    }
+
+
+
+
+
     /**
      * Ссылка активирующая Выпадающий список
      */
@@ -105,25 +293,25 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
 
         el.each(function ( i , a ) {
 
-           if ($(a).hasClass('dropdown-link'))
-           {
-               $dropdownInputElement = $(a) ;
-               $dropdownElementParent = $dropdownInputElement.parent();
-           }
-           else{
-               switch ($(a).tagName) {
-                   case 'A':
-                       $dropdownInputElement = $(a) ;
-                       break ;
-                   case 'INPUT':
-                       $dropdownInputElement = $(a) ;
-                       break ;
-                   default :
-                       $dropdownInputElement = $(a).find('input');
-               }
-               $dropdownElementParent = $dropdownInputElement.parent();
-           }
-           self.initSuggestions();
+            if ($(a).hasClass('dropdown-link'))
+            {
+                $dropdownInputElement = $(a) ;
+                $dropdownElementParent = $dropdownInputElement.parent();
+            }
+            else{
+                switch ($(a).tagName) {
+                    case 'A':
+                        $dropdownInputElement = $(a) ;
+                        break ;
+                    case 'INPUT':
+                        $dropdownInputElement = $(a) ;
+                        break ;
+                    default :
+                        $dropdownInputElement = $(a).find('input');
+                }
+                $dropdownElementParent = $dropdownInputElement.parent();
+            }
+            self.initSuggestions();
             if (self.opts.sign){
                 self.initSign() ;
             }
@@ -171,42 +359,22 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
          * Ссылки для выбора в выпадающем меню ( [name="pickups_drop_element"] )
          * @type {jQuery|[]} <a />
          */
-        var $hoveredElem =  '[name="pickups_drop_element"]'
-        self.opts.selectors.hovered_elem_name=self.opts.selectors.hovered_elem_name||$hoveredElem;
+        //var $hoveredElem =  '[name="pickups_drop_element"]'
+        //self.opts.selectors.hovered_elem_name=self.opts.selectors.hovered_elem_name||$hoveredElem;
 
 
         // Клик по ссылке с выподающем списком
-        $dropdownLink.on('click', self.showDropBlockWrap );
+        // $dropdownLink.on('click', self.showDropBlockWrap );
 
         // EVT - Установка обработчика клик по пункту выподающего меню
-        $(self.opts.selectors.drop_block_wrap).on('click' , self.onClickDropDawnElement );
+        // $(self.opts.selectors.drop_block_wrap).on('click' , self.onClickDropDawnElement );
 
 
-        /**
-         * Событие потеря фокуса для поля выбора города
-         * TODO - пременить через INIT - Элемента
-         */
-        $('#suggest_locality').on('focusout' , self.onFocusout );
+
         if(self.DEBAG) console.log( 'Drop Link element initialized'  );
 
     };
-    /**
-     * Перегрузить Елемент DropDownLink
-     * Используется при пересоздании выподающего списка
-     * устанавливает приглашение выбрать из списка пр.: "Выберите подходящее отделение"
-     * создает событие: "onAfterDestroyDropLink"
-     * @constructor
-     */
-    this.DestroyDropLink = function () {
-        var evt ;
-        // [name="pickups_drop_link"]
-        var $link = $(self.opts.selectors.link);
-        // Выберите подходящее отделение
-        var txt = self.opts.selectors.link_text ;
-        $link.text(txt);
-        evt = new CustomEvent('onAfterDestroyDropLink', {  'detail': { elem: $dropdownLink , } });
-        document.dispatchEvent(evt);
-    }
+
     /**
      * Установить обработчик Hover элементы спсиска LI>A
      * @constructor
@@ -216,22 +384,22 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
             .off('hover')
             .on('hover' , function (event) {
                 var elem = event.target;
-               // if ( self._hovered_element ) self._hovered_element = elem
-               self.toggleHoverClass( elem ) ;
+                // if ( self._hovered_element ) self._hovered_element = elem
+                // self.toggleHoverClass( elem ) ;
             });
     };
     /**
      * Переключение класса HOVER - на ссылке при наведении
      * @param elem - event.target || jQuery element
      */
-    this.toggleHoverClass = function (elem) {
+    /*this.toggleHoverClass = function (elem) {
         // название класса для выбранной ссылки
         var hoverClassName = self.opts.cssClasses.hover
         $(elem).closest('ul')
             .find('.'+hoverClassName)
             .removeClass(hoverClassName);
         $(elem).addClass(hoverClassName);
-    };
+    };*/
 
     /**
      * EVT - Обработка клик по пункту выподающего меню
@@ -275,20 +443,8 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
 
         if(self.DEBAG) console.log( 'this.onClickDropDawnElement : $dropdownLink' ,  $dropdownLink );
         if(self.DEBAG) console.log( 'this.onClickDropDawnElement : text => ' ,  text );
-        // self.hiddeDropBlockWrap(event); 
+        // self.hiddeDropBlockWrap(event);
 
-    }
-    /**
-     * Evt-потеря фокуса на элементе dropDown //
-     * @param event
-     */
-    this.onFocusout = function (event) {
-        var $ = jQuery
-        var $el = $(event.target);
-        var evt = new CustomEvent('onAfterDropDownBlur', {  'detail': event });
-        document.dispatchEvent(evt);
-        console.log('FN-onBlur',evt)
-        console.log('FN-onBlur',event.target)
     }
     /**
      * EVT - Handler оработчик события - ввод в поле поиска выпадающего списка
@@ -313,7 +469,7 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
             .each(function (i,element) {
                 // Поиск совпадений в строке подсказок
                 self._markupSuggestion( element , str )
-        });
+            });
         if(self.DEBAG) console.log( event.target  );
     }
     /**
@@ -383,6 +539,7 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
     };
     /**
      * Показать выпадающий список
+     * Todo заменено выше
      * @param event
      */
     this.showDropBlockWrap = function(event){
@@ -518,11 +675,6 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
         }
     }
 
-
-
-
-
-
     /**
      * Добавить оработчики событий для списка подсказок
      */
@@ -539,8 +691,8 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
 
             console.log($(this))
 
-            /*var event = new CustomEvent('onBeforeSetTextToInput', {'detail': {elem: $(this) ,} });
-            document.dispatchEvent(event);*/
+            var event = new CustomEvent('onBeforeSetTextToInput', {'detail': {elem: $(this) ,} });
+            document.dispatchEvent(event);
         });
     }
     /**
@@ -625,20 +777,20 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
         console.log(this)
 
         // EVT -
-        /*var cEvt = new CustomEvent(
+        var cEvt = new CustomEvent(
             'onBeforeSetTextToInput',
             {
                 'detail':{ elem: $my_a , }
             });
-        document.dispatchEvent(cEvt)*/
+        document.dispatchEvent(cEvt)
 
-        /*var _cdata = {
+        var _cdata = {
             'Елмент одиночной подсказки' : $dropdownElementSign ,
             'Список подказок у dropDawn елемента' : $dropdownElementSuggestions ,
             'dropDawn елемент' : $dropdownInputElement ,
             'CustomEvent': 'onBeforeSetTextToInput'
         };
-        if(self.DEBAG) console.log( 'EVT - клик по одоночной подсказки' , _cdata );*/
+        if(self.DEBAG) console.log( 'EVT - клик по одоночной подсказки' , _cdata );
 
     }
     /**
@@ -648,6 +800,203 @@ var GNZ11DropdownInput = function ( elSelector , Settings ) {
 
 
 }
+
+var DropLink = function (opt) {
+    this.name = 'DropLink' ;
+    var self = this ;
+    var $ = jQuery ;
+    this._defaults = {
+        idElement : null ,
+        selectors : {
+            /**
+             * селектор для <a  />
+             * к которому привязывается выпадающий список
+             */
+            link : null ,
+            /**
+             * Обертка DropInputElement
+             */
+            parentWrap : null ,
+            /**
+             * Скрытый блок для раскрывающегося списка
+             */
+            dropdownHiddenBlock : null ,
+        },
+        /**
+         * Placeholder для <input type="text" />
+         */
+        placeholder : null ,
+        validator : null ,
+
+        // ------------------------------
+        /**
+         * <input type="text" /> к которому привязывается выпадающий список
+         * @returns {JQuery<HTMLElement> | jQuery | HTMLElement}
+         */
+        get $el(){
+            var $el = $(this.selectors.link) ;
+            if (!$el[0]) {
+                alert('options.selectors.link Required option');
+                return ;
+            }
+            return $el;
+        },
+        get $parentWrap(){
+            var selector = this.selectors ;
+            var pWrap = $(selector.parentWrap);
+            if ( !pWrap[0] ) pWrap = $( selector.link ).parent() ;
+            return pWrap
+        },
+        get $dropdownHiddenBlock() {
+            var selector = this.selectors ;
+            if (selector.dropdownHiddenBlock) return $(this.$parentWrap).find(selector.dropdownHiddenBlock) ;
+            var r = this.$parentWrap.find('ul');
+            return  r ;
+        },
+        get $placeholder(){
+
+            return this.placeholder  ;
+        },
+    };
+    this.opts = $.extend( true , self._defaults , opt  );
+    this.Init = function () {
+        /**
+         * Инициализация элементов списка - UL .
+         */
+        this._initUlLiDropElement();
+
+        self.setPlaceholder( self.opts.$el ) ;
+        // Показать || скрыть раскрывающийся список
+        self.opts.$el.on('click' , {self:self} , self._showDropDownHiddenBlock );
+        if(self.DEBAG) console.log( '@DropLink-> @Init', self.opts  );
+        if(self.DEBAG) console.log( '@DropLink-> @Init $el', self.opts.$el  );
+        if(self.DEBAG) console.log( '@Init------------',   );
+    };
+    /**
+     * Установка Placeholder
+     * @param $el
+     */
+    this.setPlaceholder = function ($el) {
+        var placeholder = self.opts.placeholder ;
+        if (placeholder){
+            $el.attr('placeholder' , placeholder )
+        }
+    }
+
+    /**
+     * Установить элнменты Dropdown списка
+     * @param content
+     * @constructor
+     */
+    this.AppendToDropdown = function (content) {
+       this._AppendToDropdown(content);
+       if(self.DEBAG) console.log( '@AppendToDropdown self',  self );
+    }
+
+}
+
+
+var DropInput = function (opt) {
+    wgnz11.load.css(['/libraries/GNZ11/assets/js/modules/Dropdown/dropdown_block.css'])
+    var self = this ;
+    var $ = jQuery ;
+    this.name = 'DropInput' ;
+    this._defaults = {
+        selectors : {
+            /**
+             * селектор для <input type="text" />
+             * к которому привязывается выпадающий список
+             */
+            input : null ,
+            /**
+             * Обертка DropInputElement
+             */
+            parentWrap : null ,
+            /**
+             * Скрытый блок для раскрывающегося списка
+             */
+            dropdownHiddenBlock : null ,
+        },
+        /**
+         * Placeholder для <input type="text" />
+         */
+        placeholder : null ,
+        validator : null ,
+
+        // ------------------------------
+        /**
+         * <input type="text" /> к которому привязывается выпадающий список
+         * @returns {JQuery<HTMLElement> | jQuery | HTMLElement}
+         */
+        get $el(){
+            var $el = $(this.selectors.input) ;
+            if (!$el[0]) {
+                alert('options.selectors.input Required option');
+                return ;
+            }
+            return $el;
+        },
+        get $parentWrap(){
+            var selector = this.selectors ;
+            var pWrap = $(selector.parentWrap);
+            if ( !pWrap[0] ) pWrap = $( selector.input ).parent() ;
+            return pWrap
+        },
+        get $dropdownHiddenBlock() {
+            var selector = this.selectors ;
+            if (selector.dropdownHiddenBlock) return $(selector.dropdownHiddenBlock) ;
+            var r = this.$parentWrap.find('ul');
+            return  r ;
+        },
+
+    };
+
+    this.opts = $.extend( true , self._defaults , opt  );
+
+    this.Init = function () {
+        /**
+         * Инициализация элементов списка - UL .
+         */
+        this._initUlLiDropElement()
+
+        // Показать || скрыть раскрывающийся список
+        self.opts.$el.on('click' , {self:self} , self._showDropDownHiddenBlock );
+        self.opts.$el.on('focusout.'+this.name , {self:self} , self._hideDropDownHiddenBlock );
+
+        self.opts.$el.on('focusout' , self.onFocusout );
+        self.setPlaceholder( self.opts.$el ) ;
+    }
+
+    /**
+     * Evt-потеря фокуса на элементе DropInput //
+     * @param event
+     */
+    this.onFocusout = function (event) {
+
+        var $el = $(event.target);
+        var evt = new CustomEvent('onAfterDropDownBlur', {  'detail': event });
+        document.dispatchEvent(evt);
+        console.log('FN-onBlur',event.target)
+    }
+
+    /**
+     * Установка Placeholder
+     * @param $el
+     */
+    this.setPlaceholder = function ($el) {
+        var placeholder = self.opts.placeholder ;
+        if (placeholder){
+            $el.attr('placeholder' , placeholder )
+        }
+    }
+
+}
+
+DropLink.prototype = new GNZ11Dropdown();
+DropInput.prototype = new GNZ11Dropdown();
+
+
+
 
 
 

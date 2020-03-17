@@ -40,6 +40,9 @@
 		{
 			parent::__construct( $version , $encoding );
 			return $this;
+			
+			echo'<pre>';print_r( $shipping_id );echo'</pre>'.__FILE__.' '.__LINE__;
+			die(__FILE__ .' '. __LINE__ );
 		}
 		
 		/**

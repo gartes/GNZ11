@@ -185,7 +185,7 @@ var GNZ11 = function (options_setting) {
         console.warn('GNZ11.getAjax is deprecated!!! Use GNZ11.getModul("Ajax")');
         return this.getModul('Ajax');
     };
-    /*
+    /**
      * Загрузка css, img, js
      * @type {{css, img, js}}
      */
@@ -253,10 +253,14 @@ var GNZ11 = function (options_setting) {
         var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
         var Module = 'GNZ11'+moduleName ;
         var returnModule ;
-        // console.log( typeof Module );
+        console.log( typeof Module );
+        console.log( moduleName );
 
+
+        //
         // Если модуль еще не был загружен
         if ( typeof Module !== 'function' ) {
+
 
             return new Promise(function (resolve, reject) {
                 console.log(pathModules +'/gnz11.'+moduleName+'.js');
@@ -264,10 +268,12 @@ var GNZ11 = function (options_setting) {
                     $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
                 ]).then(function (r) {
                     console.log( typeof Module );
+                    console.log( returnModule )
                     var i = setInterval(function () {
                         if (typeof window[Module] === 'function') {
                             clearInterval(i);
                             returnModule = new window[Module](  );
+
                             if ( typeof setting === 'undefined' ) resolve(returnModule);
                             if ( typeof returnModule.setConfig !== 'undefined' ) returnModule.setConfig(setting) ;
                             resolve(returnModule);
@@ -691,6 +697,20 @@ var GNZ11 = function (options_setting) {
             // If conditions are satisfied show the target field(s), else hide
             (showfield) ? target.slideDown() : target.slideUp();
         },
+    }
+    /**
+     * Объединение объектов
+     * @param obj1
+     * @param obj2
+     * @returns {*}
+     */
+    this.extend = function ( obj1 , obj2 ) {
+        var keys = Object.keys(obj2);
+        for (var i = 0; i < keys.length; i += 1) {
+            var val = obj2[keys[i]];
+            obj1[keys[i]] = ['string', 'number', 'array', 'boolean'].indexOf(typeof val) === -1 ? extend(obj1[keys[i]] || {}, val) : val;
+        }
+        return obj1;
     }
     /**
      * получить строку между двумя символами

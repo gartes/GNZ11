@@ -2,6 +2,14 @@ var ShipmentNovaPoshta = function () {
     var self = this ;
     self.DEBAG = true ;
     /**
+     * Список выбора складов
+     * @type {null}
+     */
+    self.DropLinkWarehouses = null ;
+    /*----------------------------------------------------------------------------*/
+
+
+    /**
      * Хранение двнных Геолакации
      * @type {boolean}
      */
@@ -11,17 +19,16 @@ var ShipmentNovaPoshta = function () {
      * @type {*[]}
      */
     self.WarehousesInSelectCity = [];
-
     var $ = jQuery ;
     var selectorBlockPickupNovaPoshta = '[name="select_block_pickups"]';
     /**
      * _defaults
-     * @type {{pickups_data_wrap: string, pickups_data_element: JQuery<HTMLElement> | jQuery.fn.init | jQuery | HTMLElement, block_warehouse_descript: string, pickups_block: string, locale: null, selectors: {element_block: string}}}
+     * @type {{pickups_data_element: JQuery<HTMLElement> | jQuery.fn.init | jQuery | HTMLElement, block_warehouse_descript: string, locale: null, selectors: {element_block: string}}}
      * @private
      */
     this._defaults = {
         locale : null ,
-        pickups_block:'.pickups-select-dropdown-l',
+        // pickups_block:'.pickups-select-dropdown-l',
         pickups_data_element:$('<a />' , {
             href:'#' ,
             name:'pickups_drop_element' ,
@@ -51,7 +58,7 @@ var ShipmentNovaPoshta = function () {
      */
     var PickupsDropDown ;
     /**
-     * Список соххраняемых полей  для метода "самовывоз из Новой Почты"
+     * Список сохраняемых полей  для метода "самовывоз из Новой Почты"
      * @type {string[]}
      */
     this.fieldArr = [
@@ -84,7 +91,6 @@ var ShipmentNovaPoshta = function () {
         'categoryofwarehouse' ,
         'direct' ,
     ];
-
     this.Init = function(){
         wgnz11.load.css('/libraries/GNZ11/Api/Shipment/NovaPoshta/assets/css/nova_poshta.shipment.css')
         // Событие - Выбор ГОРОДА из списка
@@ -92,29 +98,48 @@ var ShipmentNovaPoshta = function () {
         // Событие - Выбор СКЛАДА из списка
         document.addEventListener('onBeforeSetTextToLink', self.showDescriptionWarehouse , false);
         document.addEventListener('onAfterSetTextToLink', self.AfterSetWarehouse , false);
+
         // Событие очистить поле с выбранным складом
-        document.addEventListener('onAfterDestroyDropLink', self.hiddeDescriptionWarehouse , false);
+        // document.addEventListener('onAfterDestroyDropLink', self.hiddeDescriptionWarehouse , false);
+
         // Событие - после получения данных локации
         document.addEventListener('onAfterGeolocationDataSet', self.onGeolocationDataSet , false);
+        /**
+         * Событие потеря фокуса для поля выбора города
+         */
+        // document.addEventListener('onAfterDropDownBlur', self.onAfterDropDownBlur ,false);
 
         // EVT - Выбор отделения на карте
         document.addEventListener('onAfterSelectWarehouses', self.onAfterSelectWarehouses , false);
-
-        
         // EVT Изменение способа доставки
         $('ul.check-method-subl').on('click' , '.check-method-subl-label' , self.EvtChangeRadio ) ;
 
-
-
-
+        // EVT- Потеря фокуса на элементе выбора города
+        $('body').on('blur' , '#suggest_locality' , self.onAfterDropDownBlur );
+        // EVT-нажатие кнопок ввода города
+        $('body').on('keyup' , '#suggest_locality' , self.onAfterDropDownKeyup );
+        /**
+         * Инициализ. Выбор складов!
+         */
         self.initPickupsDropDown();
 
         // Изменения на элементе самовывоз из Новой Почты
         // $('.check-method-subl-label[name="nova_pochta_pickups"]>input[type="radio"]').on('change' , self.EvtChangeRadio )
     };
-
     /**
-     * EVT-H onAfterSelectWarehouses - Собвтие после выбора склада доставки
+     * EVT-нажатие кнопок ввода города
+     */
+    this.onAfterDropDownKeyup = function () {
+        self.SelectCyty = false
+    }
+    /**
+     * EVT-потеря фокуса списка выбора города
+     * вызывается из модуля gnz11.DropdownInput.js
+     * @param event
+     */
+    this.onAfterDropDownBlur = function (event) { }
+    /**
+     * EVT-H onAfterSelectWarehouses - Событие после выбора склада доставки
      * @param event
      */
     this.onAfterSelectWarehouses = function (event) {
@@ -122,7 +147,6 @@ var ShipmentNovaPoshta = function () {
         var warehousesData = event.detail.warehousesData ;
         $('.pickups-select-dropdown-l').find('[data-number="'+warehousesData.Number+'"]').trigger('click')
     }
-
     /**
      * EVT-H - После того как выбран склад доставки
      * @param event -
@@ -154,7 +178,6 @@ var ShipmentNovaPoshta = function () {
          */
         methodsValid(event);
     }
-
     /**
      * EVT-H - Получена геолокация Получить склады для выбранного города
      * @param city str - название города
@@ -173,37 +196,45 @@ var ShipmentNovaPoshta = function () {
             AddressGeneral.getWarehouses(city , self.resultGetWarehouses)
         },2000)
     };
+    this.DropDownLink = {
+        element : '.dropdown-link' , // Элемент управления
+        suggestions : 'ul.pickups-select-dropdown-l' , // список выбора ( ul.suggestions )
+        //
+        selectors: {
+
+            // Селектор - Главная ссылка DropDownLink
+            link: '[name=pickups_drop_link]',
+            // Текст ссылки приглашение выбрать из списка
+            link_text: 'Выберите подходящее отделение',
+
+
+
+            suggestions : 'ul.pickups-select-dropdown-l' ,
+        },
+
+        not_found : 'Город не найден.<br>Проверьте написание или введите ближайший к вам!',
+    }
     /**
      * Инициализ. Выбор складов!
      */
     this.initPickupsDropDown = function () {
-        var options = {
-            element : '.dropdown-link' , // Элемент управления
-            suggestions : 'ul.pickups-select-dropdown-l' , // список выбора ( ul.suggestions )
-            //
-            selectors: {
-                block: '[name="pickups_select_block"]',
-                element_block: selectorBlockPickupNovaPoshta ,
-                drop_block: '[name=pickups_drop_block]',
-                // обвертка в которой искать блок со списком подсказок
-                drop_block_wrap: '[name=pickups_drop_block_wrap]',
+        /**
+         * Создать DropLink элемент для выбора складов
+         */
+        wgnz11.getModul('Dropdown'  ).then(function (Dropdown) {
+            var options = {
 
-                drop_element: '[name=pickups_drop_element]',
-                link: '[name=pickups_drop_link]',
-                link_text: 'Выберите подходящее отделение',
-                input: 'input[type=hidden]',
-                search_element: '[name=pickups_search_element]',
-                search_element_wrap: '[name=pickups_search_element_wrap]',
-                drop_element_not_found: '[name=pickups_drop_element_not_found]',
-                hovered_elem_name: 'pickups_drop_element'
-            },
+                selectors : {
+                    link : '#nova-poshta-warehouses' ,
+                    dropdownHiddenBlock : '[name="pickups_drop_block_wrap"]' ,
+                },
+                placeholder : 'Выберите подходящее отделение',
 
-            not_found : 'Город не найден.<br>Проверьте написание или введите ближайший к вам!',
-        };
-        wgnz11.getModul('DropdownInput' , options ).then(function (Dropdown) {
-            PickupsDropDown = Dropdown ;
-            PickupsDropDown.Inint() ;
-        }) ;
+            };
+            self.DropLinkWarehouses = new DropLink(options);
+            self.DropLinkWarehouses.Init();
+        });
+
     };
     /**
      * СОБЫТИЕ : Изменения на элементе "самовывоз из Новой Почты"
@@ -315,7 +346,6 @@ var ShipmentNovaPoshta = function () {
         Couriers.showAddressRecipient();
         if(self.DEBAG) console.log( Couriers );
     }
-
     /**
      * Инит карты Отделений
      * @constructor
@@ -361,40 +391,6 @@ var ShipmentNovaPoshta = function () {
         }) ;
 
 
-/*
-        wgnz11.load.css('/libraries/GNZ11/Api/Shipment/NovaPoshta/assets/css/nova_poshta_map.css')
-        wgnz11.load.js('/libraries/GNZ11/Api/Shipment/NovaPoshta/assets/js/nova_poshta_map.js').then(function () {
-
-            self.map.addHtml();
-            var opt = {
-                GoogleMapsApiKey : window.GoogleMapsApiKey , // Ключ MAP API
-                mapElement : 'npMapsCanv' ,         // Элемент в котором создать карту
-                myLocation : self.GeolocationData , // Текущее местоположение
-                // : self.WarehousesInSelectCity
-            }
-            // ApiShipmentNovaPoshtaMap = new Gnz11AppGoogleMap(opt);
-            // ApiShipmentNovaPoshtaMap.initMap();
-
-            // Клик ссылка на карту Google Maps
-            $('#delivery-nova_poshta-map-link').on('click' , function () {
-
-                // Устанавливаем маркеры для отделений Новой Почты
-                // self.map.addMarkers(ApiShipmentNovaPoshtaMap.map);
-
-                var html = $('#npw-map-wrapper')
-                wgnz11.__loadModul.Fancybox().then(function (a) {
-                    a.open( html ,{
-                        baseClass: "map_ShipmentNovaPoshta",
-                        touch : false ,
-                        afterShow   : function(instance, current)   {},
-                        afterClose  : function () {},
-                    });
-                })
-            })
-
-
-           // ApiShipmentNovaPoshtaMap.SetHtml();
-        },function (err) { console.error('Error nova_poshta_map.js') });*/
     };
     this.getHtmlListMap = function(marker){
        return  '<div class="">'
@@ -485,28 +481,33 @@ var ShipmentNovaPoshta = function () {
             $BlockWarehouseDescript.removeClass('hidden');
         }
     };
+
     /**
      * Событие - Выбор ГОРОДА из списка
-     * TODO Передать в службы доставки
+     * TODO Передать во все службы доставки
      * @param event
      */
     this.onBeforeSetTextToInput = function (event) {
-        var element = event.detail.elem ;
+        var element = event.detail.$elem ;
         var delivery_city = $(element).attr('delivery_city');
+        var city = (typeof delivery_city === 'undefined'?$(element).text().trim():delivery_city )
 
-        if(self.DEBAG) console.log( $(element).text() );
+        if(self.DEBAG) console.log( '@onBeforeSetTextToInput city', city  );
 
+        if (!city.length) if (self.DEBAG) {
+            console.warn('@onBeforeSetTextToInput CITY NOT FOUND', city.length);
+            return ;
+        }
 
-        console.log(delivery_city)
         AddressGeneral = new winApiShipmentNovaPoshta.AddressGeneral();
-        if (typeof delivery_city === 'undefined' ){
+        AddressGeneral.getWarehouses(city , self.resultGetWarehouses)
+
+        /*if (typeof delivery_city === 'undefined' ){
             var city = $(element).attr('text');
             AddressGeneral.getWarehouses(city , self.resultGetWarehouses)
         }else{
             AddressGeneral.getWarehouses( $(element).text() , self.resultGetWarehouses , delivery_city )
-        }
-
-        if(self.DEBAG) console.log( $(element).text() );
+        }*/
 
 
     };
@@ -516,13 +517,16 @@ var ShipmentNovaPoshta = function () {
      */
     this.resultGetWarehouses = function ( Warehouses ) {
         // Очистить список выбора складов перед загрузкой новых
-        PickupsDropDown.DestroyDropLink();
-        if(self.DEBAG) console.log( PickupsDropDown );
+        // self.DropLinkWarehouses.DestroyDropLink();
+        // self.DropLinkWarehouses.emptyDropdownList();
+        var arrElement =[];
 
         var Utilits = new winApiShipmentNovaPoshta.Utilits();
+        // Ul
         var $pickups_block =  $(self.opts.pickups_block) ;
+
         var $newElement ;
-        $pickups_block.empty();
+
         // Создание списка с выбором склада
         $.each(Warehouses.data , function (i, Warehouse ) {
 
@@ -542,11 +546,18 @@ var ShipmentNovaPoshta = function () {
             });
 
             $newElement.text(Warehouse.DescriptionRu) ;
-            $pickups_block.append($newElement)
-            $pickups_block.children('a').wrap($wrap);
+
+
+            arrElement.push($newElement) ;
+
+            // $pickups_block.append($newElement)
+            // $pickups_block.children('a').wrap($wrap);
+
+
             // Записать в глобальнеую переменную для запоминания
             self.WarehousesInSelectCity[i] = Warehouse ;
         })
+        self.DropLinkWarehouses.AppendToDropdown(arrElement );
         if(self.DEBAG) console.log( self.WarehousesInSelectCity );
     };
     /**
@@ -638,6 +649,9 @@ var ApiShipmentNovaPoshta = function () {
     var $ = jQuery ;
     var self = this ;
     self.DEBAG = true ;
+    self.setting = {
+        url : 'https://api.novaposhta.ua/v2.0/json/' ,
+    };
     this.ref_curent
     this.apiKey ;
     /**
@@ -662,12 +676,14 @@ var ApiShipmentNovaPoshta = function () {
                     MarketplacePartnerToken: "005056887b8d-856b-11e6-9121-25f3f736",
                 }
             };
-            if ( typeof Ref !== 'undefined') {
+            params.methodProperties.CityName = city
+
+           /* if ( typeof Ref !== 'undefined') {
                 params.methodProperties.CityRef = Ref
             }else{
                 params.methodProperties.CityName = city
-            }
-            self.send('POST', 'https://api.novaposhta.ua/v2.0/json/', JSON.stringify(params),
+            }*/
+            self.send('POST', self.setting.url, JSON.stringify(params),
                 true, function (response){
                 // if(self.DEBAG) console.log( response.data );
                 callBack(response) ;

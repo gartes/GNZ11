@@ -92,16 +92,16 @@ class UploadHandler
             // Чтение файлов по частям, чтобы избежать ограничений памяти при включенной загрузке download_via_php,
 	        // установите 0, чтобы отключить частичное чтение файлов:
             'readfile_chunk_size' => 10 * 1024 * 1024, // 10 MiB
-            // Defines which files can be displayed inline when downloaded:
+            // Определяет, какие файлы могут отображаться при загрузке:
             'inline_file_types' => '/\.(gif|jpe?g|png)$/i',
-            // Defines which files (based on their names) are accepted for upload.
-            // By default, only allows file uploads with image file extensions.
-            // Only change this setting after making sure that any allowed file
-            // types cannot be executed by the webserver in the files directory,
-            // e.g. PHP scripts, nor executed by the browser when downloaded,
-            // e.g. HTML files with embedded JavaScript code.
-            // Please also read the SECURITY.md document in this repository.
-            'accept_file_types' => '/\.(gif|jpe?g|png)$/i',
+	        // Определяет, какие файлы (на основе их имен) принимаются для загрузки.
+	        // По умолчанию разрешены только загрузки файлов с расширениями файлов изображений.
+	        // Измените этот параметр только после того, как убедитесь, что любой разрешенный файл
+	        // типы не могут быть выполнены веб-сервером в каталоге файлов,
+	        // например Скрипты PHP, а также не выполняются браузером при загрузке,
+	        // например HTML-файлы со встроенным кодом JavaScript.
+	        // Пожалуйста, прочтите также документ SECURITY.md в этом репозитории.
+            'accept_file_types' => '/\.(zip|gif|jpe?g|png)$/i',
             // Replaces dots in filenames with the given string.
             // Can be disabled by setting it to false or an empty string.
             // Note that this is a security feature for servers that support
