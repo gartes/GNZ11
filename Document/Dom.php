@@ -1,5 +1,7 @@
 <?php
 	
+	
+	
 	namespace GNZ11\Document;
 	
 	use DOMDocument;

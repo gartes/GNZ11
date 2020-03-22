@@ -248,7 +248,7 @@ var GNZ11 = function (options_setting) {
     this.getModul = function (moduleName , setting) {
 
         var $this = this ;
-        var siteUrl = Joomla.getOptions('siteUrl' , '' ) ;
+        var siteUrl = Joomla.getOptions('siteUrlsiteUrl' , '' ) ;
 
         var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
         var Module = 'GNZ11'+moduleName ;
@@ -425,12 +425,13 @@ var GNZ11 = function (options_setting) {
         },
         Fancybox : function () {
             var $this = new GNZ11() ;
+            var siteUrl = Joomla.getOptions('siteUrlsiteUrl' , '' ) ;
             if (  typeof $.fancyboxqqq === 'undefined' ) {
                 return new Promise(function (resolve, reject) {
                     Promise.all([
                         $this.load.css('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css'),
-                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/fancybox/thems/protect.css'),
-                        $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/fancybox/jquery.fancybox.js'),
+                        $this.load.css(siteUrl+'/libraries/GNZ11/assets/js/plugins/jQuery/fancybox/thems/protect.css'),
+                        $this.load.js(siteUrl+'/libraries/GNZ11/assets/js/plugins/jQuery/fancybox/jquery.fancybox.js'),
                     ]).then(function (a) {
                         var css = '.fancybox-content {' +
                             //   'min-width: 100%;' +

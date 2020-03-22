@@ -13,13 +13,70 @@
 
 $(function () {
     'use strict';
+    var $ = jQuery ;
+    this.DEBAG = false ;
+
+    this._default = {
+        domain : window.location.protocol +'//'+ window.location.host ,
+        urlHandler: '/index_upload.php',
+        window :{
+            head : 'Добавить фотографии',
+        },
+        upload:{
+            dir : "" ,
+            url : "" ,
+            accept_file_types: '/\.(zip|gif|jpe?g|png)$/i' ,
+            accept_file_types_arr : [
+                'zip' , 'gif' , 'jpe?g' , 'png' , 'xlsx'
+            ]
+        },
+        DEBAG : false ,
+        upload_dir : null ,
+        upload_url : null ,
+    } ;
+    var self = this ;
+    this.Init = function(){
+        var fileUploadCoreSetting = parent.Joomla.getOptions('fileUploadCoreSetting') ;
+        this._default = $.extend(true , this._default, fileUploadCoreSetting );
+
+        if (typeof parent.window.fileUploadCoreSetting === 'object' ){
+            this._default = $.extend(true , this._default,  parent.window.fileUploadCoreSetting );
+        }
+        if (this._default.urlHendler === '/index_upload.php' ){
+            console.warn('Deprecated:' , 'urlHendler : /index_upload.php Must be installed in'  )
+        }
+        this.DEBAG = this._default.DEBAG ;
+
+        this._htmlInit();
+    };
+    /**
+     * Натройка View Html!
+     * @private
+     */
+    this._htmlInit = function(){
+        if(self.DEBAG) console.log( '@_htmlInit this._default' , this._default  );
+        var file_types ='';
+        $('h3.fileupload__heading').text(this._default.window.head);
+        if ( typeof this._default.upload.accept_file_types_arr !== 'undefined' ){
+
+            $.each( this._default.upload.accept_file_types_arr , function (i,a) {
+                if (i>0) file_types += ',';
+                if (a === 'jpe?g') a = 'jpeg, .jpg' ;
+                file_types += ' .'+a
+            });
+            $('i.file_types').html(file_types)
+        }
+
+    };
+    this.Init();
+
 
     // Initialize the jQuery File Upload widget:
     $('#fileupload').fileupload({
         // Uncomment the following to send cross-domain cookies:
         // xhrFields: {withCredentials: true},
         // url: 'server/php/index.php'
-        url: '/index_upload.php',
+        url: this._default.urlHandler,
         // Enable image resizing, except for Android and Opera,
         // which actually support image resizing, but fail to
         // send Blob objects via XHR requests:
@@ -62,7 +119,9 @@ $(function () {
             data.formData = {
                 task : 'fileuploadsubmit' ,
                 productId : window.parent.product_id ,
+                _default : JSON.stringify( self._default ) ,
             } ;
+
             console.log('EVT-fileuploadsubmit',data)
         })
         .on('fileuploaddone', function (e, data) {
@@ -97,6 +156,10 @@ $(function () {
             data.formData = {
                 productId : window.parent.product_id ,
             } ;
+            data._default = self._default
+
+
+
         })
         /**
          * Окончание закрузки файла FILEUPLOAD
@@ -119,7 +182,7 @@ $(function () {
 
         })
         /**
-         * после удаление аф
+         * после удаление файла
          */
         .on('fileuploaddestroyed', function (e, data) {
             addFormEmptyClass( );
@@ -285,17 +348,18 @@ $(function () {
         }
     }
     else {
+        var $fileuploadElem =  $('#fileupload')
         // Load existing files:
-        $('#fileupload').addClass('fileupload-processing');
+        $fileuploadElem.addClass('fileupload-processing');
 
 
         $.ajax({
             // Uncomment the following to send cross-domain cookies:
             //xhrFields: {withCredentials: true},
-            url: $('#fileupload').fileupload('option', 'url'),
+            url: $fileuploadElem.fileupload('option', 'url'),
             data: objData ,
             dataType: 'json',
-            context: $('#fileupload')[0]
+            context: $fileuploadElem[0]
         })
             .always(function () {
                 $(this).removeClass('fileupload-processing');
@@ -309,3 +373,31 @@ $(function () {
             });
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

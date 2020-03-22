@@ -31,15 +31,13 @@
       integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
       crossorigin="anonymous"
     />
+    <!--libraries/GNZ11/assets/js/plugins/jQuery/file_upload/-->
     <link
       rel="stylesheet"
-      href="/libraries/GNZ11/assets/js/plugins/jQuery/file_upload/css/uplod-imag.modal.css"
+      href="css/uplod-imag.modal.css"
     />
     <!-- Generic page styles -->
     <style>
-
-
-
       #html-Upload_Modal-index,
       #html-Upload_Modal-index .container,
       #table-Upload_Modal,
@@ -91,31 +89,15 @@
           display: none;
         }
       }
-
-
-
-
-
-
-
-
-
     </style>
     <!-- blueimp Gallery styles -->
-    <link
-      rel="stylesheet"
-      href="https://blueimp.github.io/Gallery/css/blueimp-gallery.min.css"
-    />
+    <link rel="stylesheet" href="https://blueimp.github.io/Gallery/css/blueimp-gallery.min.css" />
     <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
     <link rel="stylesheet" href="css/jquery.fileupload.css" />
     <link rel="stylesheet" href="css/jquery.fileupload-ui.css" />
     <!-- CSS adjustments for browsers with JavaScript disabled -->
-    <noscript
-      ><link rel="stylesheet" href="css/jquery.fileupload-noscript.css"
-    /></noscript>
-    <noscript
-      ><link rel="stylesheet" href="css/jquery.fileupload-ui-noscript.css"
-    /></noscript>
+    <noscript><link rel="stylesheet" href="css/jquery.fileupload-noscript.css" /></noscript>
+    <noscript ><link rel="stylesheet" href="css/jquery.fileupload-ui-noscript.css" /></noscript>
     <script>
       /*document.addEventListener("DOMContentLoaded", function () {
         $('#fileupload').on('fileuploadsubmit', function (e, data) {
@@ -254,7 +236,7 @@
           </svg>
           <div class="panel-body">
             <p _ngcontent-c54="" class="add-photos__caption"> Перетащите файлы сюда или нажмите на кнопку <i>Добавить файлы</i>.
-              Добавляйте изображения в форматах <i>.jpg, .gif, .png</i>, размером файла до 5 МБ </p>
+              Добавляйте изображения в форматах <br><i class="file_types">.jpg, .gif, .png</i>,<br> размером файла до 5 МБ </p>
             <p class="add-photos__caption">После добавления файла нажмите <i>Загрузить</i></p>
             <!--<ul>
               <li>
@@ -439,5 +421,22 @@
     <!--[if (gte IE 8)&(lt IE 10)]>
       <script src="js/cors/jquery.xdr-transport.js"></script>
     <![endif]-->
+    <script>
+      window.expCore = function () {
+
+      }
+      /*this._default = {
+
+        domain : window.location.protocol +'//'+ window.location.host ,
+        urlLib : '/libraries/GNZ11/assets/js/gnz11.js' ,
+        elementBtn : "exsel_products-btn" ,
+
+      } ;
+
+      var siteUrl = parent.Joomla.getOptions('siteUrlsiteUrl')
+      var wgnz11 =  parent.wgnz11
+      wgnz11.load.css( siteUrl + '/libraries/GNZ11/assets/js/plugins/jQuery/file_upload/css/uplod-imag.modal.css');*/
+    </script>
+
   </body>
 </html>

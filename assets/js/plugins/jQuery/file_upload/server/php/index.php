@@ -11,6 +11,11 @@
  */
 
 error_reporting(E_ALL | E_STRICT);
-require('UploadHandler.php');
 
-$upload_handler = new UploadHandler();
+echo json_encode($_REQUEST) ;
+
+//require('UploadHandler.php');
+
+
+
+//$upload_handler = new UploadHandler();
