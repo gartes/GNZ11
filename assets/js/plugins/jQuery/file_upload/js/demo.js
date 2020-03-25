@@ -8,14 +8,20 @@
  * Licensed under the MIT license:
  * https://opensource.org/licenses/MIT
  */
-
+/**
+ *  Удаление файла
+ *      - fileuploaddestroy     - Перед отправлением запроса
+ *      - fileuploaddestroyed   - После получения ответа
+ *
+ *
+ *
+ */
 /* global $ */
 
 $(function () {
     'use strict';
     var $ = jQuery ;
     this.DEBAG = false ;
-
     this._default = {
         domain : window.location.protocol +'//'+ window.location.host ,
         urlHandler: '/index_upload.php',
@@ -25,9 +31,13 @@ $(function () {
         upload:{
             dir : "" ,
             url : "" ,
-            accept_file_types: '/\.(zip|gif|jpe?g|png)$/i' ,
+            accept_file_types: '/\.(zip|gif|jpe?g|png|xlsx)$/i' ,
             accept_file_types_arr : [
-                'zip' , 'gif' , 'jpe?g' , 'png' , 'xlsx'
+                'zip' ,
+                'gif' ,
+                'jpe?g' ,
+                'png' ,
+                'xlsx' ,
             ]
         },
         DEBAG : false ,
@@ -54,11 +64,9 @@ $(function () {
      * @private
      */
     this._htmlInit = function(){
-        if(self.DEBAG) console.log( '@_htmlInit this._default' , this._default  );
         var file_types ='';
         $('h3.fileupload__heading').text(this._default.window.head);
         if ( typeof this._default.upload.accept_file_types_arr !== 'undefined' ){
-
             $.each( this._default.upload.accept_file_types_arr , function (i,a) {
                 if (i>0) file_types += ',';
                 if (a === 'jpe?g') a = 'jpeg, .jpg' ;
@@ -93,6 +101,8 @@ $(function () {
         'redirect',
         window.location.href.replace(/\/[^/]*$/, '/cors/result.html?%s')
     );
+    
+
 
 
     $('#fileupload')
@@ -104,9 +114,6 @@ $(function () {
 
             console.log(data)
             addFormEmptyClass(true );
-
-
-
         })
         .on('fileuploadprocessstart', function (e, data){
             console.log('EVT-fileuploadprocessstart',data)
@@ -121,10 +128,10 @@ $(function () {
                 productId : window.parent.product_id ,
                 _default : JSON.stringify( self._default ) ,
             } ;
-
             console.log('EVT-fileuploadsubmit',data)
         })
         .on('fileuploaddone', function (e, data) {
+            if (typeof window.parent.fileuploaddone === "function"  ) window.parent.fileuploaddone( e, data );
             var resultName = data.result.files[0].name;
             var thumbnailUrl = data.result.files[0].thumbnailUrl;
             var $elementImg = $('<img />' , {
@@ -133,14 +140,10 @@ $(function () {
                 class : 'del_up_img' ,
             });
             $(window.parent.document).find('#gods').append($elementImg);
-
-
             console.log( data.result.files[0].name)
             console.log( data.result.files[0].thumbnailUrl)
             console.log('EVT-fileuploaddone',data)
         })
-
-
         /**
          *  - При загрузке окна формы
          *  - При отправке файла на сервер
@@ -157,26 +160,23 @@ $(function () {
                 productId : window.parent.product_id ,
             } ;
             data._default = self._default
-
-
-
         })
         /**
          * Окончание закрузки файла FILEUPLOAD
          */
         .on('fileuploadstopped', function (e, data) {
+            if (typeof window.parent.fileuploadstopped === "function"  ) window.parent.fileuploadstopped( e, data , $('#fileupload') );
             console.log('EVT-fileuploadstopped',data)
-
+            // Если в форме нет файлов - вывод описания для формы
             addFormEmptyClass(true,'EVT-fileuploadstopped');
             // Проверить если все файлы загружены подсказка для выхода!
-            checkTemplateUpload();
-
-
+            // checkTemplateUpload();
         })
         /**
          * Новый файл добавлен в форму
          */
         .on('fileuploadadded', function (e, data) {
+            // Если в форме нет файлов - вывод описания для формы
             addFormEmptyClass(true , 'EVT-fileuploadadded' );
             console.log('EVT-fileuploadadded',data)
 
@@ -185,12 +185,11 @@ $(function () {
          * после удаление файла
          */
         .on('fileuploaddestroyed', function (e, data) {
+            // Если в форме нет файлов - вывод описания для формы
             addFormEmptyClass( );
+            if (typeof window.parent.fileuploaddestroyed === "function"  ) window.parent.fileuploaddestroyed( e, data , $('#fileupload') );
             console.log('EVT-fileuploaddestroyed',data)
-
         })
-
-
         /**
          * Заход файла в поле дроп
          */
@@ -215,7 +214,6 @@ $(function () {
             } ;
             console.log('EVT-fileuploaddrop' , data)
         })
-
         .on('fileuploadprocessalways', function (e, data) {
             data.formData = {
                 productId : window.parent.product_id ,
@@ -245,10 +243,13 @@ $(function () {
 
         console.log('FN-checkTemplateUpload',  $fileLine );
 
-    };
-
+    }
+    /**
+     *
+     * @param toggle
+     * @param trigger
+     */
     function addFormDropClass(toggle, trigger) { }
-
     /**
      * Если в форме нет файлов - вывод описания для формы
      * @param toggle
@@ -262,10 +263,7 @@ $(function () {
             $form.removeClass('empty');
             return;
         }
-
-
         console.log('FN-addFormEmptyClass', $('#fileupload').find('tr.template-upload'));
-
 
         if (!$fileLine.length) {
             $form.addClass('empty')
@@ -290,17 +288,10 @@ $(function () {
         var fileName = data.context.find('a[download]').attr('download');
         data.formData = { productId : window.parent.product_id ,  } ;
         $(window.parent.document).find('[name="'+fileName+'"]').remove();
-        console.log('EVT-fileuploaddestroy',data)
-        /*$.post(
-            '/removePictureFromDatabase.php',
-            {
-                fileName: fileName
-            },
-            function(data, textStatus) {
-                // Process result
-            },
-            'json'
-        );*/
+        console.log('EVT-fileuploaddestroy - data ' , data)
+        console.log('EVT-fileuploaddestroy - e ' , e)
+
+        data.task = 'delete' ;
 
     });
 
@@ -319,10 +310,34 @@ $(function () {
     }
     /*--------------------------------------------------------*/
 
+    var $fileuploadElem =  $('#fileupload')
+    // Load existing files:
+    $fileuploadElem.addClass('fileupload-processing');
+    $.ajax({
+        // Uncomment the following to send cross-domain cookies:
+        //xhrFields: {withCredentials: true},
+        url: $fileuploadElem.fileupload('option', 'url'),
+        data: objData ,
+        dataType: 'json',
+        context: $fileuploadElem[0]
+    })
+        .always(function () {
+            $(this).removeClass('fileupload-processing');
+        })
+        .done(function (result) {
+            $(this)
+                .fileupload('option', 'done')
+                // eslint-disable-next-line new-cap
+                .call(this, $.Event('done'), {result: result});
+        })
+        .fail(function () {
+            $('<div class="alert alert-danger"/>')
+                .text('Upload server currently unavailable - ' + new Date())
+                .appendTo('#fileupload');
+        });
 
 
-
-    if (window.location.hostname === 'blueimp.github.io') {
+    /*if (window.location.hostname === 'blueimp.github.io') {
         // Demo settings:
         $('#fileupload').fileupload('option', {
             url: '//jquery-file-upload.appspot.com/',
@@ -348,34 +363,47 @@ $(function () {
         }
     }
     else {
-        var $fileuploadElem =  $('#fileupload')
-        // Load existing files:
-        $fileuploadElem.addClass('fileupload-processing');
 
-
-        $.ajax({
-            // Uncomment the following to send cross-domain cookies:
-            //xhrFields: {withCredentials: true},
-            url: $fileuploadElem.fileupload('option', 'url'),
-            data: objData ,
-            dataType: 'json',
-            context: $fileuploadElem[0]
-        })
-            .always(function () {
-                $(this).removeClass('fileupload-processing');
-            })
-            .done(function (result) {
-
-                $(this)
-                    .fileupload('option', 'done')
-                    // eslint-disable-next-line new-cap
-                    .call(this, $.Event('done'), {result: result});
-            });
-    }
+    }*/
 });
 
 
 
+
+function tttExl() {
+
+
+    var url = "https://pro-spec.ru/test/price/pricetin%20(13).xlsx";
+    var oReq = new XMLHttpRequest();
+    oReq.open("GET", url, true);
+    oReq.responseType = "arraybuffer";
+
+    oReq.onload = function(e) {
+        var arraybuffer = oReq.response;
+
+        /* convert data to binary string */
+        var data = new Uint8Array(arraybuffer);
+        var arr = new Array();
+        for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+        var bstr = arr.join("");
+
+        /* Call XLSX */
+        var workbook = XLSX.read(bstr, {
+            type: "binary"
+        });
+
+
+
+        /* DO SOMETHING WITH workbook HERE */
+        var first_sheet_name = workbook.SheetNames[0];
+        /* Get worksheet */
+        var worksheet = workbook.Sheets[first_sheet_name];
+        console.log(XLSX.utils.sheet_to_json(worksheet, {
+            raw: true
+        }));
+    };
+    oReq.send();
+}
 
 
 
