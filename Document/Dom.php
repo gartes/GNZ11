@@ -4,6 +4,9 @@
 	
 	namespace GNZ11\Document;
 	
+	
+	
+	use Akeeba\Engine\Driver\Joomla;
 	use DOMDocument;
 	use Exception;
 	use stdClass;
@@ -19,6 +22,7 @@
 	 */
 	class Dom extends DOMDocument
 	{
+		public static $CMS = 'Joomla' ;
 		/**
 		 * @since 3.9
 		 * @var array Список атрибутов для получения || установки
@@ -42,9 +46,6 @@
 		{
 			parent::__construct( $version , $encoding );
 			return $this;
-			
-			echo'<pre>';print_r( $shipping_id );echo'</pre>'.__FILE__.' '.__LINE__;
-			die(__FILE__ .' '. __LINE__ );
 		}
 		
 		/**
@@ -180,31 +181,19 @@
 		 */
 		public static function writeDownTag ( $tag , $value , $attr=[] ){
 			
-			$app = \JFactory::getApplication() ;
-			$body                = $app->getBody();
+			
+			$body = \GNZ11\Document\Dom\Joomla::getBody();
 			$dom = new self();
 			$dom->loadHTML( $body );
-			
-			
-			
 			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
-
-
 			# add class attribute
 			self::fetchAttr($dom ,$newTag , $attr );
-
-
-
 			$xpath = new DomXPath($dom);
 			$parent = $xpath->query( '//body');
 
-
-
 			$parent->item(0)->appendChild( $newTag );
 			$body =   $dom->saveHTML() ;
-			
 			$app->setBody($body);
-			
 		}#END FN
 		
 		/**
@@ -269,8 +258,6 @@
 			$body =   $dom->saveHTML() ;
 			$app->setBody($body);
 		}#END FN
-		
-		
 		
 		/**
 		 * Установка атрибутов узла
@@ -379,7 +366,6 @@
 			$element->appendChild($attr);
 		}#END FN
 		
-		
 		public static function DOMinnerHTML ( $element )
 		{
 			$innerHTML = "";
@@ -393,6 +379,7 @@
 			
 			return $innerHTML;
 		}
+		
 		
 		
 		

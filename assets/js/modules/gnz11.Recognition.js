@@ -13,7 +13,7 @@ GNZ11Recognition = function () {
             },
         ] ,
         /**
-         * Распознавание речи -  голосовой набор текста
+         * Распознавание речи -  голосовой набор текста (ввод текста голосом)
          */
         addSpeechRecognition : [
             {
@@ -26,6 +26,34 @@ GNZ11Recognition = function () {
          * События Распознавание речи
          */
         SpeechRecognition : {
+            lang : 'ru' ,
+            /**
+             * FALSE - Когда пользователь перестает говорить, распознавание речи заканчивается
+             * Этот режим отлично подходит для простого текста, такого как короткие поля ввода .
+             *
+             * TRUE - распознавание продолжается, даже если пользователь делает паузу во время разговора.
+             */
+            continuous : false ,
+            /**
+             *  FALSE - Значение по умолчанию для interimResults false - это означает, что единственные результаты,
+             *  возвращаемые распознавателем, являются окончательными и не изменятся.
+             *
+             *  TRUE - получаем ранние промежуточные результаты, которые могут измениться
+             */
+            interimResults :false ,
+            /**
+             * Триггер начала наспознавания речи
+             * @param $target
+             * @param $text
+             */
+            onStart : function ( $target , $text ) {},
+            /**
+             * Триггер окончания наспознавания речи
+             * @param $target
+             * @param $text
+             */
+            onend : function ( $target , $text ) {},
+
             /**
              * Перед установкой текста в Target Element
              * @param $target
@@ -84,10 +112,6 @@ GNZ11Recognition = function () {
 
                 return ;
             }
-
-
-
-
             $btnTmpl = $(Config.btn.speechUtterance);
             $btnTmpl.addClass('BTNSpeech').data('parent' , a.parent ).data('msg_element' , a.msg_element ) ;
 
@@ -170,59 +194,131 @@ GNZ11Recognition = function () {
     };
     /**
      * Старт записи
-     * @param target
+     * @param event
      */
     this.startRecognizer = function (event){
 
         var target = $(event.data.target)
         var self =  event.data.self
 
-        console.log( target )
 
-        function capitalize (s){
-            console.log( typeof s );
-            if (typeof s !== 'string') return ''
-            return s.charAt(0).toUpperCase() + s.slice(1)
+        /**
+         * Делает первую букву UpperCase
+         * @param s Строка
+         * @returns {string}
+         * @private
+         */
+        function _capitalize (s){
+            var first_char = /\S/;
+            return s.replace(first_char, function(m) { return m.toUpperCase(); });
         }
 
-        /*function getDataText  (target){
-
-        }*/
-        function setDataText( t , txt ) {
-            self.Config.SpeechRecognition.beforeInsert(t , txt );
-
-            if ( t.prop("tagName") === 'DIV'){
-                t.text(txt);
+        /**
+         * Установка распознаного текста в элемент Target
+         * @param target - элемент Target
+         * @param txt - распознаный текста
+         */
+        function setDataText( target , txt ) {
+            self.Config.SpeechRecognition.beforeInsert(target , txt );
+            // Если вставка в <div />
+            if ( target.prop("tagName") === 'DIV'){
+                target.text(txt);
                 return ;
             }
-            t.val( txt )
+            target.val( txt )
         }
 
         if ('webkitSpeechRecognition' in window) {
-            var recognition = new webkitSpeechRecognition();
-            recognition.lang = 'ru';
+            /**
+             * Индикатор - идет распознавание речи
+             */
+            var recognizing ;
+            var final_transcript = '';
 
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = self.Config.SpeechRecognition.lang ;
+
+            recognition.interimResults = self.Config.SpeechRecognition.interimResults  ;
+
+            recognition.onstart = function() {
+                recognizing = true;
+                showInfo('info_speak_now');
+                self.Config.SpeechRecognition.onStart(target);
+
+            };
             recognition.onresult = function (event) {
-                var result = event.results[event.resultIndex];
+                var interim_transcript = '';
+                if (typeof(event.results) == 'undefined') {
+                    recognition.onend = null;
+                    recognition.stop();
+                    upgrade();
+                    return;
+                }
+                for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        final_transcript += event.results[i][0].transcript;
+                    } else {
+                        interim_transcript += event.results[i][0].transcript;
+
+                    }
+                }
+                self.setDataText( target ,  interim_transcript );
+                final_transcript = _capitalize(final_transcript);
+
+                return;
+
+
+
+                /*var result = event.results[event.resultIndex];
                 // Получить содержимое целевого елемента
                 var textBefore = self.getDataText(target) ;
                 var addText ;
 
                 addText = result[0].transcript ;
-                if ( textBefore.match(/\.$/ig) || textBefore === ''  ) addText = capitalize ( result[0].transcript );
-                if (addText !== '.' && textBefore !== '' ) addText = ' ' + addText;
+                if ( textBefore.match(/\.$/ig) || textBefore === ''  ) addText = _capitalize ( result[0].transcript );
+
+
+
+                //  if (addText !== '.' && textBefore !== '' ) addText = ' ' + addText;
 
                 var text = textBefore + addText  ;
-                // Установить в целевой елемент текст
-                self.setDataText( target ,  text );
 
+                // Установка распознаного текста в элемент Target
 
-                console.log(result[0].transcript);
+                console.log(result[0].transcript);*/
             };
+            recognition.onerror = function(event) {};
+            /**
+             * Событие Распознавание завершилось
+             */
             recognition.onend = function() {
+
+                recognizing = false;
+                showInfo('');
+                $(target).attr('value' , final_transcript );
+
+                self.setDataText( target ,  final_transcript );
+                self.Config.SpeechRecognition.onend(target);
+
+
                 console.log('Распознавание завершилось.');
             };
+
             recognition.start();
+
+
+            function showInfo(s) {
+                if (s) {
+                    for (var child = info.firstChild; child; child = child.nextSibling) {
+                        if (child.style) {
+                            child.style.display = child.id == s ? 'inline-block' : 'none';
+                        }
+                    }
+                    info.style.visibility = 'visible';
+                } else {
+                    info.style.visibility = 'hidden';
+                }
+            }
         } else alert('webkitSpeechRecognition не поддерживается :(')
     };
     /**
@@ -336,6 +432,27 @@ GNZ11Recognition = function () {
             console.log(d)
             console.log(resultText)
         }) ;
+    }
+    /**
+     * Загрузка темы (html)
+     * @param theme
+     * @returns {Promise<unknown>}
+     * Поддержка тем :
+     *  Для кнопок :
+     *      microphone - Button с изображением микрофона
+     *
+     */
+    this.loadTheme = function (theme) {
+        var siteUrl = Joomla.getOptions('siteUrlsiteUrl' , '' ) ;
+        var pathModules =  siteUrl + wgnz11.Options.gnzlib_path_modules;
+        var url = pathModules + '/Recognition/themes/'+theme+'.html'
+        return new Promise(function ( resolve, reject ) {
+             $.ajax( url , {
+                success : function(html){
+                    resolve(html)
+                }
+            });
+        })
     }
 
 };
