@@ -22,14 +22,6 @@
         background: #fff;
         cursor: pointer;
     }
-    @media (min-width: 768px)
-    {
-        .search-form__microphone.speechRecognition {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-        }
-    }
     .search-form__microphone:before {
         position: absolute;
         left: 0;
@@ -50,11 +42,24 @@
     #info {
         position: absolute;
         width: 100%;
+        display: none;
     }
     #info p{
         text-align: center;
         margin: 0;
         width: 100%;
+    }
+    @media (min-width: 768px)
+    {
+        .search-form__microphone.speechRecognition {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+        #info{
+            display: block;
+        }
+
     }
 </style>
 <svg style="display: none;">
