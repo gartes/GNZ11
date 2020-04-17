@@ -41,12 +41,8 @@
 			{
 				$params = new \Joomla\Registry\Registry;
 			}#END IF
-			
 			$this->paramsComponent = $params ;
 			$this->setConfig_GNZ11 ();
-			
-			
-			
 			return $this;
 		}#END FN
 		
@@ -138,10 +134,9 @@
 			$sriptLoader = $this->_getLoaderCoreJs( $gnzlib_path_file_corejs );
 			
 			$sriptLoader .="
-			
-							Joomla = window.Joomla || {};
-							Jpro = window.Jpro || {};
-						    (function (Joomla , Jpro ) {
+				Joomla = window.Joomla || {};
+				Jpro = window.Jpro || {};
+				(function (Joomla , Jpro ) {
 						    
 						        Joomla.optionsStorage = Joomla.optionsStorage || null;
 						        Joomla.loadOptions = function( options ) {
