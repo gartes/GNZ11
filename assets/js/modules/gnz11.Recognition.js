@@ -464,7 +464,18 @@ GNZ11Recognition = function () {
 
 
 
-
+///////////////////////////////////////////////
+/**
+ * метод для поиска промежутка
+ * в случае если x в промежутке - return true else false
+ * @param x
+ * @param min
+ * @param max
+ * @returns {boolean|boolean}
+ */
+function between(x, min, max) {
+    return x >= min && x <= max;
+}
 
 
 
