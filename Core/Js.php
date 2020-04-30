@@ -238,7 +238,8 @@
 			$sriptLoader .= "});";
 			
 			$sriptLoader .= "window.CoreGnz11 = {" ;
-				$sriptLoader .= " 'Status' : 'loading' " ;
+				$sriptLoader .= " 'Status' : 'loading'," ;
+				$sriptLoader .= " 'SiteUrl' : '".\GNZ11\Core\Uri\Uri::root() ."'," ;
 			$sriptLoader .=  "};";
 			
 			return $sriptLoader;
