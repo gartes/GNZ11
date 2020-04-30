@@ -42,6 +42,9 @@
 				$params = new \Joomla\Registry\Registry;
 			}#END IF
 			$this->paramsComponent = $params ;
+			
+			if( $this->CoreJs_isLoaded ) return  null ;  #END IF
+			
 			$this->setConfig_GNZ11 ();
 			return $this;
 		}#END FN
@@ -59,7 +62,6 @@
 			{
 				self::$instance = new self( $params  );
 			}
-			
 			return self::$instance;
 		}#END FN
 		
@@ -131,7 +133,7 @@
 			}#END IF
 			$sriptLoader = null ;
 			
-			$sriptLoader = $this->_getLoaderCoreJs( $gnzlib_path_file_corejs );
+			$sriptLoader .= $this->_getLoaderCoreJs( $gnzlib_path_file_corejs );
 			
 			$sriptLoader .="
 				Joomla = window.Joomla || {};
@@ -199,8 +201,6 @@
 						            }
 						            
 						        }
-						        
-						        
 						    })(Joomla , Jpro);";
 			
 			
@@ -209,6 +209,8 @@
 			
 			return true ;
 		}
+		
+		private $CoreJs_isLoaded = false ;
 		
 		/**
 		 * @param $gnzlib_path_file_corejs
@@ -219,6 +221,8 @@
 		 */
 		private function _getLoaderCoreJs ( $gnzlib_path_file_corejs )
 		{
+			
+			
 			$sriptLoader = "document.addEventListener('DOMContentLoaded', function () {";
 			$sriptLoader .= "var n = document.createElement('script');";
 			$sriptLoader .= "n.setAttribute('type', 'text/javascript');";
@@ -232,6 +236,10 @@
                             };";
 			$sriptLoader .= "document.body.appendChild(n);";
 			$sriptLoader .= "});";
+			
+			$sriptLoader .= "window.CoreGnz11 = {" ;
+				$sriptLoader .= " 'Status' : 'loading' " ;
+			$sriptLoader .=  "};";
 			
 			return $sriptLoader;
 		}
