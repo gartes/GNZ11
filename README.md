@@ -1,5 +1,22 @@
 # GNZ11 Библиотека 
 
+## \GNZ11\Document\Text
+1. PHP Транслитерация 
+```php
+$string = 'Абвгдеж';
+\GNZ11\Document\Text::rus2translite($string);
+```
+2. PHP Транслитерация для имользования в Url
+```php
+$string = 'Абвгдеж';
+\GNZ11\Document\Text::str2url($string) ; 
+```
+3. PHP Склонение числительных
+```php
+$titles = array(' %d товар', ' %d товара', ' %d товаров');
+\GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
+```
+
 ## События ядра 
 **GNZ11Loaded** - после инициализации библиотеки  
 ```javascript
