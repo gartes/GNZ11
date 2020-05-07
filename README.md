@@ -108,11 +108,14 @@ wgnz11.__loadModul.Tippy().then(function(a){
 
 ### Storage_class
 
-![Alt text](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
-<img src="./assets/img/gist_github.svg">
-
 простой класс хранения для JavaScript 
-https://gist.github.com/gartes/30819b797838ce277ca6519cee730703
+![Alt text](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
+<img src="http://178.209.70.115/images/logos/gist_github_large.png">
+*****
+![Before, tab space example](http://178.209.70.115/images/logos/gist_github_large.png)
+
+***
+[Github Gist](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
 ```javascript
 wgnz11.getModul('Storage_class').then(function () {
     Storage_class.set( 'object' , { a: 1 , b: 2 } );
