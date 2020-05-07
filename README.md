@@ -1,5 +1,9 @@
 # GNZ11 Библиотека 
 
+[Storage Class](#storage-class-)
+
+
+
 ## \GNZ11\Document\Text
 1. PHP Транслитерация 
 ```php
