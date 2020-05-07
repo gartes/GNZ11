@@ -110,7 +110,7 @@ wgnz11.__loadModul.Tippy().then(function(a){
 
 простой класс хранения для JavaScript 
 
-[<img src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
+[<img width="100" src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
 
 *****
  
