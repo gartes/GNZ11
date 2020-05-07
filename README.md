@@ -65,7 +65,13 @@ var Settings = {
 ```
 ***
 ## Модули
+
+
+
+
+
 ### Fancybox
+fancybox, вероятно, самый популярный в мире скрипт лайтбокса.
 ```javascript
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (a) {
@@ -86,8 +92,32 @@ wgnz11.__loadModul.Fancybox().then(function (a) {
     momentum: true // Продолжайте движение после отпускания мыши / касания при панорамировании
   }
 ```
+
+### Tippy.js
+полное решение для всплывающих подсказок, всплывающих окон, 
+выпадающих меню и меню для веб-сайтов, созданное на основе Popper
+https://atomiks.github.io/tippyjs/
+```javascript
+wgnz11.__loadModul.Tippy().then(function(a){
+    tippy( '.selector' , {
+        content: 'Tooltip',
+    });
+})
+``` 
 ***
- 
+
+### Storage_class
+
+![Alt text](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
+<img src="./assets/img/gist_github.svg">
+
+простой класс хранения для JavaScript 
+https://gist.github.com/gartes/30819b797838ce277ca6519cee730703
+```javascript
+wgnz11.getModul('Storage_class').then(function () {
+    Storage_class.set( 'object' , { a: 1 , b: 2 } );
+})
+```
 ### Geolocation
 События : 
 * onAfterGeolocationDataSet - После получения данных геолокации

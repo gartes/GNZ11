@@ -94,6 +94,9 @@
 			
 			$gnzlib_debug = $this->paramsComponent->get( 'gnzlib_debug' , self::$GNZ11['gnzlib_debug'] );
 			$gnzlib_path_file_corejs     = $this->paramsComponent->get( 'gnzlib_path_file_corejs' , self::$GNZ11[ 'gnzlib_path_file_corejs' ] );
+			
+			
+			
 			$gnzlib_path_file_corejs_min = $this->paramsComponent->get( 'gnzlib_path_file_corejs_min' , self::$GNZ11[ 'gnzlib_path_file_corejs_min' ] );
 			$gnzlib_path_modules         = $this->paramsComponent->get( 'gnzlib_path_modules' , self::$GNZ11[ 'gnzlib_path_modules' ] );
 			$gnzlib_path_plugins         = $this->paramsComponent->get( 'gnzlib_path_plugins' , self::$GNZ11[ 'gnzlib_path_plugins' ] );
@@ -221,12 +224,18 @@
 		 */
 		private function _getLoaderCoreJs ( $gnzlib_path_file_corejs )
 		{
+			$domain = null ;
+			if( class_exists('\Joomla\CMS\Uri\Uri') )
+			{
+				$domain = \Joomla\CMS\Uri\Uri::root(true) ;
+			}#END IF
+			
 			
 			
 			$sriptLoader = "document.addEventListener('DOMContentLoaded', function () {";
 			$sriptLoader .= "var n = document.createElement('script');";
 			$sriptLoader .= "n.setAttribute('type', 'text/javascript');";
-			$sriptLoader .= "n.setAttribute('src', '" . $gnzlib_path_file_corejs . "');";
+			$sriptLoader .= "n.setAttribute('src', '" . $domain . $gnzlib_path_file_corejs . "');";
 			$sriptLoader .= "n.setAttribute('async', true);";
 			$sriptLoader .= "n.onerror = function() { n.onerror = null; };";
 			$sriptLoader .= "n.onload = n.onreadystatechange = function() {

@@ -350,16 +350,27 @@ var GNZ11 = function (options_setting) {
         //
         // Если модуль еще не был загружен
         if ( typeof Module !== 'function' ) {
-
-
             return new Promise(function (resolve, reject) {
                 console.log(pathModules +'/gnz11.'+moduleName+'.js');
                 Promise.all([
                     $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
                 ]).then(function (r) {
+
+                    /**
+                     * Проверка на класс
+                     * @type {void|*|RegExpMatchArray|Promise<Response | undefined>}
+                     */
+                    var testClass = moduleName.match(/_class/);
+                    console.log(testClass)
+                    if ( testClass && testClass[0] ){
+                        resolve(moduleName);
+                        return ;
+                    }
+
                     console.log( typeof Module );
                     console.log( returnModule )
                     var i = setInterval(function () {
+
                         if (typeof window[Module] === 'function') {
                             clearInterval(i);
                             returnModule = new window[Module](  );
@@ -423,6 +434,10 @@ var GNZ11 = function (options_setting) {
      * gnz11.__loadModul.Noty().then(function(a){})
      * gnz11.__loadModul.Fancybox().then(function(a){})
      * gnz11.__loadModul.Bootstrap().then(function(a){})
+     *
+     * Tippy.js - это полное решение для всплывающих подсказок, всплывающих окон,
+     * выпадающих меню и меню для веб-сайтов, созданное на основе Popper .
+     * gnz11.__loadModul.Tippy().then(function(a){})
      *
      *
      * @type {{Noty: gn_z11.__loadModul.Noty, Fancybox: gn_z11.__loadModul.Fancybox}}
@@ -567,6 +582,26 @@ var GNZ11 = function (options_setting) {
                         // UI loaded
                     }
 
+                });
+            })
+        },
+        Tippy:function (){
+            return new Promise(function (resolve, reject) {
+                var $this = new GNZ11() ;
+                Promise.all([
+                    /*$this.load.css('https://unpkg.com/tippy.js@6/animations/scale.css'),
+                    $this.load.js('https://unpkg.com/@popperjs/core@2'),
+                    $this.load.js('https://unpkg.com/tippy.js@6'),*/
+                    $this.load.css('https://unpkg.com/tippy.js@6/animations/scale.css'),
+                    $this.load.js('https://unpkg.com/@popperjs/core@2.4.0/dist/umd/popper.min.js'),
+                    $this.load.js('https://unpkg.com/tippy.js@6.2.3/dist/tippy-bundle.umd.min.js'),
+                ]).then(function (a) {
+                    console.log( typeof tippy )
+                    resolve(a);
+                },function (err)
+                {
+                    console.error('Ошибка загрузки модуля "Tippy.js"');
+                    console.log(err);
                 });
             })
         }

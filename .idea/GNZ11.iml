@@ -6,5 +6,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="nova_pochta" />
     <orderEntry type="module" module-name="nova_pochta_extended" />
+    <orderEntry type="library" name="tippy.js" level="application" />
   </component>
 </module>
