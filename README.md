@@ -1,6 +1,8 @@
 # GNZ11 Библиотека 
-
-[Storage Class](#storage-class-)
+<!-- ## Table of Contents -->
+## Содержание
+ - [Модули](#модули) 
+  - [Storage Class](#storage-class-) (Локальное хранилище браузера)
 
 
 
@@ -111,14 +113,7 @@ wgnz11.__loadModul.Tippy().then(function(a){
 ***
 
 ### Storage Class [<img width="50" src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
-
 простой класс хранения для JavaScript 
-
-*****
- 
-
-***
-[Github Gist](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
 ```javascript
 wgnz11.getModul('Storage_class').then(function () {
     Storage_class.set( 'object' , { a: 1 , b: 2 } );
