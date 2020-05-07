@@ -109,10 +109,11 @@ wgnz11.__loadModul.Tippy().then(function(a){
 ### Storage_class
 
 простой класс хранения для JavaScript 
-![Alt text](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
-<img src="http://178.209.70.115/images/logos/gist_github_large.png">
+
+[<img src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
+
 *****
-![Before, tab space example](http://178.209.70.115/images/logos/gist_github_large.png)
+ 
 
 ***
 [Github Gist](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
