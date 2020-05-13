@@ -1,9 +1,30 @@
 # GNZ11 Библиотека 
 <!-- ## Table of Contents -->
 ## Содержание
+ + [JS ядро](##JSядро)
  + [Модули](#модули) 
     + [Storage Class](#storage-class-) (Локальное хранилище браузера)
         
+##JS ядро
+```php
+<?php
+/**
+* Загрузка ядра JS !!!!
+*/
+JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
+$GNZ11_js =  \GNZ11\Core\Js::instance();
+?>
+```
+```php
+$doc = JFactory::getDocument();
+$Jpro = $doc->getScriptOptions('Jpro') ;
+$Jpro['load'][] = [
+    'u' => '/libraries/GNZ11/assets/js/alert_test.js' , // Путь к файлу
+    't' => 'js' ,                                       // Тип загружаемого ресурса
+    'c' => 'testCallback' ,                             // метод после завершения загрузки
+];
+$doc->addScriptOptions('Jpro' , $Jpro ) ;
+```
 
 
 
