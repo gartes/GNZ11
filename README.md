@@ -1,8 +1,9 @@
-# GNZ11 Библиотека 
+# GNZ11 Библиотека 1
 <!-- ## Table of Contents -->
 ## Содержание
  + [JS ядро](##JSядро)
  + [Модули](#модули) 
+    + [Ajax](#Ajax-) (Локальное хранилище браузера)
     + [Storage Class](#storage-class-) (Локальное хранилище браузера)
         
 ##JS ядро
@@ -44,7 +45,7 @@ $string = 'Абвгдеж';
 $titles = array(' %d товар', ' %d товара', ' %d товаров');
 \GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
 ```
-
+*****************************
 ## События ядра 
 **GNZ11Loaded** - после инициализации библиотеки  
 ```javascript
@@ -64,8 +65,6 @@ wgnz11.getPlugin('Inputmask' , {} );
 ```
 список доступных плагинов :
 * Inputmask
-
-
 
 ## Плагины 
 ###  Inputmask (маски для тестовых полей)
@@ -94,7 +93,19 @@ var Settings = {
 ***
 ## Модули
 
-
+### Ajax
+```javascript
+wgnz11.getModul("Ajax").then(function (Ajax) {
+    // Не обрабатывать сообщения
+    Ajax.ReturnRespond = true ;  
+    // Отправить запрос 
+    Ajax.send(data).then(function (r) {
+        console.log(r)
+    },function(err) {
+        console.error(err)
+    })
+});
+```
 
 
 

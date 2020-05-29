@@ -20,6 +20,7 @@ if (!window.console) {
         }, info: function () {
         }, log: function () {
         }, warn: function () {
+        }, warn: function () {
         }, error: function () {
         }, time: function () {
         }, timeEnd: function () {
