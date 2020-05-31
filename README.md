@@ -1,8 +1,13 @@
 # GNZ11 Библиотека 1
 <!-- ## Table of Contents -->
 ## Содержание
- + [JS ядро](##JSядро)
- + [Модули](#модули) 
+1. [JS ядро](##JSядро)
+2. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
++ [PHP Транслитерация](#rus2translite)
++ [PHP Транслитерация для имользования в Url](#str2url)
++ [PHP Склонение числительных](#declOfNum)
+
+3. [Модули](#модули) 
     + [Ajax](#Ajax) (Локальное хранилище браузера)
     + [Storage Class](#storage-class-) (Локальное хранилище браузера)
         
@@ -29,22 +34,26 @@ $doc->addScriptOptions('Jpro' , $Jpro ) ;
 
 
 
-## \GNZ11\Document\Text
-1. PHP Транслитерация 
+## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
+1. <a name="rus2translite"></a>PHP Транслитерация 
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::rus2translite($string);
 ```
-2. PHP Транслитерация для имользования в Url
+2. <a name="str2url"></a>PHP Транслитерация для имользования в Url
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::str2url($string) ; 
 ```
-3. PHP Склонение числительных
+3. <a name="declOfNum"></a>PHP Склонение числительных
 ```php
 $titles = array(' %d товар', ' %d товара', ' %d товаров');
 \GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
 ```
+
+
+
+
 *****************************
 ## События ядра 
 **GNZ11Loaded** - после инициализации библиотеки  
