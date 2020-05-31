@@ -154,7 +154,7 @@ var GNZ11_defSetting = {
 /**
  * @constructor
  */
-var GNZ11 = function (options_setting) {
+window.GNZ11 = function (options_setting) {
     var $=jQuery ;
     var self = this ;
     self.DEBAG = true ;

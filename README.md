@@ -4,11 +4,11 @@
 1. [JS ядро](##JSядро)
 2. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
 + [PHP Транслитерация](#rus2translite)
-+ [PHP Транслитерация для имользования в Url](#str2url)
++ [PHP Транслитерация для использования в Url](#str2url)
 + [PHP Склонение числительных](#declOfNum)
 
 3. [Модули](#модули) 
-    + [Ajax](#Ajax) (Локальное хранилище браузера)
+    + [Ajax](#Ajax) 
     + [Storage Class](#storage-class-) (Локальное хранилище браузера)
         
 ##JS ядро
@@ -40,7 +40,7 @@ $doc->addScriptOptions('Jpro' , $Jpro ) ;
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::rus2translite($string);
 ```
-2. <a name="str2url"></a>PHP Транслитерация для имользования в Url
+2. <a name="str2url"></a>PHP Транслитерация для использования в Url
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::str2url($string) ; 
