@@ -331,6 +331,24 @@ window.GNZ11 = function (options_setting) {
 
 
     /**
+     *  ## Joomla Plugins Обработка плагинов  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     *
+     * @param key
+     * @returns {mixed|*}
+     * @constructor
+     */
+     this.JoomlaStoragePlugin = function ( key )
+     {
+        var opt =  Joomla.getOptions( this.__plugin );
+        if (typeof key === 'undefined')  return  opt ;
+        return  opt[key] ;
+     }
+
+
+
+    /**
      * Звгрузка модулей GNZ11
      * @param moduleName
      * @param setting
@@ -425,7 +443,15 @@ window.GNZ11 = function (options_setting) {
      * @param setting       obj - Объект с конфигурацией плагина
      */
     this.getPlugin = function (pluginName , setting) {
-       this.__loadModul[pluginName](setting)
+        return new Promise(function (resolve, reject) {
+            this.__loadModul[pluginName](setting).then(function (a)
+            {
+                resolve(a) ;
+            },function (err)
+            {
+                reject(err) ;
+            })
+        })
     }
     /*
      * Load  module

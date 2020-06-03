@@ -1,17 +1,64 @@
 # GNZ11
 <!-- ## Table of Contents -->
 ## Содержание
-1. [JS ядро](##JSядро)
-2. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
-+ [PHP Транслитерация](#rus2translite)
-+ [PHP Транслитерация для использования в Url](#str2url)
-+ [PHP Склонение числительных](#declOfNum)
+ 1. [Javascript and jQuery](#JavascriptjQuery)
+    + [Отложенная загрузка ресурсов из js](#JavascriptjQueryLoad)
+    
+ 2. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
+    + [PHP Транслитерация](#rus2translite);
+    + [PHP Транслитерация для использования в Url](#str2url);
+    + [PHP Склонение числительных](#declOfNum).
+ 3. [Модули](#модули) 
+    + [Ajax](#Ajax);
+    + [Storage Class](#storage-class-) (Локальное хранилище браузера).
+ 4. [Joomla](Joomla)
 
-3. [Модули](#модули) 
-    + [Ajax](#Ajax) 
-    + [Storage Class](#storage-class-) (Локальное хранилище браузера)
+
+## <a name="Joomla"></a> Joomla
+### <a name="Joomla-plugins"></a> Взаимодействие с плагинами Joomla
+
+#### Передача параметров плагином на front-end
+Загрузка данных плагином
+```php
+public function setJsData (){
+    $pluginName = 'country_filter' ;
+    $JsData['siteUrl'] = \Joomla\CMS\Uri\Uri::root();
+    \GNZ11\Document\Options::addPluginOptions(  $pluginName , $JsData );
+}
+```
+Получение данных в Javascript
+```javascript
+var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
+```
+******
+
+
+
+
+
+
         
-##JS ядро
+## <a name="JavascriptjQuery"></a> Javascript and jQuery
+
+###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM ) 
++ [Simple application](#JavascriptjQuerySimpleLoad)
+1.  Simple application 
+```javascript
+    wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
+    wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
+```
+
+****************************
+
+
+
+
+
+
+
+
+
+
 ```php
 <?php
 /**
@@ -21,6 +68,10 @@ JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = fals
 $GNZ11_js =  \GNZ11\Core\Js::instance();
 ?>
 ```
+
+
+
+
 ```php
 $doc = JFactory::getDocument();
 $Jpro = $doc->getScriptOptions('Jpro') ;
@@ -35,26 +86,36 @@ $doc->addScriptOptions('Jpro' , $Jpro ) ;
 
 
 ## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
-1. <a name="rus2translite"></a>PHP Транслитерация 
+Обработка строковых и числовых значений
+
+1.<a name="rus2translite"></a>PHP Транслитерация 
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::rus2translite($string);
 ```
-2. <a name="str2url"></a>PHP Транслитерация для использования в Url
+2.<a name="str2url"></a>PHP Транслитерация для использования в Url
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::str2url($string) ; 
 ```
-3. <a name="declOfNum"></a>PHP Склонение числительных
+
+3.<a name="declOfNum"></a>PHP Склонение числительных
 ```php
 $titles = array(' %d товар', ' %d товара', ' %d товаров');
 \GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
 ```
 
-
-
-
 *****************************
+
+
+
+
+
+
+
+
+
+
 ## События ядра 
 **GNZ11Loaded** - после инициализации библиотеки  
 ```javascript
@@ -66,6 +127,7 @@ document.addEventListener('GNZ11Loaded', function () {
         } );
 ```
 ***
+
 
 
 ### Загрузка плагинов 
@@ -249,4 +311,17 @@ _markupSuggestion: function(el) {
         var et_regex = new RegExp('(^' + this.input.value + ')','i');
         return el.setHTML(el.getText().replace(et_regex, '<span class="queriedValue">$1</span>'))
     },
+```
+
+
+##PHP
+Подключение для Joomla
+```php
+JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
+```
+
+### Api - Optimize
+Конвертирует изображения в формате PNG в JPG
+```php
+\GNZ11\Api\Optimize\Img::png2jpg (  $filePath , $Quality = 50 );
 ```
