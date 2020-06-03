@@ -314,8 +314,7 @@ _markupSuggestion: function(el) {
 ```
 
 ***
-#PHP
-
+## PHP
 Подключение для Joomla
 ```php
 JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
