@@ -316,13 +316,13 @@ _markupSuggestion: function(el) {
 ***
 ## PHP
 Подключение для Joomla
-> безопасно с прозрачностью белого цвета.
 ```php
 JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
 ```
 
 ### Api - Optimize
 Конвертирует изображения в формате PNG в JPG
+> безопасно с прозрачностью белого цвета.
 ```php
 \GNZ11\Api\Optimize\Img::png2jpg (  $filePath , $Quality = 50 );
 ```
