@@ -8,16 +8,18 @@
     <license>GNU/GPLv3</license>
     <authorEmail>sad.net79@gmail.com</authorEmail>
     <authorUrl>https://ru.wikipedia.org/wiki/GN-z11</authorUrl>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
     <description>Library GN-z11 by Gartes</description>
     <files>
         <folder>Api</folder>
         <folder>assets</folder>
         <folder>Core</folder>
         <folder>Document</folder>
+        <folder>layouts</folder>
         <folder>sql</folder>
         <file>gnz11.xml</file>
         <file>GNZ11_update_server.xml</file>
+        <file>README.md</file>
     </files>
     <install> <!-- Runs on install -->
         <sql>
