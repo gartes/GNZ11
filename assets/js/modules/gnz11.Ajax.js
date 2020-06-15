@@ -5,9 +5,7 @@
  */
 GNZ11Ajax = function () {
     var $ = jQuery;
-
     this.Init = function () { };
-
     this.Setting = {
         Ajax: {
             auto_render_message: false,
@@ -78,8 +76,6 @@ GNZ11Ajax = function () {
 
         var paramsAjax = Joomla.extend(paramsDef , params ) ;
 
-
-
         return new Promise(function (succeed, fail) {
             var Options = Joomla.getOptions('GNZ11');
 
@@ -91,8 +87,6 @@ GNZ11Ajax = function () {
             }
             var admin = ( (typeof Options.Ajax.isClient !== 'undefined' && Options.Ajax.isClient ) ? 'administrator/' : '');
 
-           // admin = '';
-
             $.ajax({
                 type: paramsAjax.method,
                 cache: false,
@@ -102,18 +96,39 @@ GNZ11Ajax = function () {
                     + (typeof namespace !== 'undefined' ? "namespace=" + namespace + '&' : '')
                     + "format=json"
                     + (typeof token !== 'undefined' ? "&" + token + "=1" : '' ),
-                data: obj
+                data: obj ,
+                error: function (jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status === 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status === 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    console.log( msg ) ;
+                    fail( msg , jqXHR, exception   )
+                }
             }).done(function (datas, textStatus) {
 
                 console.log($this.Setting);
 
+                // TODO - упрастить создание простых ответов
                 // Если обьекту Ajax разрешено создавать соообщения во время запроса
                 if ($this.Setting.Ajax.auto_render_message) {
                     // Отправить полученные данные для поиска и создания сообщений
                     $this.renderMessages(datas);
                 }
                 // Вернуть результат запроса вызвашему методу
-                succeed(datas);
+                succeed( datas , textStatus );
             });
         });
     };

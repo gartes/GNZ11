@@ -28,11 +28,7 @@
 		 * @see https://stackoverflow.com/a/8951540
 		 * @param        $filePath
 		 * @param   int  $Quality
-		 *
-		 *
 		 * @since version
-		 *
-		 *
 		 */
 		public static function png2jpg (  $filePath , $Quality = 50  ){
 			$image = imagecreatefrompng($filePath);
