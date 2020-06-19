@@ -104,19 +104,11 @@ GNZ11Recognition = function () {
          * кнопка прочтения текста
          */
         $.each( Config.speechUtterance , function (i,a) {
-
-            console.log( $(a.parent).find('.Speech')[0])
-
             if ( typeof ($(a.parent).find('.Speech')[0]) !==  'undefined' ) {
-
-
                 return ;
             }
             $btnTmpl = $(Config.btn.speechUtterance);
             $btnTmpl.addClass('BTNSpeech').data('parent' , a.parent ).data('msg_element' , a.msg_element ) ;
-
-            console.log($(a.parent))
-
             $(a.parent).find(a.key).append( $btnTmpl ) ;
 
             $btnTmpl = $(Config.btn.speechUtteranceRefresh);

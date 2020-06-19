@@ -23,8 +23,6 @@ GNZ11Ajax = function () {
 
     this.set = function (param  ) {
         $.extend(true , this.Setting , param  );
-        console.log(this.Setting )
-
     };
 
 
@@ -118,9 +116,6 @@ GNZ11Ajax = function () {
                     fail( msg , jqXHR, exception   )
                 }
             }).done(function (datas, textStatus) {
-
-                console.log($this.Setting);
-
                 // TODO - упрастить создание простых ответов
                 // Если обьекту Ajax разрешено создавать соообщения во время запроса
                 if ($this.Setting.Ajax.auto_render_message) {

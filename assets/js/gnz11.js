@@ -13,6 +13,10 @@
     }
     window.CustomEvent = CustomEvent;
 })();
+
+
+
+
 // IE9 fix console
 if (!window.console) {
     var console = {
@@ -362,15 +366,15 @@ window.GNZ11 = function (options_setting) {
         var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
         var Module = 'GNZ11'+moduleName ;
         var returnModule ;
-        console.log( typeof Module );
-        console.log( moduleName );
+        // console.log( typeof Module );
+        // console.log( moduleName );
 
 
         //
         // Если модуль еще не был загружен
         if ( typeof Module !== 'function' ) {
             return new Promise(function (resolve, reject) {
-                console.log(pathModules +'/gnz11.'+moduleName+'.js');
+                // console.log(pathModules +'/gnz11.'+moduleName+'.js');
                 Promise.all([
                     $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
                 ]).then(function (r) {
@@ -380,14 +384,14 @@ window.GNZ11 = function (options_setting) {
                      * @type {void|*|RegExpMatchArray|Promise<Response | undefined>}
                      */
                     var testClass = moduleName.match(/_class/);
-                    console.log(testClass)
+                    // console.log(testClass)
                     if ( testClass && testClass[0] ){
                         resolve(moduleName);
                         return ;
                     }
 
-                    console.log( typeof Module );
-                    console.log( returnModule )
+                    // console.log( typeof Module );
+                    // console.log( returnModule )
                     var i = setInterval(function () {
 
                         if (typeof window[Module] === 'function') {
@@ -664,7 +668,7 @@ window.GNZ11 = function (options_setting) {
                     if (typeof window[item.c] !== 'function') {
                         // Create the event
                         var event = new CustomEvent(item.c, {'file': a});
-                        console.log( event )
+                        // console.log( event )
                         document.dispatchEvent(event);
                     }else {
                         window[item.c](a);
