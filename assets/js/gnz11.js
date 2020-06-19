@@ -1,4 +1,9 @@
 /**
+ * IE9 fix console
+ */
+if(!window.console)var console={trace:function(){},info:function(){},log:function(){},warn:function(){},warn:function(){},error:function(){},time:function(){},timeEnd:function(){}};
+
+/**
  * IE9+
  * You can polyfill the CustomEvent() constructor functionality in Internet Explorer 9 and higher with the following code:
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
@@ -13,24 +18,6 @@
     }
     window.CustomEvent = CustomEvent;
 })();
-
-
-
-
-// IE9 fix console
-if (!window.console) {
-    var console = {
-        trace: function () {
-        }, info: function () {
-        }, log: function () {
-        }, warn: function () {
-        }, warn: function () {
-        }, error: function () {
-        }, time: function () {
-        }, timeEnd: function () {
-        }
-    }
-}
 
 
 
