@@ -8,7 +8,7 @@
 
 
 
-<a name="General_settings"></a>Общие настройки
+1.Общие настройки <a name="General_settings"></a>
 
 
 
