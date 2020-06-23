@@ -1,0 +1,46 @@
+.Backup-list-modal {}
+
+div#backupsList {
+    padding: 15px;
+    width: 440px;
+}
+
+div#backupsList .row-line {
+    width: 100%;
+    float: left;
+}
+
+div#backupsList .row-line.line-head {
+    margin-bottom: 10px;
+}
+
+div#backupsList .row-line.line-head >div {
+    min-width: 20px;
+    float: left;
+    height: 18px;
+    text-align: center;
+}
+
+div#backupsList .row-line.line-head >div.date {
+    width: 123px;
+}
+
+div#backupsList .row-line > div {
+    float: left;
+    margin-right: 20px;
+    line-height: 13px;
+}
+
+div#backupsList .row-line > div > input {
+    margin: 0;
+}
+.footerBtn{
+    float: left;
+    width: 100%;
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+}
+
+.footerBtn > div >div {
+    float: right;
+}

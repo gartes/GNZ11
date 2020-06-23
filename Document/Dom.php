@@ -49,7 +49,7 @@
 		}
 		
 		/**
-		 * Получить атребуты узла
+		 * Получить атрибуты узла
 		 *
 		 * @param          $nodeElement  - DOM Node
 		 * @param   array  $excludeAttr  - ислючить attr

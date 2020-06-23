@@ -14,6 +14,32 @@
     + [Ajax](#Ajax);
     + [Storage Class](#storage-class-) (Локальное хранилище браузера).
  4. [Joomla](Joomla)
+ 5. [Core](Core)
+    + 5.1 [Backup](Core\Backup)
+       + 5.1.1 [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)
+          
+  ## <a name="Core"></a> Core       
+  ### <a name="Core\Backup"></a> Backup       
+INIT :
+````php
+$options = [
+    'component' => 'jshopping',
+    'backup_type'=>'sql',           // Def sql
+];
+try
+{
+    $JoomlaBackup = \GNZ11\Core\Backup\Joomla::instance($options);
+}
+catch ( Exception $e)
+{
+	echo 'Выброшено исключение: ',  $e->getMessage(), "\n";
+	echo'<pre>';print_r( $e );echo'</pre>'.__FILE__.' '.__LINE__;
+	die(__FILE__ .' '. __LINE__ );
+}
+```` 
+       
+  #### <a name="Core\Backup\Joomla\com_jshopping"></a> Joomla\com_jshopping       
+  Backup DB For Joomla Component Jshopping    
 
 
 ## <a name="Joomla"></a> Joomla
