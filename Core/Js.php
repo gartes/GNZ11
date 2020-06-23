@@ -95,7 +95,8 @@
 			$gnzlib_debug = $this->paramsComponent->get( 'gnzlib_debug' , self::$GNZ11['gnzlib_debug'] );
 			$gnzlib_path_file_corejs     = $this->paramsComponent->get( 'gnzlib_path_file_corejs' , self::$GNZ11[ 'gnzlib_path_file_corejs' ] );
 			
-			
+
+
 			
 			$gnzlib_path_file_corejs_min = $this->paramsComponent->get( 'gnzlib_path_file_corejs_min' , self::$GNZ11[ 'gnzlib_path_file_corejs_min' ] );
 			$gnzlib_path_modules         = $this->paramsComponent->get( 'gnzlib_path_modules' , self::$GNZ11[ 'gnzlib_path_modules' ] );
