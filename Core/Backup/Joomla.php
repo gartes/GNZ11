@@ -57,10 +57,31 @@
 		 */
 		private $backup_component_table;
 		/**
-		 * @var string простарнство имен для бекап попераций
+		 * @var string простарнство имен для бекап операций
 		 * @since 3.9
 		 */
 		private $backup_namespace;
+		/**
+		 * @var int Количество строк в одном запросе
+		 * @since 3.9
+		 */
+		private $limit = 200 ;
+		private $interval = 0 ;
+		/**
+		 * @var string Имя файла
+		 * @since 3.9
+		 */
+		private $fileName;
+		/**
+		 * @var string таблица текущего запроса
+		 * @since 3.9
+		 */
+		private $currentTable;
+		/**
+		 * @var string время на которое было произведено восстановление
+		 * @since 3.9
+		 */
+		private $dateTime;
 
 		/**
 		 * helper constructor.
@@ -94,7 +115,6 @@
 			}
 			return $this;
 		}#END FN
-
 		/**
 		 * @param array $options
 		 * @return Joomla
@@ -110,6 +130,40 @@
 			return self::$instance;
 		}#END FN
 
+		public function removeBackup(){
+			$Id = $this->app->input->get('Id' , false , 'ARRAY') ;
+			if( !$Id ) return false ; #END IF
+			$query = $this->db->getQuery(true);
+			$query->select('*' );
+			$query->from($this->db->quoteName('#__gnz11_core_backups'));
+			if( $this->backup_namespace )
+			{
+				$query->where( $this->db->quoteName('namespace') .'='.$this->db->quote( $this->backup_namespace ) );
+			}#END IF
+			$query->where( $this->db->quoteName('backup_id') .' IN (' . implode(',', $Id ) . ')'  );
+			$query->order( $this->db->quoteName('date') . 'DESC');
+			$this->db->setQuery($query);
+
+			$AssocList =  $this->db->loadAssocList();
+			$returnId = [];
+			foreach( $AssocList as $item )
+			{
+				/**
+				 * @see https://api.joomla.org/cms-3/classes/Joomla.CMS.Filesystem.File.html
+				 * @see http://inet-reklama.com/blog/joomla/rabota-s-fajlami-v-joomla-klass-jfile.html
+				 */
+				\Joomla\CMS\Filesystem\File::delete($item['file']) ;
+				$this->db->setQuery('DELETE FROM  `#__gnz11_core_backups` WHERE `backup_id` = '.$item['backup_id'].';');
+				$this->db->execute();
+				$returnId[] = $item['backup_id'] ;
+			}#END FOREACH
+			echo new \JResponseJson($returnId);
+			die();
+
+
+
+		}
+
 		/**
 		 * Создать дамп таблиц для компонента
 		 * @return bool
@@ -118,33 +172,145 @@
 		 */
 		public function backup()
 		{
-			$fp = fopen( $this->backup_path . DS . $this->backup_filename , "a" );
-			foreach( $this->backup_component_table as $table )
+			$InfoStatic = $this->app->input->get('InfoStatic' , false , 'ARRAY') ;
+			$this->fileName = $this->backup_path . DS . $this->backup_filename ;
+
+			if( $InfoStatic )
 			{
-				$table = str_replace( '#__' , $this->db->getPrefix() , $table );
-				$fields_list_array = $this->db->getTableColumns( $table );
+				$this->fileName = $InfoStatic['fileName'] ;
+			}#END IF
+			if( $InfoStatic && isset( $InfoStatic['SavedFile'] )  )
+			{
+				$size = filesize( $this->fileName );
+				if( $size )
+				{
+					try
+					{
+						# Сохранить данные о файле резервного копирования в БД .
+						$this->_saveDataFileDb( $size );
+					} catch( Exception $e )
+					{
+						$code = $e->getCode();
+						$mes = $e->getMessage();
+						switch( $code )
+						{
+							# Если отсутствует таблица для хранения информации о резервном копировании - Создать !!!
+							case 1146 :
+								$mes_success = 'Создана таблица `#__gnz11_core_backups` для хранения результатов резервного копирования ';
+								$res_restore = $this->restore( __DIR__ . '/sql/backup.table.sql' , $mes_success );
+								$MessageQueue = $this->app->getMessageQueue();
+								# Сохранить данные о файле резервного копирования в БД .
+								$this->_saveDataFileDb( $size );
+								break;
+							default :
+								throw $e;
+						}
+					}
+					$this->app->enqueueMessage( 'Backup completed successfully' );
+					$this->_finalizeAjax();
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}#END IF
+
+
+			$this->Timeout = false ;
+			# Получить список резервных копий
+			$listBackups = $this->getBackups();
+			# Проверяем на таймаут между копиями
+			if( !empty($listBackups['data']) && !$InfoStatic ) {
+				$jdata= new \Joomla\CMS\Date\Date();
+				$now = $jdata->toSql();
+				$nowTime =  strtotime($now) ;
+
+				# 2020-06-22 02:39:36 => 1592782776
+				$backupsTime = strtotime( $listBackups['data'][0]['date'] ) ;
+				# Сколько прошло
+				$time_has_passed = $nowTime - $backupsTime ;
+
+				if( $time_has_passed < $this->interval )
+				{
+					$this->app->enqueueMessage( 'Backup is Time-out!' );
+					$this->Timeout = true ;
+					$this->_finalizeAjax();
+				}#END IF
+			}#END IF
+
+			$fp = fopen( $this->fileName , "a" );
+			foreach( $this->backup_component_table as $t => $table )
+			{
+				$this->currentTable = $this->backup_component_table[$t] ;
+				if( $InfoStatic )
+				{
+					$t = $InfoStatic['tableId'] ;
+					$this->currentTable = $InfoStatic['Tables'][$t] ;
+
+				}#END IF
+
+				$table = str_replace( '#__' , $this->db->getPrefix() , $this->currentTable );
+				$fields_list_array = $this->db->getTableColumns( $this->currentTable );
+
 				$fields_list = [];
 				foreach( $fields_list_array as $key => $field )
 				{
 					$fields_list[] = $key;
 				}
-				$this->db->setQuery( "SELECT COUNT(*) FROM `{$table}`" );
+				$this->db->setQuery( "SELECT COUNT(*) FROM `{$this->currentTable}`" );
 				$total = $this->db->loadResult();
-				fwrite( $fp , "TRUNCATE TABLE `{$table}`;\n" );
+
+				$this->total = $total;
+
+
 				$i = 0;
+				if( $InfoStatic )
+				{
+					$i = $InfoStatic['lineStart'] ;
+				}#END IF
+
+				if( $i == 0 )
+				{
+					fwrite( $fp , "TRUNCATE TABLE `{$table}`;\n" );
+				}#END IF
 				for( ; ; )
 				{
+
+					# если закончились строки в таблицы
 					if( $i >= $total )
+					{
+						$i = 0 ;
+						$this->tableId = $t+1 ;
+						$this->currentTable = $this->backup_component_table[$t+1] ;
+						$this->lineStart = $i ;
+						$this->total = 0 ;
+						$this->_finalizeAjax($fp);
 						break;
-					$this->db->setQuery( "SELECT * FROM `{$table}`" , $i , 200 );
+					}
+					$this->db->setQuery( "SELECT * FROM `{$table}`" , $i , $this->limit );
 					$data = $this->db->loadAssocList();
-					$i += 200;
-					if( !$data )
+					$i +=  $this->limit;
+
+					$this->tableId = $t ;
+					$this->lineStart = $i ;
+
+
+					if( !$data ){
+
+						echo'<pre>';print_r( $InfoStatic );echo'</pre>'.__FILE__.' '.__LINE__;
+						die(__FILE__ .' '. __LINE__ );
+
+
 						break;
+					}
+
 					if( count( $fields_list ) )
 					{
 						fwrite( $fp , "INSERT INTO `{$table}` (`" . implode( "`,`" , $fields_list ) . "`) VALUES\n" );
-					} else
+					}
+					else
 					{
 						fwrite( $fp , "INSERT INTO `{$table}` VALUES\n" );
 					}
@@ -159,44 +325,37 @@
 						}
 						$rows[] = "(" . implode( "," , $fields ) . ")";
 					}
+
 					if( count( $rows ) )
 					{
 						fwrite( $fp , implode( ",\n" , $rows ) . ";\n\n" );
-					} else
+					} else{
 						fwrite( $fp , ";\n\n" );
+					}
+					$this->_finalizeAjax($fp);
 				}
 			}
-			fclose( $fp );
-			$size = filesize( $this->backup_path . DS . $this->backup_filename );
-			if( $size )
-			{
-				try
-				{
-					# Сохранить данные о файле резервного копирования в БД .
-					$this->_saveDataFileDb( $size );
-				}
-				catch (Exception $e)
-				{
-					$code = $e->getCode();
-					$mes = $e->getMessage();
-				    switch($code ){
-						# Если отсутствует таблица для хранения информации о резервном копировании - Создать !!!
-				    	case 1146 :
-							$mes_success = 'Создана таблица `#__gnz11_core_backups` для хранения результатов резервного копирования ';
-							$res_restore = $this->restore(__DIR__ . '/sql/backup.table.sql' , $mes_success );
-							$MessageQueue = $this->app->getMessageQueue();
-							# Сохранить данные о файле резервного копирования в БД .
-							$this->_saveDataFileDb( $size );
-							break ;
-						default :
-							throw $e ;
-					}
-				}
-				$this->app->enqueueMessage('Backup completed successfully');
-				return true;
-			} else
-				return false;
+//			fclose( $fp );
+//			$size = filesize( $this->backup_path . DS . $this->backup_filename );
 
+		}
+
+		private function _finalizeAjax($fp = null ){
+			if( $fp )
+			{
+				fclose( $fp );
+			}#END IF
+			$ReturnData = [
+				'fileName' =>   $this->fileName ,
+				'table' => 		$this->currentTable ,
+				'tableId' => 		$this->tableId ,
+				'lineStart' => 	$this->lineStart ,
+				'total' => 		$this->total ,
+				'Tables' => $this->backup_component_table ,
+				'Timeout' => $this->Timeout ,
+			];
+			echo new \JResponseJson($ReturnData);
+			die();
 		}
 
 		/**
@@ -252,18 +411,23 @@
 			$this->db->setQuery($query);
 			$data = $this->db->loadAssoc();
 
-			$this->restore($data['file']) ;
-			echo'<pre>';print_r( $data );echo'</pre>'.__FILE__.' '.__LINE__;
-			die(__FILE__ .' '. __LINE__ );
+			$this->dateTime = $date['date'] ;
 
+
+
+
+			$this->restore($data['file']) ;
+
+			echo new \JResponseJson($data);
+			die();
 
 		}
 		function restore( $file , $mes_success = false ) {
 
+			
 			$query        = '';
 			$success      = 0;
 			$counter      = 0;
-
 
 //			$this->table->load($this->id);
 //			$this->table->dateFormat('date', 'd.m.Y H:i:s');
@@ -274,42 +438,54 @@
 				$file_handler = fopen($file, "r");
 
 
-
+				
 
 				while (!feof($file_handler)) {
 					$counter++;
-					$query .= fgets($file_handler, 16192);
-
-					echo'<pre>';print_r( $file );echo'</pre>'.__FILE__.' '.__LINE__;
-					echo'<pre>';print_r( $file_handler );echo'</pre>'.__FILE__.' '.__LINE__;
-					echo'<pre>';print_r( substr(trim($query), -1) == ";" );echo'</pre>'.__FILE__.' '.__LINE__;
-					echo'<pre>';print_r( $query );echo'</pre>'.__FILE__.' '.__LINE__;
-
-
-
+					$query .= fgets($file_handler  /*, 16192*/);
+					$query = trim( $query ) ;
 					if ( substr(trim($query), -1) == ";" ) {
 
 						if( $query != 'TRUNCATE TABLE `dveri_jshopping_categories`;' )
 						{
-							echo'<pre>';print_r( $query );echo'</pre>'.__FILE__.' '.__LINE__;
-							die(__FILE__ .' '. __LINE__ );
+//							echo'<pre>';print_r( $query );echo'</pre>'.__FILE__.' '.__LINE__;
+//							die(__FILE__ .' '. __LINE__ );
 						}#END IF
 
 
 
 						$this->db->setQuery($query);
 						$query = '';
-						/*if ( $this->db->execute() ) {
-							$success++;
-							$query = '';
-						}*/
+						try
+						{
+						    // Code that may throw an Exception or Error.
+							if ( $this->db->execute() ) {
+								$success++;
+								$query = '';
+							}else{
+								echo'<pre>';print_r( $query );echo'</pre>'.__FILE__.' '.__LINE__;
+								die(__FILE__ .' '. __LINE__ );
+
+
+							}
+						    // throw new Exception('Code Exception '.__FILE__.':'.__LINE__) ;
+						}
+						catch (Exception $e)
+						{
+						    // Executed only in PHP 5, will not be reached in PHP 7
+						    echo 'Выброшено исключение: ',  $e->getMessage(), "\n";
+						    echo'<pre>';print_r( $e );echo'</pre>'.__FILE__.' '.__LINE__;
+						    die(__FILE__ .' '. __LINE__ );
+						}
+
 					}
 				}
-				die(__FILE__ .' '. __LINE__ );
+
+
 
 				if( $success )
 				{
-					$mes = 'Данные восстановлены: TIME OF('. $this->table->date .')'. '<br>Количество запросов -' . $success ;
+					$mes = 'Данные восстановлены: TIME OF('. $this->dateTime .')'. '<br>Количество запросов -' . $success ;
 					if( $mes_success )
 					{
 						$mes = $mes_success ;
@@ -343,7 +519,7 @@
 		 * @since 3.9
 		 */
 		private function _saveDataFileDb ( $size ){
-			$file = $this->backup_path . DS . $this->backup_filename ;
+			$file = $this->fileName ;
 			$date = new \Joomla\CMS\Date\Date();
 			$now = $date->toSql();
 			$this->db->setQuery( "
@@ -364,15 +540,38 @@
 		 */
 		private function _Def(){
 			$this->components = [
-				'jshopping' => [ "#__jshopping_categories" , "#__jshopping_products" , "#__jshopping_products_attr" , "#__jshopping_products_attr2" , "#__jshopping_products_images" , "#__jshopping_products_prices" , "#__jshopping_products_relations" , "#__jshopping_products_to_categories" , "#__jshopping_products_free_attr" , "#__jshopping_products_files" , "#__jshopping_manufacturers" , "#__jshopping_attr" , "#__jshopping_attr_values" ]
+				'jshopping' => [
+					"#__jshopping_categories" ,
+					"#__jshopping_products" ,
+					"#__jshopping_products_attr" ,
+					"#__jshopping_products_attr2" ,
+					"#__jshopping_products_images" ,
+					"#__jshopping_products_prices" ,
+					"#__jshopping_products_relations" ,
+					"#__jshopping_products_to_categories" ,
+					"#__jshopping_products_free_attr" ,
+					"#__jshopping_products_files" ,
+					"#__jshopping_manufacturers" ,
+					"#__jshopping_attr" ,
+					"#__jshopping_attr_values",
+				]
 			];
 			if( !Folder::exists( $this->backup_path ) )
 			{
 				Folder::create($this->backup_path , 0755) ;
 			}#END IF
-			
-
 		}
+
+		/**
+		 * Установка значений
+		 * @param $variable
+		 * @param $val
+		 * @since 3.9
+		 */
+		public function set( $variable , $val ){
+			$this->{$variable} = $val ;
+		}
+
 
 		/**
 		 * Установить список таблиц для компонента
@@ -382,6 +581,9 @@
 		 * @since 3.9
 		 */
 		private function _getTableList($component){
+			
+			
+			
 			if( !array_key_exists($component , $this->components ) )
 			{
 				$keys = array_keys($this->components) ;

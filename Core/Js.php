@@ -12,7 +12,8 @@
 	use JFactory;
 	use JSession;
 	use JUri;
-	
+	use RegularLabs\AdvancedModules\Document;
+
 	class Js
 	{
 		private $app;
@@ -116,9 +117,17 @@
 					'timeout' =>5000 ,
 					'layout' => 'bottomLeft' ,
 				],
+				'Document' => [
+					'Host' =>\JURI::root(true),
+				],
 			];
-			
 			$new_options = array_merge($GNZ11_options , $data ) ;
+
+
+
+
+
+
 			$doc->addScriptOptions('GNZ11'  , $new_options ) ;
 			$doc->addScriptOptions('Jpro'  , [ 'load'=>[] ] ) ;
 			

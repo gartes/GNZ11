@@ -40,6 +40,12 @@
             </div>
         </div>
     </div>
+<script>
+
+/*    wgnz11.load.js("<?=\Joomla\CMS\Uri\Uri::root(true)?>/libraries/GNZ11/Core/Backup/assets/js/Core.Backup.Joomla.Backup.js")*/
+</script>
+<script src="<?=\Joomla\CMS\Uri\Uri::root(true)?>/libraries/GNZ11/Core/Backup/assets/js/Core.Backup.Joomla.Restore.js"></script>
+
 
 
 

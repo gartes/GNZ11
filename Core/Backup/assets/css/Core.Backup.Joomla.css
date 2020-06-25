@@ -8,10 +8,29 @@ div#backupsList {
 div#backupsList .row-line {
     width: 100%;
     float: left;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-bottom: 10px;
 }
+
+div#backupsList .row-line._error {
+    color: red;
+    position: relative;
+}
+
+div#backupsList .row-line._error:before {content: 'ERROR';position: absolute;right: 120px;top: 7px;font-weight: 600;text-shadow: 1.5px 1px 2px #000;}
+
+div#backupsList .row-line._loading {
+    background: #267708;
+    color: #ffffff2b;
+    position: relative;
+}
+
+div#backupsList .row-line._loading:before {content: 'Loading!';position: absolute;top: 2px;left: 41%;color: white;font-size: 1.2em;font-weight: 600;text-shadow: 1px 1px 1px #000;}
 
 div#backupsList .row-line.line-head {
     margin-bottom: 10px;
+    border-top: none;
 }
 
 div#backupsList .row-line.line-head >div {
