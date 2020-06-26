@@ -180,8 +180,8 @@
 		 * @copyright 02.01.19
 		 */
 		public static function writeDownTag ( $tag , $value , $attr=[] ){
-			
-			
+
+
 			$body = \GNZ11\Document\Dom\Joomla::getBody();
 			$dom = new self();
 			$dom->loadHTML( $body );
@@ -225,8 +225,7 @@
 			
 			$app->setBody($body);
 		}#END FN
-		
-		
+
 		/**
 		 * Создание тегов в начале тега <head>
 		 *

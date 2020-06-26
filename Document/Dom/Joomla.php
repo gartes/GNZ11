@@ -12,18 +12,19 @@
 	
 	use Exception;
 	use JFactory;
-	
-	
+	use Joomla\CMS\Factory;
+
+
 	class Joomla
 	{
 		public static function getBody ()
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			try
 			{
 				// Code that may throw an Exception or Error.
 				$dody = $app->getBody();
-			} catch (Exception $e)
+			} catch (\Exception $e)
 			{
 				// Executed only in PHP 5, will not be reached in PHP 7
 				echo 'Выброшено исключение: ', $e->getMessage(), "\n";
