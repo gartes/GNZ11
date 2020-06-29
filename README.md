@@ -101,7 +101,7 @@ $GNZ11_js =  \GNZ11\Core\Js::instance();
 
 
 ```php
-$doc = JFactory::getDocument();
+$doc = \Joomla\CMS\Factory::getDocument();
 $Jpro = $doc->getScriptOptions('Jpro') ;
 $Jpro['load'][] = [
     'u' => '/libraries/GNZ11/assets/js/alert_test.js' , // Путь к файлу
