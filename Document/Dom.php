@@ -9,6 +9,7 @@
 	use Akeeba\Engine\Driver\Joomla;
 	use DOMDocument;
 	use Exception;
+	use JFactory;
 	use stdClass;
 	use DomXPath;
 	
@@ -130,7 +131,7 @@
 		 *
 		 */
 		public static function writeBottomHeadTag ( $tag , $value ,  $attr = null , $params = [] ){
-			$app = \JFactory::getApplication() ;
+			$app = JFactory::getApplication() ;
 			
 			$body                = $app->getBody();
 			$dom = new self();
@@ -207,7 +208,7 @@
 		 * @since 3.9
 		 */
 		public static function writeDownNosciptTag($tag , $value , $attr=[]){
-			$app = \JFactory::getApplication() ;
+			$app = JFactory::getApplication() ;
 			$body                = $app->getBody();
 			$dom = new self();
 			$dom->loadHTML( $body );
@@ -240,7 +241,7 @@
 		 * @copyright 05.01.19
 		 */
 		public static function writeTopHeadTag ( $tag , $value , $attr=[]){
-			$app = \JFactory::getApplication() ;
+			$app = JFactory::getApplication() ;
 			$body                = $app->getBody();
 			$dom = new self();
 			$dom->loadHTML( $body );
@@ -345,9 +346,6 @@
 		 * @copyright 01.12.18
 		 */
 		public static function AddAttribute($dom, &$element, $name, $value = null ) {
-			
-			
-			
 			$value = str_replace('&', "&amp;",  $value );
 			$attr = $dom->createAttribute($name);
 			if ($value)
@@ -375,7 +373,6 @@
 				$tmp_dom->appendChild( $tmp_dom->importNode( $child, true ) );
 				$innerHTML .= trim( $tmp_dom->saveHTML() );
 			}
-			
 			return $innerHTML;
 		}
 		

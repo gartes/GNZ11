@@ -5,6 +5,7 @@
  */
 GNZ11Ajax = function () {
     var $ = jQuery;
+    var self = this ;
     this.Init = function () { };
     this.Setting = {
         Ajax: {
@@ -74,6 +75,9 @@ GNZ11Ajax = function () {
 
         var paramsAjax = Joomla.extend(paramsDef , params ) ;
 
+
+
+
         return new Promise(function (succeed, fail) {
             var Options = Joomla.getOptions('GNZ11');
 
@@ -85,12 +89,16 @@ GNZ11Ajax = function () {
             }
             var admin = ( (typeof Options.Ajax.isClient !== 'undefined' && Options.Ajax.isClient ) ? 'administrator/' : '');
 
+
+            // var Uri = siteUrl + admin + "index.php?"
+            var Uri = window.location.pathname + '?' ;
+
             $.ajax({
                 type: paramsAjax.method,
                 cache: false,
                 dataType: "json",
                 timeout: "20000",
-                url: siteUrl + admin + "index.php?"
+                url: Uri
                     + (typeof namespace !== 'undefined' ? "namespace=" + namespace + '&' : '')
                     + "format=json"
                     + (typeof token !== 'undefined' ? "&" + token + "=1" : '' ),
