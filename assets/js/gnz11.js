@@ -167,9 +167,7 @@ window.GNZ11 = function (options_setting) {
     };
 
     (function () { })();
-
     this._siteUrl = null ;
-
     this.set_siteUrl = function (Url) {
         this._siteUrl = Url ;
         Joomla.loadOptions({ 'siteUrl' : Url })
@@ -330,15 +328,11 @@ window.GNZ11 = function (options_setting) {
      * @returns {mixed|*}
      * @constructor
      */
-     this.JoomlaStoragePlugin = function ( key )
-     {
+     this.JoomlaStoragePlugin = function ( key ){
         var opt =  Joomla.getOptions( this.__plugin );
         if (typeof key === 'undefined')  return  opt ;
         return  opt[key] ;
      }
-
-
-
     /**
      * Звгрузка модулей GNZ11
      * @param moduleName
