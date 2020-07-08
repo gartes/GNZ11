@@ -15,6 +15,7 @@
 	use Joomla\CMS\Factory;
 
 
+
 	class Joomla
 	{
 		public static function getBody ()
