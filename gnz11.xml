@@ -42,7 +42,10 @@
     </updateservers>
 </extension>
 
-<!-- INSTALL : -->
+<!-- INSTALL :
+ /templates/demomir/assets/js/demomir.productdetails.js
+
+ -->
 <!-- https://github.com/gartes/GNZ11/archive/master.zip -->
 
 

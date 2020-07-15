@@ -45,9 +45,26 @@
 		
 		public function __construct ( $version = '1.0' , $encoding = 'utf-8' )
 		{
-			parent::__construct( $version , $encoding );
-			return $this;
+		    parent::__construct( $version , $encoding );
+            return $this;
 		}
+
+        /**
+         * Подключить phpQuery
+         * @param $html
+         * @param bool $debug
+         *
+         * @return
+         *
+         * @since version
+         */
+		public static function getPhpQuery( $html , $debug = false ){
+            if ( !class_exists('phpQuery') ) {
+                require ( JPATH_LIBRARIES . '/GNZ11/Document/Dom/phpQuery.php');
+            }#END IF
+            \phpQuery::$debug = $debug ;
+            return \phpQuery::newDocument( $html );
+        }
 		
 		/**
 		 * Получить атрибуты узла
