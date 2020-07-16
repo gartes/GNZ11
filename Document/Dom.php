@@ -103,36 +103,7 @@
 			return $retAttr;
 		}#END FN
 		
-		/**
-		 * Проверить наличие атрибута async
-		 *
-		 * @param $nodeElement
-		 * @param $attr
-		 *
-		 * @return bool true если атребут присутствует
-		 *
-		 * @since version
-		 */
-		private static function testAttribute ( $nodeElement , $attr )
-		{
-			$newdoc               = new DOMDocument;
-			$newdoc->formatOutput = true;
-			$newdoc->loadXML( "<test><yyyy></yyyy></test>" );
-			$newdoc->saveXML();
-			
-			$node = $newdoc->importNode( $nodeElement , true );
-			
-			$newdoc->documentElement->appendChild( $node );
-			$testAsync = $newdoc->saveXML();
-			$pos       = strpos( $testAsync , $attr );
-			
-			if( $pos )
-			{
-				return true;
-			}#END IF
-			
-			return false;
-		}#END FN
+
 		
 		/**
 		 * Добавить узел в конец тега  <head>
@@ -392,7 +363,37 @@
 			}
 			return $innerHTML;
 		}
-		
+
+        /**
+         * Проверить наличие атрибута async
+         *
+         * @param $nodeElement
+         * @param $attr
+         *
+         * @return bool true если атребут присутствует
+         *
+         * @since version
+         */
+        private static function testAttribute ( $nodeElement , $attr )
+        {
+            $newdoc               = new DOMDocument;
+            $newdoc->formatOutput = true;
+            $newdoc->loadXML( "<test><yyyy></yyyy></test>" );
+            $newdoc->saveXML();
+
+            $node = $newdoc->importNode( $nodeElement , true );
+
+            $newdoc->documentElement->appendChild( $node );
+            $testAsync = $newdoc->saveXML();
+            $pos       = strpos( $testAsync , $attr );
+
+            if( $pos )
+            {
+                return true;
+            }#END IF
+
+            return false;
+        }#END FN
 		
 		
 		

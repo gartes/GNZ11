@@ -117,6 +117,15 @@
         public static function strpos_array($haystack, $needles) {
             if ( is_array($needles) ) {
                 foreach ($needles as $str) {
+
+                   /* if ($haystack != 'Детекторы взрывчатых веществ') {
+                        echo'<pre>';print_r( $haystack );echo'</pre>'.__FILE__.' '.__LINE__;
+                        echo'<pre>';print_r( $str );echo'</pre>'.__FILE__.' '.__LINE__;
+                        die(__FILE__ .' '. __LINE__ );
+                    }#END IF*/
+
+
+
                     if ( is_array($str) ) {
                         $pos = strpos_array($haystack, $str);
                     } else {
@@ -129,6 +138,8 @@
             } else {
                 return strpos($haystack, $needles);
             }
+
+            return false ;
         }
 		
 	}
