@@ -7,7 +7,7 @@
  
  2. [Document](#Document) 
     + [Text](#Document/Text)
-        + [Найти слово из массива в заданной строке](#Document\Text::strpos_array)
+        + [Найти слово из массива в заданной строке](#Document\Text__strpos_array)
     
 ### <a name="DOM"></a> DOM
 ***   
