@@ -35,3 +35,12 @@ $str = 'This is a test' ;
 $pregArr = array('test', 'drive') ;  
 $pos = \GNZ11\Document\Text::strpos_array( $str , $pregArr ) ; // Output is 10
 ```
+##### <a name="Document\Text::declOfNum"></a> PHP Склонение числительных
+```php
+/*
+* $titles = array(' %d товар', ' %d товара', ' %d товаров');
+* $number = INT ;
+* @return string ( 1 товар| 2 товара | 8 товаров )
+*/
+$checkText = \GNZ11\Document\Text::declOfNum( $number , $titles );
+```
