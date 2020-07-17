@@ -48,6 +48,14 @@
 		    parent::__construct( $version , $encoding );
             return $this;
 		}
+        public  function loadHTML( $source,   $encoding = 'utf-8') {
+            $_source = mb_convert_encoding( $source, 'HTML-ENTITIES', $encoding);
+            @parent::loadHTML(''.$_source);
+        }
+        public function saveHTML(){
+            return html_entity_decode( parent::saveHTML() );
+        }
+
 
         /**
          * Подключить phpQuery
@@ -170,9 +178,10 @@
 		 */
 		public static function writeDownTag ( $tag , $value , $attr=[] ){
 
-
-			$body = \GNZ11\Document\Dom\Joomla::getBody();
+            $app = JFactory::getApplication();
+			$body = $app->getBody();
 			$dom = new self();
+            libxml_use_internal_errors(true);
 			$dom->loadHTML( $body );
 			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
 			# add class attribute
