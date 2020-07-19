@@ -56,6 +56,43 @@
             return html_entity_decode( parent::saveHTML() );
         }
 
+        /**
+         * Добавить тег в тело документа перед закрывающемся тегом </body>
+         *
+         * @param   string  $tag    название тега
+         * @param   string  $value  контент тега
+         * @param   array   $attr   атребуты тега
+         *
+         * @throws Exception
+         * @since     3.8
+         * @author    Gartes
+         *
+         * @copyright 02.01.19
+         */
+        public static function writeDownTag ( $dom , $tag , $value , $attr=[] ){
+
+            $newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+            # add class attribute
+            self::fetchAttr($dom ,$newTag , $attr );
+            $xpath = new DomXPath($dom);
+            $parent = $xpath->query( '//body');
+
+            $parent->item(0)->appendChild( $newTag );
+
+
+        }#END FN
+
+
+
+
+
+
+
+
+
+
+
+
 
         /**
          * Подключить phpQuery
@@ -163,36 +200,7 @@
 			$app->setBody($body);
 		}#END FN
 		
-		/**
-		 * Добавить тег в тело документа перед закрывающемся тегом </body>
-		 *
-		 * @param   string  $tag    название тега
-		 * @param   string  $value  контент тега
-		 * @param   array   $attr   атребуты тега
-		 *
-		 * @throws Exception
-		 * @since     3.8
-		 * @author    Gartes
-		 *
-		 * @copyright 02.01.19
-		 */
-		public static function writeDownTag ( $tag , $value , $attr=[] ){
 
-            $app = JFactory::getApplication();
-			$body = $app->getBody();
-			$dom = new self();
-            libxml_use_internal_errors(true);
-			$dom->loadHTML( $body );
-			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
-			# add class attribute
-			self::fetchAttr($dom ,$newTag , $attr );
-			$xpath = new DomXPath($dom);
-			$parent = $xpath->query( '//body');
-
-			$parent->item(0)->appendChild( $newTag );
-			$body =   $dom->saveHTML() ;
-			$app->setBody($body);
-		}#END FN
 		
 		/**
 		 * Добавить тег в тело документа перед закрывающемся тегом </noscript>

@@ -870,6 +870,20 @@ window.GNZ11 = function (options_setting) {
             serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
         return serialized;
     }
+
+    /**
+     * Извлечь из тега <Template/>
+     */
+    this.fromTemplate = function (templateSelector , form ) {
+        var $template  = $(templateSelector) ;
+        var htmlTemplate = $template.html().trim();
+        var TemplateClone = $(htmlTemplate);
+
+        if ( typeof form === 'undefined' ){
+            $template.parent().append(TemplateClone);
+        }
+        $template.remove();
+    }
 };
 
 

@@ -141,5 +141,23 @@
 
             return false ;
         }
-		
+
+        /**
+         * Проверит, что первая строка начинается со второй
+         *
+         * @param string $str      основная строка
+         * @param string $substr   та, которая может содержаться внутри основной
+         * @return bool  True -    Если сторка начинается с $substr
+         * @since 3.9
+         */
+        public static function isStart($str, $substr)
+        {
+            $result = strpos($str, $substr);
+            if ($result === 0) { // если содержится, начиная с первого символа
+                return true;
+            } else {
+                return false;
+            }
+        }
+
 	}

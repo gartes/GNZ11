@@ -134,6 +134,18 @@ $string = 'Абвгдеж';
 $titles = array(' %d товар', ' %d товара', ' %d товаров');
 \GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
 ```
+4.<a name="isStart"></a>PHP Проверит, что первая строка начинается со второй 
+
+```php 
+/**
+ * Проверит, что первая строка начинается со второй
+ * 
+ * @param string $str      основная строка
+ * @param string $substr   та, которая может содержаться внутри основной
+ * @return bool  True -    Если сторка начинается с $substr
+ */
+\GNZ11\Document\Text::isStart($str, $substr)
+```
 
 *****************************
 
