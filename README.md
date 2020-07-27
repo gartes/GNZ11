@@ -368,3 +368,9 @@ JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = fals
 ```php
 \GNZ11\Api\Optimize\Img::png2jpg (  $filePath , $Quality = 50 );
 ```
+
+
+
+
+Versions : 
+0.3.2 - Добавлен объект `GNZ11\Document\Document` 
