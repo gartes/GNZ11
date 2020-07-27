@@ -872,7 +872,7 @@ window.GNZ11 = function (options_setting) {
     }
 
     /**
-     * Извлечь из тега <Template/>
+     * Извлечение из тега <Template />
      */
     this.fromTemplate = function (templateSelector , form ) {
         var $template  = $(templateSelector) ;
