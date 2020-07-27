@@ -6,6 +6,8 @@
         + [Поиск элемента](#Document/DOM/Поиск_элемента)
  
  2. [Document](#Document) 
+    + [Document](#Document/Document)
+        + [Добавить Style содержимое CSS файла] 
     + [Text](#Document/Text)
         + [Найти слово из массива в заданной строке](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%BD%D0%B0%D0%B9%D1%82%D0%B8-%D1%81%D0%BB%D0%BE%D0%B2%D0%BE-%D0%B8%D0%B7-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D0%B0-%D0%B2-%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D0%BE%D0%B9-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5)
         + [PHP Склонение числительных](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-php-%D1%81%D0%BA%D0%BB%D0%BE%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D0%B8%D1%81%D0%BB%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D1%85)
@@ -28,6 +30,15 @@ $xpath = new \DOMXPath( $dom );
 $Nodes = $xpath->query( '//label[@class="uf_category"]' );
 ``` 
 ***
+#### <a name="Document/Document"></a> Document/Document 
+***
+##### <a name="Document\Document::addIncludeStyleDeclaration"></a> Добавить Style содержимое CSS файла
+```php
+$pathCss = JPATH_THEMES . '/elektro/assets/css/com_jshopping.category.critical.css' ;
+\GNZ11\Document\Document::addIncludeStyleDeclaration( $pathCss ) ;
+
+```
+
 #### <a name="Document/Text"></a> Document/Text 
 ***
 ##### <a name="Document\Text::strpos_array"></a> Найти слово из массива в заданной строке
