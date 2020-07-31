@@ -874,14 +874,21 @@ window.GNZ11 = function (options_setting) {
     /**
      * Извлечение из тега <Template />
      */
-    this.fromTemplate = function (templateSelector , form ) {
-        var $template  = $(templateSelector) ;
+    this.fromTemplate = function (templateSelector , formSelector ) {
+        var $template  = $( templateSelector ) ;
+        if (!$template[0]){
+            console.warn('Tag <template /> selector ("'+templateSelector+'") not found')
+            return ;
+        }
         var htmlTemplate = $template.html().trim();
         var TemplateClone = $(htmlTemplate);
 
         if ( typeof form === 'undefined' ){
             $template.parent().append(TemplateClone);
+        }else{
+            $(formSelector).append(TemplateClone);
         }
+
         $template.remove();
     }
 };

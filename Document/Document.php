@@ -22,12 +22,14 @@ class Document
         $_params = array_merge(self::IncludeStyleParams , $params );
         $doc = \Joomla\CMS\Factory::getDocument();
         ob_start();
-            echo  ( !$_params['debug']?: PHP_EOL . '/* ******* '.$path.' */' . PHP_EOL ) ;
+            echo  ( !$_params['debug']? null : PHP_EOL . '/* ******* '.$path.' */' . PHP_EOL ) ;
             include $path  ;
-            echo  ( !$_params['debug']?: PHP_EOL . '/* ******* END '.$path.' */' . PHP_EOL ) ;
+            echo  ( !$_params['debug']? null : PHP_EOL . '/* ******* END '.$path.' */' . PHP_EOL ) ;
 
         $css_output = ob_get_contents();
         ob_end_clean();
+
+
         $doc->addStyleDeclaration( $css_output );
     }
 }
