@@ -227,8 +227,10 @@ fancybox, вероятно, самый популярный в мире скри
 ```javascript
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (a) {
-    a.open( html ,{
-    baseClass: "gjContactPhones",
+	a.open( html ,{
+	baseClass: "gjContactPhones",	// Класс основного элемента 
+    touch : false , 				// полностью отключить сенсорные жесты default : true
+	
     afterShow   : function(instance, current)   {},
     afterClose  : function () {},
     });
