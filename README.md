@@ -6,19 +6,22 @@
  1. [Javascript and jQuery](#JavascriptjQuery)
     + [Отложенная загрузка ресурсов из js](#JavascriptjQueryLoad)
     
- 2. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
+ 1. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
     + [PHP Транслитерация](#rus2translite);
     + [PHP Транслитерация для использования в Url](#str2url);
     + [PHP Склонение числительных](#declOfNum).
- 3. [Модули](#модули) 
+ 1. [Плагины]()
+    + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)
+ 1. [Модули](#модули) 
     + [Ajax](#Ajax);
     + [Storage Class](#storage-class-) (Локальное хранилище браузера).
- 4. [Joomla](Joomla)
- 5. [Core](Core)
-    + 5.1 [Backup](Core\Backup)
-       + 5.1.1 [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)
+ 1. [Joomla](Joomla)
+ 1. [Core](Core)
+    + [Backup](Core\Backup)
+    + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)
   
- 6. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)
+  
+ 1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)
     +        
   ## <a name="Core"></a> Core       
   ### <a name="Core\Backup"></a> Backup       
@@ -42,8 +45,6 @@ catch ( Exception $e)
        
   #### <a name="Core\Backup\Joomla\com_jshopping"></a> Joomla\com_jshopping       
   Backup DB For Joomla Component Jshopping    
-
-
 ## <a name="Joomla"></a> Joomla
 ### <a name="Joomla-plugins"></a> Взаимодействие с плагинами Joomla
 
@@ -112,9 +113,6 @@ $Jpro['load'][] = [
 ];
 $doc->addScriptOptions('Jpro' , $Jpro ) ;
 ```
-
-
-
 ## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
 Обработка строковых и числовых значений
 
@@ -148,15 +146,6 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
 ```
 
 *****************************
-
-
-
-
-
-
-
-
-
 
 ## События ядра 
 **GNZ11Loaded** - после инициализации библиотеки  
