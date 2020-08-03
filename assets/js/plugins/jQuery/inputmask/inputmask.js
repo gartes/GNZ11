@@ -81,7 +81,17 @@ var GNZ11_Inputmask = function ( elSelector , Settings ) {
                 onChange: function( val , event ){
                     self._setOperatorIcon(event.target )
                 },
-                onKeyPress:function(v,event,currentField,options){},
+                onKeyPress:function(val,event,currentField,options){
+                    currentField[0].style.setProperty("--c", "blue");
+
+                    console.log( val )
+                    console.log( currentField[0] )
+                    console.log( $(currentField).attr('placeholder') )
+
+                    if ( typeof self.opts.onKeyPress ==='function' ) {
+                        self.opts.onKeyPress( val,event,currentField,options );
+                    }
+                },
                 onComplete : function ( val , event , currentField , d  ) {
                     console.log('setMask onComplete')
                     if ( typeof self.opts.onComplete ==='function' && !self.isComplete ) {
@@ -90,11 +100,16 @@ var GNZ11_Inputmask = function ( elSelector , Settings ) {
                         setTimeout(function () {
                             self.isComplete = false ;
                         },3000 )
+                    }else {
+                        $( elSelector ).addClass('Mask-Complete');
                     }
                 }
-
             });
         },
+    };
+
+    this._placeholderModified = function (){
+
     }
 
     /**
@@ -105,9 +120,13 @@ var GNZ11_Inputmask = function ( elSelector , Settings ) {
         var wrp = $('<div />' , {
             class : 'wrapMaskPhone'
         });
-        $(elSelector)
-            .attr('placeholder' , self.opts.mask)
-            .wrap( wrp );
+        var $maskEl = $(elSelector);
+        var $parent = $maskEl.parent();
+        // var $labelElPrev = $maskEl.prev('label')
+        // var $labelElNext = $maskEl.next('label')
+
+        $parent.wrap( wrp );
+        $maskEl.attr('placeholder' , self.opts.mask)
     }
     /**
      * Установщик иконки мобильного оператора для полей телефонов

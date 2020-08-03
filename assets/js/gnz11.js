@@ -429,7 +429,7 @@ window.GNZ11 = function (options_setting) {
      */
     this.getPlugin = function (pluginName , setting) {
         return new Promise(function (resolve, reject) {
-            this.__loadModul[pluginName](setting).then(function (a)
+            self.__loadModul[pluginName](setting).then(function (a)
             {
                 resolve(a) ;
             },function (err)
@@ -457,41 +457,32 @@ window.GNZ11 = function (options_setting) {
      */
     this.__loadModul = {
         Inputmask : function(param){
-            if ( typeof  Inputmask === 'undefined' ){
+            var Host = self.Options.Ajax.siteUrl
+            function _init() {
+                var Inputmask = new GNZ11_Inputmask();
+                if (typeof param !== 'undefined' ){
+                    var elSelector = param.element ;
+                    return  Inputmask.Inint( elSelector , param );
+                }
+                return Inputmask ;
+            }
+            if ( typeof  window.Inputmask === 'undefined' ){
                 return new Promise(function (resolve, reject) {
                     Promise.all([
-                        wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css'),
-                        wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js'),
-                        wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.js'),
+                        wgnz11.load.css(Host+ 'libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css'),
+                        wgnz11.load.js(Host+ 'libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js'),
+                        wgnz11.load.js(Host+ 'libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.js'),
                     ]).then(function (a) {
-                        console.info( 'Inputmask loaded' )
-                        var $ =jQuery ;
-                        var elSelector = param.element ;
-                        Inputmask.Inint( elSelector , param );
-
-                        /*function Inint (elSelector , Settings){
-                            var wrp = $('<div />' , {
-                                class : 'wrapMaskPhone'
-                            });
-                            $(elSelector)
-                                .attr('placeholder' , Settings.mask)
-                                .wrap( wrp )
-                        }*/
-
-                        /*$( elSelector ).mask(Settings.mask ,{
-                            onKeyPress:function(v,event,currentField,options){
-                                _setOperatorIcon( Settings , currentField )
-                            },
-                            onChange: function(cep){
-                                console.log('cep changed! ', cep);
-                            },
-                        });*/
-
-
+                        var res = _init();
+                        resolve(res)
                     })
                 })
+            }else{
+                return new Promise(function (resolve, reject) {
+                    var res = _init();
+                    resolve(res)
+                })
             }
-
         },
         Noty :  function (param) {
             //

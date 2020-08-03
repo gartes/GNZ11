@@ -3109,6 +3109,39 @@
       }
     },
 
+    /**
+     * Закрыть окно по окончанию TimeOut
+     * @param time
+     */
+    setTimeOut : function(time){
+      console.log( time )
+      var _self = this ;
+      var instance = this.getInstance();
+      var $tElemet = $('<div />' , {
+        id : 'progress' ,
+        class : 'waiting' ,
+        html : '<dt></dt><dd></dd>',
+      })
+
+      $(instance.current.$content[0]).append($tElemet)
+
+      $({property: 0}).animate({property: 105}, {
+        // время выполнения
+        duration: time,
+        step: function () {
+          var _percent = Math.round(this.property);
+          var $progress = $('#progress') ;
+          $progress.css('width', _percent + "%");
+          if (_percent === 105) {
+            $progress.addClass("done");
+          }
+        },
+        complete: function () {
+          instance.close();
+        }
+      });
+    },
+
     // Close all instances and unbind all events
     // =========================================
 
