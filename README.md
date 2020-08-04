@@ -201,7 +201,7 @@ wgnz11.getModul("Ajax").then(function (Ajax) {
     // Не обрабатывать сообщения
     Ajax.ReturnRespond = true ;  
     // Отправить запрос 
-    Ajax.send(data).then(function (r) {
+    Ajax.send(request).then(function (r) {
         console.log(r)
     },function(err) {
         console.error(err)

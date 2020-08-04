@@ -7,6 +7,10 @@ GNZ11Ajax = function () {
     var $ = jQuery;
     var self = this ;
     this.Init = function () { };
+
+
+    this.Loader = false ;
+
     this.Setting = {
         Ajax: {
             auto_render_message: false,
@@ -26,6 +30,31 @@ GNZ11Ajax = function () {
         $.extend(true , this.Setting , param  );
     };
 
+
+    this._startLoader = function (   ){
+        $appendTo = $('body')
+        var $tElemet = $('<div />', {id: 'progress', class: 'waiting', html: '<dt></dt><dd></dd>',})
+        $tElemet.appendTo( $appendTo );
+        $({property: 0}).animate({property: 105}, {
+            // время выполнения
+            duration: 5000 ,
+            step: function () {
+
+                console.log( this )
+                var _percent = Math.round(this.property);
+                var $progress = $('#progress');
+                $progress.css('width', _percent + "%");
+                if (_percent === 105) {
+                    $progress.addClass("done");
+                }
+            },
+            complete: function () {
+                /*if (typeof params.complete === 'function') {
+                    params.complete();
+                }*/
+            }
+        });
+    }
 
     /**
      Для Правильной отправки понадобится установить переменные
@@ -58,8 +87,9 @@ GNZ11Ajax = function () {
             });
 
 
+     */
 
-     *
+    /**
      *
      * @param obj
      * @param namespace
@@ -71,11 +101,20 @@ GNZ11Ajax = function () {
 
         var paramsDef = {
             method : 'POST' ,
+            Loader : self.Loader ,
         };
+
+        if ( self.Loader ){
+            self._startLoader();
+        }
+
 
         var paramsAjax = Joomla.extend(paramsDef , params ) ;
 
+        if ( paramsAjax.Loader ){
 
+        }
+        console.log( paramsAjax ) ;
 
 
         return new Promise(function (succeed, fail) {

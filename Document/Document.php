@@ -17,7 +17,14 @@ class Document
     ] ;
     private $_commentStart = '' ;
 
-
+    /**
+     * Загрузка стилей в тег <style /> из файла
+     * @param $path - путь к файлу от корня сайта
+     * @param array $params - параметры
+     *
+     *
+     * @since version
+     */
     public static function addIncludeStyleDeclaration( $path , $params = [] ){
         $_params = array_merge(self::IncludeStyleParams , $params );
         $doc = \Joomla\CMS\Factory::getDocument();
@@ -30,6 +37,15 @@ class Document
         ob_end_clean();
         $doc->addStyleDeclaration( $css_output );
     }
+
+    /**
+     * Загрузка скрипта в тег <script />
+     * @param $path - путь к файлу от корня сайта
+     * @param array $params - параметры
+     *
+     *
+     * @since version
+     */
     public static function addIncludeScriptDeclaration( $path , $params = [] ){
         $_params = array_merge(self::IncludeStyleParams , $params );
         $doc = \Joomla\CMS\Factory::getDocument();
