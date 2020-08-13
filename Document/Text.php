@@ -160,4 +160,26 @@
             }
         }
 
+        /**
+         * Разбить многобайтовую строку на отдельные символы.
+         * Используется для разбиения строки состоящих из символов кирилицы в массив
+         * @param $string Строка с кирилицей
+         *
+         * @param string $encofing Кодировка ( default - UTF-8 )
+         * @return array массив символов строки
+         *
+         * @since version
+         */
+        public static function mbStringToArray ($string , $encofing = "UTF-8" ) {
+            $strlen = mb_strlen($string);
+            $array = [] ;
+            while ($strlen) {
+                $array[] = mb_substr($string,0,1, $encofing );
+                $string = mb_substr($string,1,$strlen, $encofing );
+                $strlen = mb_strlen($string);
+            }
+            return $array;
+        }
+
+
 	}

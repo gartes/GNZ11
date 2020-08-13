@@ -114,7 +114,7 @@ GNZ11Ajax = function () {
         if ( paramsAjax.Loader ){
 
         }
-        console.log( paramsAjax ) ;
+
 
 
         return new Promise(function (succeed, fail) {
