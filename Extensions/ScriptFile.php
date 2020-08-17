@@ -57,9 +57,6 @@ class ScriptFile
         File::write($file, $json);
     }
 
-    private function getVersionGnz11(){
-
-    }
 
     /**
      * Задачи перед обновлением
@@ -200,13 +197,8 @@ class ScriptFile
             \Joomla\CMS\Factory::getApplication()->enqueueMessage( 'Не удалось скачать пакет установки' , 'error');
             return false;
         }
-
-
         // Распакуй скачанный файл пакета.
         $package = \Joomla\CMS\Installer\InstallerHelper::unpack($tmp_path . '/' . $p_file, true);
-
-
-
         // Get an installer instance.
         $installer = new \Joomla\CMS\Installer\Installer();
         /*
@@ -243,8 +235,6 @@ class ScriptFile
                 }*/
             }
         }
-
-
         if (!$package || !$package['type'])
         {
             \Joomla\CMS\Installer\InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
@@ -267,9 +257,7 @@ class ScriptFile
             $result = true;
             $msgType = 'message';
         }
-
         \Joomla\CMS\Factory::getApplication()->enqueueMessage( $msg ,  $msgType );
-
         // Cleanup the install files.
         if (!is_file($package['packagefile']))
         {
