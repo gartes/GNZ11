@@ -15,6 +15,7 @@
         <folder>assets</folder>
         <folder>Core</folder>
         <folder>Document</folder>
+        <folder>Extensions</folder>
         <folder>layouts</folder>
         <folder>sql</folder>
         <file>gnz11.xml</file>
