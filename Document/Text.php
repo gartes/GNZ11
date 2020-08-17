@@ -18,7 +18,7 @@
 	 * @license     A "Slug" license name e.g. GPL2
 	 * @package     GNZ11\Document
 	 */
-	class Text
+	class Text extends \Joomla\CMS\Language\Text
 	{
 		
 		/**
@@ -181,5 +181,22 @@
             return $array;
         }
 
+        /**
+         * Проверить емеет ли строка  длину
+         * Check if have a string with a length
+         *
+         * @input	string   The string to check
+         *
+         * @returns bool true on success
+         * @since 3.9
+         */
+        public static function checkString($string)
+        {
+            if (isset($string) && is_string($string) && strlen($string) > 0)
+            {
+                return true;
+            }
+            return false;
+        }
 
 	}
