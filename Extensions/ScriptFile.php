@@ -70,8 +70,7 @@ class ScriptFile
 
 
 
-        echo'<pre>';print_r( class_exists( '\GNZ11\Extensions\ScriptFile' ) );echo'</pre>'.__FILE__.' '.__LINE__;
-        die(__FILE__ .' '. __LINE__ );
+
 
         $app = \Joomla\CMS\Factory::getApplication();
         $Registry = new \Joomla\Registry\Registry();
