@@ -262,101 +262,10 @@ class ScriptFile
         {
             $package['packagefile'] = $tmp_path . '/' . $package['packagefile'];
         }
-
         \Joomla\CMS\Installer\InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
-
-
         return $result ;
 
 
-
-
-        if (!(function_exists('curl_init') && function_exists('curl_exec')) && !ini_get('allow_url_fopen'))
-        {
-            return JText::_('NNEM_ERROR_CANNOT_DOWNLOAD_FILE');
-        }
-        else if (function_exists('curl_init') && function_exists('curl_exec'))
-        {
-            /* USE CURL */
-            $ch = curl_init();
-            $options = array(
-                CURLOPT_URL            => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 30,
-            );
-
-            curl_setopt_array($ch, $options);
-            $content = curl_exec($ch);
-
-            echo'<pre>';print_r( $ch );echo'</pre>'.__FILE__.' '.__LINE__;
-            die(__FILE__ .' '. __LINE__ );
-
-
-            curl_close($ch);
-        }
-        else
-        {
-            /* USE FOPEN */
-            $handle = @fopen($url, 'r');
-            if (!$handle)
-            {
-                return JText::_('SERVER_CONNECT_FAILED');
-            }
-
-            $content = '';
-            while (!feof($handle))
-            {
-                $content .= fread($handle, 4096);
-                if ($content === false)
-                {
-                    return JText::_('NNEM_ERROR_FAILED_READING_FILE');
-                }
-            }
-            fclose($handle);
-        }
-
-
-        echo'<pre>';print_r( $target );echo'</pre>'.__FILE__.' '.__LINE__;
-        echo'<pre>';print_r( $content );echo'</pre>'.__FILE__.' '.__LINE__;
-        die(__FILE__ .' '. __LINE__ );
-
-        if (empty($content))
-        {
-            return Text::_('NNEM_ERROR_CANNOT_DOWNLOAD_FILE');
-        }
-
-        // Write buffer to file
-        File::write($target, $content);
-
-        jimport('joomla.installer.installer');
-        jimport('joomla.installer.helper');
-
-        // Get an installer instance
-        $installer = \Joomla\CMS\Installer\Installer::getInstance();
-
-        echo'<pre>';print_r( $installer );echo'</pre>'.__FILE__.' '.__LINE__;
-        die(__FILE__ .' '. __LINE__ );
-
-
-        // Unpack the package
-        $package = JInstallerHelper::unpack($target);
-
-        // Cleanup the install files
-        if (!is_file($package['packagefile']))
-        {
-            $config = JFactory::getConfig();
-            $package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
-        }
-        JInstallerHelper::cleanupInstall($package['packagefile'], $package['packagefile']);
-
-        // Install the package
-        if (!$installer->install($package['dir']))
-        {
-            // There was an error installing the package
-            return JText::sprintf('COM_INSTALLER_INSTALL_ERROR', JText::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
-        }
-
-        return true;
     }
 
 }
