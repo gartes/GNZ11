@@ -95,8 +95,19 @@ var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
 /**
 * Загрузка ядра JS !!!!
 */
-JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
-$GNZ11_js =  \GNZ11\Core\Js::instance();
+try
+{
+    JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
+    $GNZ11_js =  \GNZ11\Core\Js::instance();
+}
+catch( Exception $e )
+{
+    if( !\Joomla\CMS\Filesystem\Folder::exists( $this->patchGnz11 ) && $this->app->isClient('administrator') )
+    {
+        $this->app->enqueueMessage('Должна быть установлена бибиотека GNZ11' , 'error');
+    }#END IF
+    throw new \Exception('Должна быть установлена бибиотека GNZ11' , 400 ) ; 
+}
 ?>
 ```
 
