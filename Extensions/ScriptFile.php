@@ -67,11 +67,6 @@ class ScriptFile
      * @since version
      */
     public static function updateProcedure($typeExt, $parent){
-
-
-
-
-
         $app = \Joomla\CMS\Factory::getApplication();
         $Registry = new \Joomla\Registry\Registry();
 
