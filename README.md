@@ -208,11 +208,28 @@ var Settings = {
 
 ### Ajax
 ```javascript
+/*
+AjaxDefaul для плагина
+*/
+this.AjaxDefaultData = {
+        group : this.__group,
+        plugin : this.__plugin ,
+        option : 'com_ajax' ,
+        format : 'json' ,
+        task : null ,
+    };
+
+
 wgnz11.getModul("Ajax").then(function (Ajax) {
+    var DATA = {
+        param1 : 'test1',    
+        param2 : 'test2',    
+    }
+    var requestData = $.extend(true, self.AjaxDefaultData, DATA );
     // Не обрабатывать сообщения
     Ajax.ReturnRespond = true ;  
     // Отправить запрос 
-    Ajax.send(request).then(function (r) {
+    Ajax.send(requestData).then(function (r) {
         console.log(r)
     },function(err) {
         console.error(err)
