@@ -36,6 +36,8 @@ $Nodes = $xpath->query( '//label[@class="uf_category"]' );
 ***
 ##### <a name="Document\Document::addIncludeStyleDeclaration"></a> Добавить Style содержимое CSS файла
 ```php
+JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
+
 $pathCss = JPATH_THEMES . '/elektro/assets/css/com_jshopping.category.critical.css' ;
 \GNZ11\Document\Document::addIncludeStyleDeclaration( $pathCss ) ;
 
