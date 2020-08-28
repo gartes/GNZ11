@@ -37,9 +37,20 @@ $Nodes = $xpath->query( '//label[@class="uf_category"]' );
 #### <a name="Document/Document"></a> Document/Document 
 ***
 ##### <a name="Document\Document::addIncludeStyleDeclaration"></a> Добавить Style содержимое CSS файла
+Параметры : 
+ + 'debug' => false ,  // Отображать в стлях пути к файлу из которого они вставлены
+ + 'asFile' => false , // Загрузить как сcs файл  <link rel="stylesheet" /> 
 ```php
+JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = false , $prepend = false , $type = 'psr4' );
+
 $pathCss = JPATH_THEMES . '/elektro/assets/css/com_jshopping.category.critical.css' ;
-\GNZ11\Document\Document::addIncludeStyleDeclaration( $pathCss ) ;
+$params = [ 'debug' => true ]
+/**
+* @param string $path - путь к файлу от корня сайта
+* @param array $params - параметры
+* @since 3.9
+*/
+\GNZ11\Document\Document::addIncludeStyleDeclaration( $pathCss , $params ) ;
 
 ```
 
