@@ -57,7 +57,7 @@ $params = [ 'debug' => true ]
 
 #### <a name="Document/Text"></a> Document/Text 
 ***
-#####<a name="Document\Text::replaceQuotesWithSmart"><a> Замена в строке кавычек на умные|елочки
+##### <a name="Document\Text::replaceQuotesWithSmart"><a> Замена в строке кавычек на умные|елочки
 ```php
 $datatext = GNZ11\Document\Text::replaceQuotesWithSmart($datatext);
 ```
