@@ -63,6 +63,13 @@ $params = [ 'debug' => true ]
 ***
 ##### <a name="Document\Text::replaceQuotesWithSmart"><a> Замена в строке кавычек на умные|елочки
 ```php
+/**
+* Замена в строке кавычек на умные|елочки
+* @param   string $datatext
+* @return  string
+* @since 3.9
+* @date 29.08.2020 18:44
+*/ 
 $datatext = \GNZ11\Document\Text::replaceQuotesWithSmart($datatext);
 ```
 
