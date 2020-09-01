@@ -61,7 +61,18 @@ $params = [ 'debug' => true ]
 
 #### <a name="Document/Text"></a> Document/Text 
 ***
-##### <a name="Document\Text::replaceQuotesWithSmart"><a> Замена в строке кавычек на умные|елочки
+##### <a name="Document\Text::camelCase"></a> Преобразовать строку в строку camelCase
+```php
+/**
+* Преобразовать строку в строку camelCase
+* GNZ11\Document\Text::camelCase($str, $noStrip)
+* @param $str
+* @param array $noStrip
+* @return string
+*/
+\GNZ11\Document\Text::camelCase($str, $noStrip)
+```
+##### <a name="Document\Text::replaceQuotesWithSmart"></a> Замена в строке кавычек на умные|елочки
 ```php
 /**
 * Замена в строке кавычек на умные|елочки
