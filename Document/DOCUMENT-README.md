@@ -61,6 +61,20 @@ $params = [ 'debug' => true ]
 
 #### <a name="Document/Text"></a> Document/Text 
 ***
+##### <a name="Document\Text::camelCase"></a> Обрезка строки до длины
+```php
+/**
+* Обрезка строки до длины
+* @param $str
+* @param $length
+* @return string
+* @since 3.9
+* @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+* @date 09.09.2020 14:43
+*
+*/
+\GNZ11\Document\Text::truncation($str, $length);
+```
 ##### <a name="Document\Text::camelCase"></a> Преобразовать строку в строку camelCase
 ```php
 /**
