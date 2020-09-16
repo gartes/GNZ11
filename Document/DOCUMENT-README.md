@@ -12,6 +12,7 @@
         + [Добавить Style содержимое CSS файла](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-style-%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%BC%D0%BE%D0%B5-css-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0)
         
     + [Text](#Document/Text)
+        + [Обрезка строки до длины](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%BE%D0%B1%D1%80%D0%B5%D0%B7%D0%BA%D0%B0-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8-%D0%B4%D0%BE-%D0%B4%D0%BB%D0%B8%D0%BD%D1%8B)
         + [Замена в строке кавычек на умные|елочки](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%B7%D0%B0%D0%BC%D0%B5%D0%BD%D0%B0-%D0%B2-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5-%D0%BA%D0%B0%D0%B2%D1%8B%D1%87%D0%B5%D0%BA-%D0%BD%D0%B0-%D1%83%D0%BC%D0%BD%D1%8B%D0%B5%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B8)
         + [Найти слово из массива в заданной строке](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%BD%D0%B0%D0%B9%D1%82%D0%B8-%D1%81%D0%BB%D0%BE%D0%B2%D0%BE-%D0%B8%D0%B7-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D0%B0-%D0%B2-%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D0%BE%D0%B9-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5)
         + [PHP Склонение числительных](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-php-%D1%81%D0%BA%D0%BB%D0%BE%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D0%B8%D1%81%D0%BB%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D1%85)
@@ -61,7 +62,32 @@ $params = [ 'debug' => true ]
 
 #### <a name="Document/Text"></a> Document/Text 
 ***
-##### <a name="Document\Text::replaceQuotesWithSmart"><a> Замена в строке кавычек на умные|елочки
+##### <a name="Document\Text::camelCase"></a> Обрезка строки до длины
+```php
+/**
+* Обрезка строки до длины
+* @param $str
+* @param $length
+* @return string
+* @since 3.9
+* @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+* @date 09.09.2020 14:43
+*
+*/
+\GNZ11\Document\Text::truncation($str, $length);
+```
+##### <a name="Document\Text::camelCase"></a> Преобразовать строку в строку camelCase
+```php
+/**
+* Преобразовать строку в строку camelCase
+* GNZ11\Document\Text::camelCase($str, $noStrip)
+* @param $str
+* @param array $noStrip
+* @return string
+*/
+\GNZ11\Document\Text::camelCase($str, $noStrip)
+```
+##### <a name="Document\Text::replaceQuotesWithSmart"></a> Замена в строке кавычек на умные|елочки
 ```php
 /**
 * Замена в строке кавычек на умные|елочки
