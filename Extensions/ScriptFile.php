@@ -71,7 +71,11 @@ class ScriptFile
         $Registry = new \Joomla\Registry\Registry();
 
         $filePath = false ;
+        if( !isset( $parent->get('manifest')->config ) ) return ; #END IF
+
+
         $config = $parent->get('manifest')->config->fields->fieldset[0];
+
         foreach ($config as $conf){
             $name = self::xml_attribute( $conf , 'name' );
             if( $name == '_fileJsonPath' )

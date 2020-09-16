@@ -4,6 +4,7 @@ GNZ11Recognition = function () {
     this.Config = {
         /**
          * Голосовое произношение текста
+         * @type array
          */
         speechUtterance :[
             {
@@ -14,6 +15,7 @@ GNZ11Recognition = function () {
         ] ,
         /**
          * Распознавание речи -  голосовой набор текста (ввод текста голосом)
+         * @type array
          */
         addSpeechRecognition : [
             {
@@ -24,6 +26,7 @@ GNZ11Recognition = function () {
         ] ,
         /**
          * События Распознавание речи
+         * @type object
          */
         SpeechRecognition : {
             lang : 'ru' ,
@@ -68,6 +71,7 @@ GNZ11Recognition = function () {
         },
         /**
          * Шаблоны кнопок
+         * @type object
          */
         btn : {
             /**
@@ -79,7 +83,7 @@ GNZ11Recognition = function () {
              */
             'speechUtteranceRefresh' : '<input type="button" value="Refresh" tabindex="3" class="btn btn-danger btn-sm">',
             /**
-             * Шаблоны кнопки распознавание речи
+             * Шаблоны кнопки распознавание речи или селектор если элемент имеется на странице
              */
             'speechRecognition' : '<input type="button" value="Record" tabindex="3" onclick=""  class="btn btn-danger btn-mini btn-sm">',
             /**
@@ -89,6 +93,10 @@ GNZ11Recognition = function () {
         },
     };
 
+    /**
+     * Кстановка параметров настроек модуля Recognition
+     * @param setting object
+     */
     this.setConfig = function (setting) {
         this.Config = $.extend( true , this.Config , setting )
     };

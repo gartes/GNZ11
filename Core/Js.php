@@ -47,6 +47,9 @@
 			if( $this->CoreJs_isLoaded ) return  null ;  #END IF
 			
 			$this->setConfig_GNZ11 ();
+
+
+
 			return $this;
 		}#END FN
 		
@@ -241,6 +244,7 @@
 			}#END IF
 			
 			
+
 			
 			$sriptLoader = "document.addEventListener('DOMContentLoaded', function () {";
 			$sriptLoader .= "var n = document.createElement('script');";
@@ -260,6 +264,9 @@
 				$sriptLoader .= " 'Status' : 'loading'," ;
 				$sriptLoader .= " 'SiteUrl' : '".\GNZ11\Core\Uri\Uri::root() ."'," ;
 			$sriptLoader .=  "};";
+
+
+
 			
 			return $sriptLoader;
 		}

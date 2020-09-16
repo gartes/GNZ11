@@ -20,8 +20,78 @@
 	 */
 	class Text extends \Joomla\CMS\Language\Text
 	{
-		
-		/**
+        /**
+         * Обрезка строки до длины
+         * \GNZ11\Document\Text::truncation($str, $length);
+         * @param $str      - строка
+         * @param $length   - длина строки в сисволах
+         * @return string
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 09.09.2020 14:43
+         *
+         */
+        public static function truncation($str, $length = 30)
+        {
+            $cloneStr = $str ;
+            $str = mb_substr($str, 0, $length - 2);        //Обрезаем до заданной длины
+            $words = explode(" ", $str);                //Разбиваем по словам
+            $cloneWords = $words ;
+
+//            echo'<pre>';print_r( $words );echo'</pre>'.__FILE__.' '.__LINE__;
+
+            array_splice($words, -1);                //Удаляем последнее слово
+            $last = array_pop($cloneWords );                //Получаем последнее слово
+
+            for ($i = 1; $i < strlen($last); $i++)
+            {
+                //Ищем и удаляем в конце последнего слова все кроме букв и цифр
+                if (preg_match('/\W$/u', substr($last, -1, 1))) $last = mb_substr($last, 0, strlen($last) - 1);
+                else break;
+            }
+            $result = implode(" ", $words) . ' ' . $last ;
+            $result = trim( $result ) ;
+            if ( $result == $cloneStr ) return $result ;   #END IF
+            return $result. '...';
+        }
+
+        /**
+         * Получить количество слов в строке
+         * @param string $string
+         * @return int - Количество слов
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 08.09.2020 02:05
+         *
+         */
+        public static function getCountWord(string $string)
+        {
+	        $arr = explode(' ' , $string);
+	        return count( $arr ) ;
+        }
+
+        /**
+         * Замена в строке кавычек на умные|елочки
+         * GNZ11\Document\Text::replaceQuotesWithSmart($datatext)
+         * @param   string $datatext
+         * @return  string
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 29.08.2020 18:44
+         */
+		public static function replaceQuotesWithSmart($datatext){
+            return preg_replace_callback(
+                '#(([\"]{2,})|(?![^\W])(\"))|([^\s][\"]+(?![\w]))#u',
+                function ($matches) {
+                    if (count($matches)===3) return "«»";
+                    else if ($matches[1]) return str_replace('"',"«",$matches[1]);
+                    else return str_replace('"',"»",$matches[4]);
+                },
+                $datatext
+            );
+        }
+
+        /**
 		 * PHP Склонение числительных
 		 *
 		 * USE :
@@ -85,7 +155,7 @@
 		}
 		
 		/**
-		 * Траслителтрует строку для имользования в Url
+		 * Траслителтрует строку для использования в Url
 		 * @param $str string
 		 *
 		 * @return string
@@ -107,6 +177,7 @@
 
         /**
          * Найти слово из массива в заданной строке
+         * ALIAS \GNZ11\Document\Arrays::strpos_array($haystack , $needles) ;
          * @param $haystack
          * @param $needles
          *
@@ -115,31 +186,7 @@
          * @since version
          */
         public static function strpos_array($haystack, $needles) {
-            if ( is_array($needles) ) {
-                foreach ($needles as $str) {
-
-                   /* if ($haystack != 'Детекторы взрывчатых веществ') {
-                        echo'<pre>';print_r( $haystack );echo'</pre>'.__FILE__.' '.__LINE__;
-                        echo'<pre>';print_r( $str );echo'</pre>'.__FILE__.' '.__LINE__;
-                        die(__FILE__ .' '. __LINE__ );
-                    }#END IF*/
-
-
-
-                    if ( is_array($str) ) {
-                        $pos = strpos_array($haystack, $str);
-                    } else {
-                        $pos = strpos($haystack, $str);
-                    }
-                    if ($pos !== FALSE) {
-                        return $pos;
-                    }
-                }
-            } else {
-                return strpos($haystack, $needles);
-            }
-
-            return false ;
+            return \GNZ11\Document\Arrays::strpos_array($haystack , $needles) ;
         }
 
         /**
@@ -199,4 +246,62 @@
             return false;
         }
 
+        /**
+         * Получить часть строки от первого появления  $inthat
+         *
+         * GNZ11\Document\Text::getAfter($str, $inthat)
+         * / e.c.   GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
+         *          returns 'online.ge'
+         *          // от первого появления "@"
+         * @param $str
+         * @param $inthat
+         * @return false|string
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 31.08.2020 16:38
+         *
+         */
+        public static function getAfter($str, $inthat)
+        {
+            if (!is_bool(mb_strpos($str, $inthat, 0, 'UTF-8')))
+                return mb_substr($str, mb_strlen($inthat, 'UTF-8'), mb_strlen($str, 'UTF-8'));
+        }
+
+        /**
+         * Преобразовать строку в строку camelCase
+         * \GNZ11\Document\Text::camelCase($str, $noStrip)
+         * @param $str
+         * @param array $noStrip
+         * @return string
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 31.08.2020 20:08
+         * @{url : http://www.mendoweb.be/blog/php-convert-string-to-camelcase-string/ }
+         *
+         */
+        public static function camelCase($str, array $noStrip = [])
+        {
+            # не буквенные и нечисловые символы становятся пробелами
+            $str = preg_replace('/[^a-z0-9' . implode("", $noStrip) . ']+/i', ' ', $str);
+            $str = trim($str);
+            # верхний регистр первого символа каждого слова
+            $str = ucwords($str);
+            $str = str_replace(" ", "", $str);
+            $str = lcfirst($str);
+
+            return $str;
+        }
+
 	}
+
+
+
+
+
+
+
+
+
+
+
+

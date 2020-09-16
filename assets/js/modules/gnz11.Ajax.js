@@ -96,7 +96,7 @@ GNZ11Ajax = function () {
      * @param params
      * @returns {Promise<unknown>}
      */
-    this.send = function (obj, namespace , params) {
+    this.send = function (obj, namespace , params , addToGet ) {
         var $this = this;
 
         var paramsDef = {
@@ -140,7 +140,8 @@ GNZ11Ajax = function () {
                 url: Uri
                     + (typeof namespace !== 'undefined' ? "namespace=" + namespace + '&' : '')
                     + "format=json"
-                    + (typeof token !== 'undefined' ? "&" + token + "=1" : '' ),
+                    + (typeof token !== 'undefined' ? "&" + token + "=1" : '' )
+                    + "&t=" + Date.now() ,
                 data: obj ,
                 error: function (jqXHR, exception) {
                     var msg = '';

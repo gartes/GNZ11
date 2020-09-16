@@ -3,13 +3,14 @@
  */
 class Storage_class {
 
-    static get(key) {
+    static get( key , def ) {
         let value = localStorage.getItem(key);
+        if (value === 'undefined') return def ;
         return value === null ? null : JSON.parse(value);
     }
 
     static set(key,value) {
-        return localStorage.setItem(key,JSON.stringify(value));
+       return localStorage.setItem(key,JSON.stringify(value));
     }
 
     static unset(key) {

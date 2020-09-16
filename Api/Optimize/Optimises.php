@@ -46,7 +46,6 @@ class Optimises
         // Get the parameters.
         if ( !empty( $options ))
         {
-
             if ( $options instanceof Registry)
             {
                 $this->Params = $options;
@@ -63,21 +62,6 @@ class Optimises
         return $this;
     }#END FN
 
-
-
-    /**
-     * @param $namespace
-     * @param array|Registry $Params
-     * @since 3.9
-     */
-    public function setParams(  $Params)
-    {
-        $Params = new Registry($Params) ;
-        $this->Params->merge( $Params ) ;
-    }
-
-
-
     /**
      * @param array $options
      *
@@ -92,14 +76,42 @@ class Optimises
         }
         return self::$instance;
     }#END FN
+
+    /**
+     * Добавить параметры в Optimises
+     * @param array|Registry $Params
+     * @since 3.9
+     */
+    public function setParams(  $Params)
+    {
+        $Params = new Registry($Params) ;
+        $this->Params->merge( $Params ) ;
+    }
+
+    /**
+     * Старт Optimises - Выполнить задания по оптимизации
+     *
+     * @throws Exception
+     * @since version
+     */
     public function Start (){
+//        echo'<pre>';print_r( $this->Params );echo'</pre>'.__FILE__.' '.__LINE__;
+//        die(__FILE__ .' '. __LINE__ );
+
+
         # Перенос сериптов вниз страницы
         if ( $this->Params->get('downScript' , 0 ))  $this->downScript() ;#END IF
         # Выгрузка части страницы в html файл
         if ( !empty($this->Params->get('to_html_file' , [] ))) $this->toHtmlFile() ;#END IF
+        # Обварачивать элементы в тег <template /> : Array
         if ( !empty($this->Params->get('to_templates' , [] ))) $this->toTemplates() ;#END IF
     }
 
+    /**
+     * обварачивать элементы в тег <template /> : Array
+     *
+     * @since 3.9
+     */
     protected function toTemplates(){
         $toTemplatesArr =$this->Params->get('to_templates' , [] );
         $body                = $this->app->getBody();
@@ -168,6 +180,7 @@ class Optimises
         # Найти все скрипты в теле страницы
         $scriptNodes = $xpath->query( "//script" );
         foreach ( $scriptNodes as $i => $scriptNode) {
+
             #Получить атрибуты
             $excludeAttr=[];
             $attr = $dom::getAttrElement( $scriptNode , $excludeAttr ) ;
@@ -177,6 +190,8 @@ class Optimises
                 $this->_scriptCollection[ $key ] = $attr  ;
             }else{
                 $key =  md5($scriptNode->nodeValue) ;
+                $attr['type'] = ( isset( $attr['type']) ? $attr['type'] : null ) ;
+
                 switch ( $attr['type'] ){
                     case 'application/json':
                         $type = $attr['type'] ;
@@ -187,22 +202,21 @@ class Optimises
                         $this->_scriptDeclarationCollection['javascript'][ $key ] = $scriptNode->nodeValue ;
                 }
             }#END IF
-
             $scriptNode->parentNode->removeChild($scriptNode);
-
         }#END FOREACH
 
 
+        # Создать тег DATA application/json
         foreach ($this->_scriptDeclarationCollection['application/json'] as $item) {
             \GNZ11\Document\Dom::writeDownTag( $dom , 'script', $item['nodeValue'], $item['attr']);
-
         }#END FOREACH
 
+        # Создать ссылки на JS Файлы
         foreach ( $this->_scriptCollection as $item) {
             \GNZ11\Document\Dom::writeDownTag( $dom , 'script', '',  $item );
         }#END FOREACH
 
-
+        #Созадть Тег Скрипт с собанысм скриптами - разделенные переносом строк
         $scriptDeclaration = implode("\r\n" , $this->_scriptDeclarationCollection['javascript'] ) ;
         \GNZ11\Document\Dom::writeDownTag( $dom , 'script', $scriptDeclaration  );
 

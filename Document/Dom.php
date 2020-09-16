@@ -1,25 +1,20 @@
 <?php
-	
-	
-	
 	namespace GNZ11\Document;
-	
-	
-	
 	use Akeeba\Engine\Driver\Joomla;
 	use DOMDocument;
 	use Exception;
 	use JFactory;
 	use stdClass;
 	use DomXPath;
-	
+
+
 	/**
-	 * @since       3.9
-	 * @subpackage
 	 *
+     *
 	 * @copyright   A copyright
 	 * @license     A "Slug" license name e.g. GPL2
 	 * @package     GNZ11\Document
+     * @since       3.9
 	 */
 	class Dom extends DOMDocument
 	{
@@ -48,6 +43,8 @@
 		    parent::__construct( $version , $encoding );
             return $this;
 		}
+
+
         public  function loadHTML( $source,   $encoding = 'utf-8') {
             $_source = mb_convert_encoding( $source, 'HTML-ENTITIES', $encoding);
             @parent::loadHTML(''.$_source);
@@ -57,42 +54,27 @@
         }
 
         /**
-         * Добавить тег в тело документа перед закрывающемся тегом </body>
+         * Создать новый тег в экз.Dom перед закрывающемся тегом </body>
          *
-         * @param   string  $tag    название тега
-         * @param   string  $value  контент тега
-         * @param   array   $attr   атребуты тега
+         * @param Dom       $dom
+         * @param string    $tag название нового тега
+         * @param string    $value контент тега
+         * @param array     $attr атребуты тега
          *
-         * @throws Exception
          * @since     3.8
          * @author    Gartes
          *
          * @copyright 02.01.19
          */
-        public static function writeDownTag ( $dom , $tag , $value , $attr=[] ){
+        public static function writeDownTag ( $dom , $tag , $value , $attr=[] , $params = []  ){
 
             $newTag =  $dom->createElement( $tag , htmlentities( $value ) );
             # add class attribute
             self::fetchAttr($dom ,$newTag , $attr );
             $xpath = new DomXPath($dom);
             $parent = $xpath->query( '//body');
-
             $parent->item(0)->appendChild( $newTag );
-
-
         }#END FN
-
-
-
-
-
-
-
-
-
-
-
-
 
         /**
          * Подключить phpQuery
@@ -147,9 +129,7 @@
 			}#END FOREACH
 			return $retAttr;
 		}#END FN
-		
 
-		
 		/**
 		 * Добавить узел в конец тега  <head>
 		 *
@@ -181,27 +161,38 @@
 			}#END IF
 			
 			$dom->loadHTML( $body );
-			$xpath = new DomXPath($dom);
-			$parent = $xpath->query( '//head');
-			
-			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
-			
-			
-			# Установка атрибутов узла
-			self::fetchAttr($dom ,$newTag , $attr );
-			
-			
-			
-			$parent->item(0)->appendChild( $newTag );
-			
-			
-			
-			$body =   $dom->saveHTML() ;
+
+            self::_setBottomHeadTag($dom, $tag, $value, $attr);
+
+
+            $body =   $dom->saveHTML() ;
 			$app->setBody($body);
 		}#END FN
-		
 
-		
+        /**
+         * Создать новый тег и вставить его в экз. DOM Перед закрываеющеемся тегом </head>
+         * @param Dom $dom
+         * @param string $tag
+         * @param string $value
+         * @param array $attr
+         * @return \DOMElement
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 25.08.2020 21:03
+         *
+         */
+        public static function _setBottomHeadTag(Dom $dom, string $tag, string $value, array $attr = null ): \DOMElement
+        {
+            $xpath = new DomXPath($dom);
+            $parent = $xpath->query('//head');
+            $newTag = $dom->createElement($tag, htmlentities($value));
+            # Установка атрибутов узла
+            self::fetchAttr($dom, $newTag, $attr);
+            $parent->item(0)->appendChild($newTag);
+            return $newTag;
+        }
+
+
 		/**
 		 * Добавить тег в тело документа перед закрывающемся тегом </noscript>
 		 *
@@ -276,17 +267,10 @@
 		 * @copyright 02.01.19
 		 */
 		public static function fetchAttr ( $dom , &$elem , $attrs=[] ){
-			
 			if ( !count( (array)$attrs ) ) { return ; }
-			
 			$exclTypeArr = ['text/javascript','text/css'] ;
-			
-			
-
 			$log = [] ;
 			foreach ($attrs as $name => $attrVal  ){
-				
-				
 				if ( !in_array($name , self::$attrArrName) )  continue ;
 				
 				switch ($name){
@@ -411,7 +395,8 @@
 
             return false;
         }#END FN
-		
-		
-		
-	}
+
+
+
+
+    }

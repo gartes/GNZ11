@@ -3,12 +3,12 @@
 	use Exception;
 	
 	/**
-	 * @since 3.9
-	 *@subpackage
 	 *
+     *
 	 * @copyright   A copyright
 	 * @license     A "Slug" license name e.g. GPL2
-	 * @package     ${NAMESPACE}
+	 * @package     GNZ11\Api\Optimize
+     * @since 3.9
 	 */
 	
 	class Js_css
