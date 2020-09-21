@@ -99,6 +99,10 @@ class Tasks
                 $file = $file_temp ;
             }#END IF
 
+            echo'<pre>';print_r( $file );echo'</pre>'.__FILE__.' '.__LINE__;
+            die(__FILE__ .' '. __LINE__ );
+
+
             foreach ( $file as $item)
             {
                 $pos1 = stripos($item, $DS);
