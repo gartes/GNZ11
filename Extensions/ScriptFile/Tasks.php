@@ -93,27 +93,30 @@ class Tasks
 
         foreach ((array)$filesArr as $file ){
             $DS = DIRECTORY_SEPARATOR ;
-            
-            echo'<pre>';print_r( $file );echo'</pre>'.__FILE__.' '.__LINE__;
-            die(__FILE__ .' '. __LINE__ );
-
-            
-            $pos1 = stripos($file, $DS);
-            if ($pos1 === false)
+            if (!is_array( $file ))
             {
-                $file = $DS . $file ;
+                $file[] = $file ;
             }#END IF
-            $filePath = JPATH_ROOT . $file ;
 
-            if( \Joomla\CMS\Filesystem\File::exists( $filePath ) )
+            foreach ( $file as $item)
             {
-                if( \Joomla\CMS\Filesystem\File::delete( $filePath ) )
+                $pos1 = stripos($item, $DS);
+                if ($pos1 === false)
                 {
-                    $this->app->enqueueMessage( 'Файл удален ' . $filePath  . PHP_EOL   );
-                }else{
-                    $this->app->enqueueMessage( 'Не удалось удалить файл ' . $filePath  . PHP_EOL   );
+                    $item = $DS . $item ;
                 }#END IF
-            }#END IF
+                $filePath = JPATH_ROOT . $item ;
+
+                if( \Joomla\CMS\Filesystem\File::exists( $filePath ) )
+                {
+                    if( \Joomla\CMS\Filesystem\File::delete( $filePath ) )
+                    {
+                        $this->app->enqueueMessage( 'Файл удален ' . $filePath  . PHP_EOL   );
+                    }else{
+                        $this->app->enqueueMessage( 'Не удалось удалить файл ' . $filePath  . PHP_EOL   );
+                    }#END IF
+                }#END IF
+            }#END FOREACH
         }
     }
 
