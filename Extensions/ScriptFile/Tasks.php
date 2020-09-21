@@ -91,10 +91,9 @@ class Tasks
      */
     public function DelFiles($filesArr){
 
-        echo'<pre>';print_r( $filesArr );echo'</pre>'.__FILE__.' '.__LINE__;
-        die(__FILE__ .' '. __LINE__ );
 
-        foreach ((array)$filesArr as $file ){
+
+        foreach ((array)$filesArr->filename as $file ){
             $DS = DIRECTORY_SEPARATOR ;
             if (!is_array( $file ))
             {
