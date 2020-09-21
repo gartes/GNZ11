@@ -69,12 +69,31 @@ class ScriptFile
     public static function updateProcedure($typeExt, $parent){
         $app = \Joomla\CMS\Factory::getApplication();
         $Registry = new \Joomla\Registry\Registry();
+        $Tasks = \GNZ11\Extensions\ScriptFile\Tasks::instance();
+
+
+        /**
+         * Если в файле манифест есть тэг <preflight />
+         * Передаем данные для выполнения
+         *
+         */
+        if (isset( $parent->get('manifest')->preflight ) )
+        {
+            $Tasks->preflight($parent->get('manifest')->preflight);
+        }#END IF
+
+
+
 
         $filePath = false ;
         if( !isset( $parent->get('manifest')->config ) ) return ; #END IF
 
 
         $config = $parent->get('manifest')->config->fields->fieldset[0];
+
+
+
+
 
         foreach ($config as $conf){
             $name = self::xml_attribute( $conf , 'name' );
@@ -86,19 +105,13 @@ class ScriptFile
         }
         if( !$filePath  ) return ; #END IF
 
-
-
         $filePath = JPATH_ROOT .  $filePath . '/files.json' ;
         $dataSetting = $Registry->loadFile( $filePath ) ;
 
-        $Tasks = \GNZ11\Extensions\ScriptFile\Tasks::instance();
+
         
         $taskArray = $dataSetting->toArray();
         if( !$taskArray || !is_array( $taskArray ) || empty( $taskArray ) || !count( $taskArray )  ) return ; #END IF
-
-
-
-
 
         foreach ($taskArray as $method => $item)
         {
@@ -108,10 +121,9 @@ class ScriptFile
                 $Tasks->{$method}( $item ) ;
             }#END IF
         }#END FOREACH
-        
-
-
     }
+
+
 
     /**
      * Получить атрибут из $object - XML

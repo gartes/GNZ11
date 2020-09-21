@@ -56,6 +56,27 @@ class Tasks
     }#END FN
 
     /**
+     * Выполненние задач для события preflight
+     * Метод, запускаемый перед методом install/update/uninstall
+     *
+     * @since 3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date 21.09.2020 05:00
+     *
+     */
+    public function preflight( $preflight ){
+        if (isset( $preflight->delite ))
+        {
+            $Registry = new \Joomla\Registry\Registry();
+            $this->DelFiles($preflight->delite->files);
+
+        }#END IF
+
+
+    }
+
+
+    /**
      * Удалить файлы перечисленные в массиве
      * @param $filesArr
      *
@@ -64,13 +85,23 @@ class Tasks
      * TODO - перенести выполнение в  namespace GNZ11\Core\Platform;
      */
     public function DelFiles($filesArr){
-        foreach ($filesArr as $file ){
+
+        foreach ((array)$filesArr as $file ){
+            $DS = DIRECTORY_SEPARATOR ;
+            $pos1 = stripos($file, $DS);
+            if ($pos1 === false)
+            {
+                $file = $DS . $file ;
+            }#END IF
             $filePath = JPATH_ROOT . $file ;
+
             if( \Joomla\CMS\Filesystem\File::exists( $filePath ) )
             {
                 if( \Joomla\CMS\Filesystem\File::delete( $filePath ) )
                 {
                     $this->app->enqueueMessage( 'Файл удален ' . $filePath  . PHP_EOL   );
+                }else{
+                    $this->app->enqueueMessage( 'Не удалось удалить файл ' . $filePath  . PHP_EOL   );
                 }#END IF
             }#END IF
         }
