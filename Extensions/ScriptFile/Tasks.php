@@ -65,6 +65,11 @@ class Tasks
      *
      */
     public function preflight( $preflight ){
+
+        /**
+         * Если есть файлы для удаления
+         * @see https://github.com/gartes/GNZ11/tree/master/Extensions
+         */
         if (isset( $preflight->delite ))
         {
             $Registry = new \Joomla\Registry\Registry();
