@@ -93,6 +93,11 @@ class Tasks
 
         foreach ((array)$filesArr as $file ){
             $DS = DIRECTORY_SEPARATOR ;
+            
+            echo'<pre>';print_r( $file );echo'</pre>'.__FILE__.' '.__LINE__;
+            die(__FILE__ .' '. __LINE__ );
+
+            
             $pos1 = stripos($file, $DS);
             if ($pos1 === false)
             {
