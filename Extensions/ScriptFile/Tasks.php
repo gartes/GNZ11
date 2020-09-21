@@ -95,7 +95,8 @@ class Tasks
             $DS = DIRECTORY_SEPARATOR ;
             if (!is_array( $file ))
             {
-                $file[] = $file ;
+                $file_temp[] = $file ;
+                $file = $file_temp ;
             }#END IF
 
             foreach ( $file as $item)
