@@ -62,13 +62,13 @@ class Tasks
      * @since 3.9
      * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
      * @date 21.09.2020 05:00
-     *
+     * @see https://github.com/gartes/GNZ11/tree/master/Extensions
      */
     public function preflight( $preflight ){
 
         /**
          * Если есть файлы для удаления
-         * @see https://github.com/gartes/GNZ11/tree/master/Extensions
+         *
          */
         if (isset( $preflight->delite ))
         {

@@ -94,7 +94,7 @@ GNZ11Recognition = function () {
     };
 
     /**
-     * Кстановка параметров настроек модуля Recognition
+     * Установка параметров настроек модуля Recognition
      * @param setting object
      */
     this.setConfig = function (setting) {
