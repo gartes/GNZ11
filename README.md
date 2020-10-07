@@ -115,6 +115,14 @@ catch( Exception $e )
 
 
 ```php
+/**
+* Добавить в отложенную загрузку файлы рессурсов ( CSS or JS )
+* @param $Assets   string Url - ресурса
+* @param $Callback string|null Callback после загрузки ( для JS файлов )
+*/
+\GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' , 'Callback' );
+
+//@depecated  
 $doc = \Joomla\CMS\Factory::getDocument();
 $Jpro = $doc->getScriptOptions('Jpro') ;
 $Jpro['load'][] = [
