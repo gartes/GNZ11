@@ -119,8 +119,9 @@ catch( Exception $e )
 * Добавить в отложенную загрузку файлы рессурсов ( CSS or JS )
 * @param $Assets   string Url - ресурса
 * @param $Callback string|null Callback после загрузки ( для JS файлов )
+* @param bool $Trigger string  Trigger - для ожидания загрузки
 */
-\GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' , 'Callback' );
+\GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' , 'Callback' = false , $Trigger = false );
 
 //@depecated  
 $doc = \Joomla\CMS\Factory::getDocument();
