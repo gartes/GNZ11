@@ -4,6 +4,7 @@
 
 ## Содержание
  1. [Javascript and jQuery](#JavascriptjQuery)
+    + [Text - текстовые операции в JS](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js](#JavascriptjQueryLoad)
     
  1. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
@@ -70,6 +71,17 @@ var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
 
         
 ## <a name="JavascriptjQuery"></a> Javascript and jQuery
+
+### <a name="JavascriptjQueryText"></a>Text - текстовые операции в JS  
+
++ implode - Объединяет элементы массива в строку
+```javascript
+var sting = wgnz11.TEXT.implode(',' , arr )
+```
+
+
+
+
 
 ###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM ) 
 + [Simple application](#JavascriptjQuerySimpleLoad)
