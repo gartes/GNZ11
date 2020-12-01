@@ -4,6 +4,7 @@
 
 ## Содержание
  1. [Javascript and jQuery](#JavascriptjQuery)
+    + [Text - текстовые операции в JS](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js](#JavascriptjQueryLoad)
     
  1. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
@@ -71,6 +72,17 @@ var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
         
 ## <a name="JavascriptjQuery"></a> Javascript and jQuery
 
+### <a name="JavascriptjQueryText"></a>Text - текстовые операции в JS  
+
++ implode - Объединяет элементы массива в строку
+```javascript
+var sting = wgnz11.TEXT.implode(',' , arr )
+```
+
+
+
+
+
 ###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM ) 
 + [Simple application](#JavascriptjQuerySimpleLoad)
 1.  Simple application 
@@ -115,6 +127,15 @@ catch( Exception $e )
 
 
 ```php
+/**
+* Добавить в отложенную загрузку файлы рессурсов ( CSS or JS )
+* @param $Assets   string Url - ресурса
+* @param $Callback string|null Callback после загрузки ( для JS файлов )
+* @param bool $Trigger string  Trigger - для ожидания загрузки
+*/
+\GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' , 'Callback' = false , $Trigger = false );
+
+//@depecated  
 $doc = \Joomla\CMS\Factory::getDocument();
 $Jpro = $doc->getScriptOptions('Jpro') ;
 $Jpro['load'][] = [
