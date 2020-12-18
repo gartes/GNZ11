@@ -7,7 +7,7 @@
     + [Text - текстовые операции в JS.](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
 
-1. [\GNZ11\Document\Text ( текстовые операции ).](#GNZ11DocumentText)
+1. [\GNZ11\Document\Text ( текстовые операции ).](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)
     + [Транслитерация.](#rus2translite)
     + [Транслитерация для использования в Url.](#str2url)
     + [Склонение числительных.](#declOfNum)
@@ -214,7 +214,6 @@ GNZ11\Document\Text::isStart($str, $substr) ;
  */
 GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ; 
  ```
-
 ##### Проверить имеет ли строка длину <a name="checkString"></a>
  ```php
 /**
@@ -224,7 +223,6 @@ GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ;
  */
 \GNZ11\Document\Text::checkString($string) ; 
  ```
-
 ##### Получить часть строки от первого появления $inthat <a name="getAfter"></a>
  ```php
 /**
@@ -235,7 +233,6 @@ GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ;
 GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
 //         returns 'online.ge'
 ```
-
 ##### Преобразовать строку в строку camelCase <a name="camelCase"></a>
  ```php
 /**
@@ -246,7 +243,6 @@ GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
  */
 \GNZ11\Document\Text::camelCase($str, $noStrip) ;
  ```
-
 ##### Удалить пробелы html - сущностей &nbsp ; <a name="trimSpace"></a>
  ```php
 /**
@@ -260,7 +256,6 @@ $stringHTML = 'Epson M3180&nbsp;';
 \GNZ11\Document\Text::trimSpace($stringHTML) ;
 // return Epson M3180
  ```
-
 ##### Удалить повторение слов в строке идущие друг за другом <a name="removeNextDuplicate"></a>
  ```php
 /**
