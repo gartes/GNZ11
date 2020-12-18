@@ -261,15 +261,28 @@ GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
  <a name="NAMEFUNCTION"></a>PHP Удалить пробелы html - сущностей &nbsp;
  ```php
 /**
-* @param string $stringHTML
-* @return string
+* @param string|array $stringHTML
+* @return string|array
 * @since  3.9
 * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
 * @date   18.12.2020 12:11
 */
+$stringHTML = 'Epson M3180&nbsp;';
 \GNZ11\Document\Text::trimSpace($stringHTML) ;
+// return Epson M3180
  ```
-
+ <a name="removeNextDuplicate"></a>PHP Удалить повторение слов в строке идущие друг за другом
+ ```php
+/**
+ * @param string $str строка
+ * @param string $delimiter разделитель слов ( default ' ' )
+ * @return string
+ * @date   18.12.2020 12:47
+ */
+$str = 'Ремонт принтера Epson Epson M3180';
+\GNZ11\Document\Text::removeNextDuplicate($str) ;
+// return Ремонт принтера Epson M3180
+ ```
 ***************************************************************************************
 
 ## События GNZ11
