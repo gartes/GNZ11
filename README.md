@@ -3,30 +3,30 @@
 
 
 ## Содержание
- 1. [Javascript and jQuery](#JavascriptjQuery)
+1. [Javascript and jQuery](#JavascriptjQuery)
     + [Text - текстовые операции в JS](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js](#JavascriptjQueryLoad)
-    
- 1. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
+
+1. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
     + [PHP Транслитерация](#rus2translite);
     + [PHP Транслитерация для использования в Url](#str2url);
     + [PHP Склонение числительных](#declOfNum).
     + [PHP Обрезка строки до длины](#truncation).
-    
 
- 1. [Плагины]()
+
+1. [Плагины]()
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)
- 1. [Модули](#модули) 
+1. [Модули](#модули)
     + [Ajax](#Ajax);
     + [Storage Class](#storage-class-) (Локальное хранилище браузера).
- 1. [Joomla](Joomla)
- 1. [Core](Core)
+1. [Joomla](Joomla)
+1. [Core](Core)
     + [Backup](Core\Backup)
     + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)
- 1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)
-    +        
-  ## <a name="Core"></a> Core       
-  ### <a name="Core\Backup"></a> Backup       
+1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)
+    +
+## <a name="Core"></a> Core
+### <a name="Core\Backup"></a> Backup
 INIT :
 ````php
 $options = [
@@ -44,9 +44,9 @@ catch ( Exception $e)
 	die(__FILE__ .' '. __LINE__ );
 }
 ```` 
-       
-  #### <a name="Core\Backup\Joomla\com_jshopping"></a> Joomla\com_jshopping       
-  Backup DB For Joomla Component Jshopping    
+
+#### <a name="Core\Backup\Joomla\com_jshopping"></a> Joomla\com_jshopping
+Backup DB For Joomla Component Jshopping
 ## <a name="Joomla"></a> Joomla
 ### <a name="Joomla-plugins"></a> Взаимодействие с плагинами Joomla
 
@@ -65,10 +65,10 @@ var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
 ```
 ******
 
-        
+
 ## <a name="JavascriptjQuery"></a> Javascript and jQuery
 
-### <a name="JavascriptjQueryText"></a>Text - текстовые операции в JS  
+### <a name="JavascriptjQueryText"></a>Text - текстовые операции в JS
 
 + implode - Объединяет элементы массива в строку
 ```javascript
@@ -79,12 +79,12 @@ var sting = wgnz11.TEXT.implode(',' , arr )
 
 
 
-###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM ) 
+###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM )
 + [Simple application](#JavascriptjQuerySimpleLoad)
-1.  Simple application 
+1.  Simple application
 ```javascript
     wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
-    wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
+wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
 ```
 
 ****************************
@@ -143,22 +143,23 @@ $doc->addScriptOptions('Jpro' , $Jpro ) ;
 ```
 ## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
 Обработка строковых и числовых значений
- 1.<a name="rus2translite"></a>PHP Транслитерация 
+
+##### Транслитерация <a name="rus2translite"></a>
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::rus2translite($string);
 ```
- 2.<a name="str2url"></a>PHP Транслитерация для использования в Url
+##### Транслитерация для использования в Url <a name="str2url"></a>
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::str2url($string) ; 
 ```
- 3.<a name="declOfNum"></a>PHP Склонение числительных
+##### Склонение числительных <a name="declOfNum"></a>
 ```php
 $titles = array(' %d товар', ' %d товара', ' %d товаров');
 \GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
 ```
- 4.<a name="isStart"></a>PHP Проверит, что первая строка начинается со второй 
+##### Проверит, что первая строка начинается со второй <a name="isStart"></a>
 ```php 
 /**
  * Проверит, что первая строка начинается со второй
@@ -169,7 +170,7 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
  */
 \GNZ11\Document\Text::isStart($str, $substr)
 ```
- 5.<a name="truncation"></a>PHP Обрезка строки до длины
+##### Обрезка строки до длины <a name="truncation"></a>
 ```php
 /**
  * @param $str      - строка
@@ -178,7 +179,7 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
  */
 \GNZ11\Document\Text::truncation($str, $length);
 ```
- 6.<a name="getCountWord"></a>PHP Получить количество слов в строке
+##### Получить количество слов в строке <a name="getCountWord"></a>
 ```php
 /**
  * @param string $string
@@ -186,7 +187,7 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
  */
 \GNZ11\Document\Text::getCountWord($string);
 ```
- 7.<a name="replaceQuotesWithSmart"></a>PHP Замена в строке кавычек на умные|елочки
+##### Замена в строке кавычек на умные|елочки <a name="replaceQuotesWithSmart"></a>
 ```php
 /**
  * Замена в строке кавычек на умные|елочки
@@ -195,8 +196,7 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
  */
 GNZ11\Document\Text::replaceQuotesWithSmart($datatext);
 ```
- 
-<a name="strpos_array"></a>PHP Найти слово из массива в заданной строке
+##### Найти слово из массива в заданной строке <a name="strpos_array"></a>
  ```php
 /**
  * ALIAS \GNZ11\Document\Arrays::strpos_array($haystack , $needles) ;
@@ -205,8 +205,7 @@ GNZ11\Document\Text::replaceQuotesWithSmart($datatext);
  */
 GNZ11\Document\Text::strpos_array($haystack , $needles) ;
  ```
- 
-<a name="isStart"></a>PHP Проверит, что первая строка начинается со второй
+##### Проверит, что первая строка начинается со второй <a name="isStart"></a>
  ```php
 /**
  * @param string $str      основная строка
@@ -215,8 +214,7 @@ GNZ11\Document\Text::strpos_array($haystack , $needles) ;
  */
 GNZ11\Document\Text::isStart($str, $substr) ; 
  ```
-
-<a name="mbStringToArray"></a>PHP Разбить многобайтовую строку на отдельные символы. Используется для разбиения строки состоящих из символов кирилицы в массив
+##### Разбить много байтовую строку на отдельные символы. Используется для разбиения строки состоящих из символов кириллицы в массив <a name="mbStringToArray"></a>
  ```php
 /**
  * @param string $string Строка с кирилицей
@@ -225,8 +223,7 @@ GNZ11\Document\Text::isStart($str, $substr) ;
  */
 GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ; 
  ```
-
-<a name="checkString"></a>PHP Проверить емеет ли строка  длину
+##### Проверить имеет ли строка длину <a name="checkString"></a>
  ```php
 /**
  * @param string $string The string to check
@@ -235,8 +232,7 @@ GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ;
  */
 \GNZ11\Document\Text::checkString($string) ; 
  ```
-
-<a name="getAfter"></a>PHP Получить часть строки от первого появления  $inthat
+##### Получить часть строки от первого появления $inthat <a name="getAfter"></a>
  ```php
 /**
  * @param $str
@@ -246,8 +242,7 @@ GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ;
 GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
 //         returns 'online.ge'
 ```
-
-<a name="camelCase"></a>PHP Преобразовать строку в строку camelCase
+##### Преобразовать строку в строку camelCase <a name="camelCase"></a>
  ```php
 /**
  * @param $str
@@ -257,8 +252,7 @@ GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
  */
 \GNZ11\Document\Text::camelCase($str, $noStrip) ;
  ```
-
- <a name="NAMEFUNCTION"></a>PHP Удалить пробелы html - сущностей &nbsp;
+##### Удалить пробелы html - сущностей &nbsp ; <a name="trimSpace"></a>
  ```php
 /**
 * @param string|array $stringHTML
@@ -271,7 +265,7 @@ $stringHTML = 'Epson M3180&nbsp;';
 \GNZ11\Document\Text::trimSpace($stringHTML) ;
 // return Epson M3180
  ```
- <a name="removeNextDuplicate"></a>PHP Удалить повторение слов в строке идущие друг за другом
+##### Удалить повторение слов в строке идущие друг за другом <a name="removeNextDuplicate"></a>
  ```php
 /**
  * @param string $str строка
@@ -283,36 +277,37 @@ $str = 'Ремонт принтера Epson Epson M3180';
 \GNZ11\Document\Text::removeNextDuplicate($str) ;
 // return Ремонт принтера Epson M3180
  ```
-***************************************************************************************
+
+##### ***************************************************************************************
 
 ## События GNZ11
-**GNZ11Loaded** - Библиотека загружена и готова к работе 
+**GNZ11Loaded** - Библиотека загружена и готова к работе
 ```javascript
 /*
 * USE : 
 */
 document.addEventListener('GNZ11Loaded', function () {
-            wgnz11.load.js('').then(function () {})
-        } );
+    wgnz11.load.js('').then(function () {})
+} );
 ```
 ***
 
 
 
-### Загрузка плагинов 
+### Загрузка плагинов
 ```javascript
 wgnz11.getPlugin('Inputmask' , {} );
 ```
 список доступных плагинов :
 * Inputmask
 
-## Плагины 
+## Плагины
 ###  Inputmask (маски для тестовых полей)
-Загрузка 
+Загрузка
 ```javascript
 wgnz11.getPlugin('Inputmask' , Settings );
 ```
-Параметры : 
+Параметры :
 ```javascript
 var Settings = {
     //  Шаблон маски поля
@@ -321,7 +316,7 @@ var Settings = {
 
     // Can be true , false
     // Создавать placeholder из маски поля
-    placeholder :   true ,   
+    placeholder :   true ,
 
     // Используется для масок телефонов 
     // предназначен для загрузки иконок мобильных операторов
@@ -339,22 +334,22 @@ var Settings = {
 AjaxDefaul для плагина
 */
 this.AjaxDefaultData = {
-        group : this.__group,
-        plugin : this.__plugin ,
-        option : 'com_ajax' ,
-        format : 'json' ,
-        task : null ,
-    };
+    group : this.__group,
+    plugin : this.__plugin ,
+    option : 'com_ajax' ,
+    format : 'json' ,
+    task : null ,
+};
 
 
 wgnz11.getModul("Ajax").then(function (Ajax) {
     var DATA = {
-        param1 : 'test1',    
-        param2 : 'test2',    
+        param1 : 'test1',
+        param2 : 'test2',
     }
     var requestData = $.extend(true, self.AjaxDefaultData, DATA );
     // Не обрабатывать сообщения
-    Ajax.ReturnRespond = true ;  
+    Ajax.ReturnRespond = true ;
     // Отправить запрос 
     Ajax.send(requestData).then(function (r) {
         console.log(r)
@@ -371,32 +366,32 @@ fancybox, вероятно, самый популярный в мире скри
 ```javascript
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (a) {
-	a.open( html ,{
-	baseClass: "gjContactPhones",	// Класс основного элемента 
-    touch : false , 				// полностью отключить сенсорные жесты default : true
-		// Events
-    beforeShow   : function(instance, current)   {}, 	// Перед началом анимации открытия 
-    afterShow   : function(instance, current)   {},		// Когда контент загружен и анимирован
-    beforeClose  : function () {}, 						// Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
-    afterClose  : function () {},						// После того, как экземпляр был закрыт
+    a.open( html ,{
+        baseClass: "gjContactPhones",	// Класс основного элемента 
+        touch : false , 				// полностью отключить сенсорные жесты default : true
+        // Events
+        beforeShow   : function(instance, current)   {}, 	// Перед началом анимации открытия 
+        afterShow   : function(instance, current)   {},		// Когда контент загружен и анимирован
+        beforeClose  : function () {}, 						// Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
+        afterClose  : function () {},						// После того, как экземпляр был закрыт
 
 
     });
 });
 ```
-Параметры : 
-* baseClass - Класс основного элемента 
+Параметры :
+* baseClass - Класс основного элемента
 * touch  (смавхивание)
  ```javascript
 // Set `touch: false` to disable panning/swiping
-  touch: {
+touch: {
     vertical: true, // Разрешить перетаскивать содержимое по вертикали
-    momentum: true // Продолжайте движение после отпускания мыши / касания при панорамировании
-  }
+        momentum: true // Продолжайте движение после отпускания мыши / касания при панорамировании
+}
 ```
 
 ### Tippy.js
-полное решение для всплывающих подсказок, всплывающих окон, 
+полное решение для всплывающих подсказок, всплывающих окон,
 выпадающих меню и меню для веб-сайтов, созданное на основе Popper
 https://atomiks.github.io/tippyjs/
 ```javascript
@@ -409,14 +404,14 @@ wgnz11.__loadModul.Tippy().then(function(a){
 ***
 
 ### Storage Class [<img width="50" src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
-простой класс хранения для JavaScript 
+простой класс хранения для JavaScript
 ```javascript
 wgnz11.getModul('Storage_class').then(function () {
     Storage_class.set( 'object' , { a: 1 , b: 2 } );
 })
 ```
 ### Geolocation
-События : 
+События :
 * onAfterGeolocationDataSet - После получения данных геолокации
 ```javascript
 document.addEventListener('onAfterGeolocationDataSet', self.GeolocationDataSet , false);
@@ -426,7 +421,7 @@ this.GeolocationDataSet = function (event) {
 }
 ```
 ### Dropdown
-Вызвать : 
+Вызвать :
 ```javascript
 options = {
     element : '.dropdown-link' , // Элемент управления
@@ -472,14 +467,14 @@ this.afterDestroyDropLink = function (event) {
 
 ***
 
-## API 
+## API
 ###Shipment
 ####NovaPoshta
 Загрузка :
 ```javascript
 wgnz11.getApi( 'Shipment' , 'NovaPoshta' , {} )
 ```
-Методы : 
+Методы :
 * 1
 * 2
 ####
@@ -500,9 +495,9 @@ initDropElements: function() { }
 Отметить совпадения
 ```javascript
 _markupSuggestion: function(el) {
-        var et_regex = new RegExp('(^' + this.input.value + ')','i');
-        return el.setHTML(el.getText().replace(et_regex, '<span class="queriedValue">$1</span>'))
-    },
+    var et_regex = new RegExp('(^' + this.input.value + ')','i');
+    return el.setHTML(el.getText().replace(et_regex, '<span class="queriedValue">$1</span>'))
+},
 ```
 
 ***
@@ -522,5 +517,5 @@ JLoader::registerNamespace( 'GNZ11' , JPATH_LIBRARIES . '/GNZ11' , $reset = fals
 
 
 
-Versions : 
+Versions :
 0.3.2 - Добавлен объект `GNZ11\Document\Document` 
