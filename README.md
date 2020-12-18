@@ -11,6 +11,9 @@
     + [PHP Транслитерация](#rus2translite);
     + [PHP Транслитерация для использования в Url](#str2url);
     + [PHP Склонение числительных](#declOfNum).
+    + [PHP Обрезка строки до длины](#truncation).
+    
+
  1. [Плагины]()
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)
  1. [Модули](#модули) 
@@ -20,8 +23,6 @@
  1. [Core](Core)
     + [Backup](Core\Backup)
     + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)
-  
-  
  1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)
     +        
   ## <a name="Core"></a> Core       
@@ -63,11 +64,6 @@ public function setJsData (){
 var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
 ```
 ******
-
-
-
-
-
 
         
 ## <a name="JavascriptjQuery"></a> Javascript and jQuery
@@ -147,25 +143,22 @@ $doc->addScriptOptions('Jpro' , $Jpro ) ;
 ```
 ## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
 Обработка строковых и числовых значений
-
-1.<a name="rus2translite"></a>PHP Транслитерация 
+ 1.<a name="rus2translite"></a>PHP Транслитерация 
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::rus2translite($string);
 ```
-2.<a name="str2url"></a>PHP Транслитерация для использования в Url
+ 2.<a name="str2url"></a>PHP Транслитерация для использования в Url
 ```php
 $string = 'Абвгдеж';
 \GNZ11\Document\Text::str2url($string) ; 
 ```
-
-3.<a name="declOfNum"></a>PHP Склонение числительных
+ 3.<a name="declOfNum"></a>PHP Склонение числительных
 ```php
 $titles = array(' %d товар', ' %d товара', ' %d товаров');
 \GNZ11\Document\Text::declOfNum ( $number = 5 , $titles );
 ```
-4.<a name="isStart"></a>PHP Проверит, что первая строка начинается со второй 
-
+ 4.<a name="isStart"></a>PHP Проверит, что первая строка начинается со второй 
 ```php 
 /**
  * Проверит, что первая строка начинается со второй
@@ -176,8 +169,108 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
  */
 \GNZ11\Document\Text::isStart($str, $substr)
 ```
+ 5.<a name="truncation"></a>PHP Обрезка строки до длины
+```php
+/**
+ * @param $str      - строка
+ * @param $length   - длина строки в сисволах
+ * @return string
+ */
+\GNZ11\Document\Text::truncation($str, $length);
+```
+ 6.<a name="getCountWord"></a>PHP Получить количество слов в строке
+```php
+/**
+ * @param string $string
+ * @return int - Количество слов
+ */
+\GNZ11\Document\Text::getCountWord($string);
+```
+ 7.<a name="replaceQuotesWithSmart"></a>PHP Замена в строке кавычек на умные|елочки
+```php
+/**
+ * Замена в строке кавычек на умные|елочки
+ * @param   string $datatext
+ * @return  string
+ */
+GNZ11\Document\Text::replaceQuotesWithSmart($datatext);
+```
+ 
+<a name="strpos_array"></a>PHP Найти слово из массива в заданной строке
+ ```php
+/**
+ * ALIAS \GNZ11\Document\Arrays::strpos_array($haystack , $needles) ;
+ * @param $haystack
+ * @param $needles
+ */
+GNZ11\Document\Text::strpos_array($haystack , $needles) ;
+ ```
+ 
+<a name="isStart"></a>PHP Проверит, что первая строка начинается со второй
+ ```php
+/**
+ * @param string $str      основная строка
+ * @param string $substr   та, которая может содержаться внутри основной
+ * @return bool  True -    Если сторка начинается с $substr
+ */
+GNZ11\Document\Text::isStart($str, $substr) ; 
+ ```
 
-*****************************
+<a name="mbStringToArray"></a>PHP Разбить многобайтовую строку на отдельные символы. Используется для разбиения строки состоящих из символов кирилицы в массив
+ ```php
+/**
+ * @param string $string Строка с кирилицей
+ * @param string $encofing Кодировка ( default - UTF-8 )
+ * @return array массив символов строки
+ */
+GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ; 
+ ```
+
+<a name="checkString"></a>PHP Проверить емеет ли строка  длину
+ ```php
+/**
+ * @param string $string The string to check
+ * @return bool
+ * @since 3.9
+ */
+\GNZ11\Document\Text::checkString($string) ; 
+ ```
+
+<a name="getAfter"></a>PHP Получить часть строки от первого появления  $inthat
+ ```php
+/**
+ * @param $str
+ * @param $inthat
+ * @return false|string
+ */
+GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
+//         returns 'online.ge'
+```
+
+<a name="camelCase"></a>PHP Преобразовать строку в строку camelCase
+ ```php
+/**
+ * @param $str
+ * @param array $noStrip
+ * @return string
+ * @{url : http://www.mendoweb.be/blog/php-convert-string-to-camelcase-string/ }
+ */
+\GNZ11\Document\Text::camelCase($str, $noStrip) ;
+ ```
+
+ <a name="NAMEFUNCTION"></a>PHP Удалить пробелы html - сущностей &nbsp;
+ ```php
+/**
+* @param string $stringHTML
+* @return string
+* @since  3.9
+* @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+* @date   18.12.2020 12:11
+*/
+\GNZ11\Document\Text::trimSpace($stringHTML) ;
+ ```
+
+***************************************************************************************
 
 ## События GNZ11
 **GNZ11Loaded** - Библиотека загружена и готова к работе 
