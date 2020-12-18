@@ -3,17 +3,28 @@
 
 
 ## Содержание
-1. [Javascript and jQuery](#JavascriptjQuery)
-    + [Text - текстовые операции в JS](#JavascriptjQueryText)
-    + [Отложенная загрузка ресурсов из js](#JavascriptjQueryLoad)
+1. [Javascript and jQuery.](#JavascriptjQuery)
+    + [Text - текстовые операции в JS.](#JavascriptjQueryText)
+    + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
 
-1. [\GNZ11\Document\Text ( текстовые операции )](#GNZ11DocumentText)
-    + [PHP Транслитерация](#rus2translite);
-    + [PHP Транслитерация для использования в Url](#str2url);
-    + [PHP Склонение числительных](#declOfNum).
-    + [PHP Обрезка строки до длины](#truncation).
+1. [\GNZ11\Document\Text ( текстовые операции ).](#GNZ11DocumentText)
+    + [Транслитерация.](#rus2translite)
+    + [Транслитерация для использования в Url.](#str2url)
+    + [Склонение числительных.](#declOfNum)
+    + [Обрезка строки до длины.](#truncation)
+    + [Получить количество слов в строке.](#getCountWord)
+    + [Замена в строке кавычек на умные|елочки.](#replaceQuotesWithSmart)
+    + [Найти слово из массива в заданной строке.](#strpos_array)
+    + [Проверит, что первая строка начинается со второй.](#isStart)
+    + [Разбить много байтовую строку на отдельные символы. <br>
+      Используется для разбиения строки состоящих из символов кириллицы в массив.](#mbStringToArray)
+    + [Проверить имеет ли строка длину.](#checkString)
+    + [Получить часть строки от первого появления $inthat.](#getAfter)
+    + [Преобразовать строку в строку camelCase.](#camelCase)
+    + [Удалить пробелы html - сущностей &nbsp ; .](#trimSpace)
+    + [Удалить повторение слов в строке идущие друг за другом.](#removeNextDuplicate)
 
-
+      
 1. [Плагины]()
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)
 1. [Модули](#модули)
@@ -64,21 +75,13 @@ public function setJsData (){
 var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
 ```
 ******
-
-
 ## <a name="JavascriptjQuery"></a> Javascript and jQuery
-
 ### <a name="JavascriptjQueryText"></a>Text - текстовые операции в JS
 
 + implode - Объединяет элементы массива в строку
 ```javascript
 var sting = wgnz11.TEXT.implode(',' , arr )
 ```
-
-
-
-
-
 ###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM )
 + [Simple application](#JavascriptjQuerySimpleLoad)
 1.  Simple application
@@ -86,18 +89,7 @@ var sting = wgnz11.TEXT.implode(',' , arr )
     wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
 wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
 ```
-
 ****************************
-
-
-
-
-
-
-
-
-
-
 ```php
 <?php
 /**
@@ -118,10 +110,6 @@ catch( Exception $e )
 }
 ?>
 ```
-
-
-
-
 ```php
 /**
 * Добавить в отложенную загрузку файлы рессурсов ( CSS or JS )
@@ -141,9 +129,12 @@ $Jpro['load'][] = [
 ];
 $doc->addScriptOptions('Jpro' , $Jpro ) ;
 ```
-## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
-Обработка строковых и числовых значений
 
+
+*********************************************************************************
+
+## <a name="GNZ11DocumentText"></a>  \GNZ11\Document\Text
+###Обработка строковых и числовых значений
 ##### Транслитерация <a name="rus2translite"></a>
 ```php
 $string = 'Абвгдеж';
@@ -179,7 +170,7 @@ $titles = array(' %d товар', ' %d товара', ' %d товаров');
  */
 \GNZ11\Document\Text::truncation($str, $length);
 ```
-##### Получить количество слов в строке <a name="getCountWord"></a>
+#####  <a name="getCountWord"></a>
 ```php
 /**
  * @param string $string
@@ -214,7 +205,7 @@ GNZ11\Document\Text::strpos_array($haystack , $needles) ;
  */
 GNZ11\Document\Text::isStart($str, $substr) ; 
  ```
-##### Разбить много байтовую строку на отдельные символы. Используется для разбиения строки состоящих из символов кириллицы в массив <a name="mbStringToArray"></a>
+##### Разбить много байтовую строку на отдельные символы. <br>Используется для разбиения строки состоящих из символов кириллицы в массив <a name="mbStringToArray"></a>
  ```php
 /**
  * @param string $string Строка с кирилицей
@@ -223,6 +214,7 @@ GNZ11\Document\Text::isStart($str, $substr) ;
  */
 GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ; 
  ```
+
 ##### Проверить имеет ли строка длину <a name="checkString"></a>
  ```php
 /**
@@ -232,6 +224,7 @@ GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ;
  */
 \GNZ11\Document\Text::checkString($string) ; 
  ```
+
 ##### Получить часть строки от первого появления $inthat <a name="getAfter"></a>
  ```php
 /**
@@ -242,6 +235,7 @@ GNZ11\Document\Text::mbStringToArray ($string , $encofing  ) ;
 GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
 //         returns 'online.ge'
 ```
+
 ##### Преобразовать строку в строку camelCase <a name="camelCase"></a>
  ```php
 /**
@@ -252,6 +246,7 @@ GNZ11\Document\Text::getAfter ('@', 'biohazard@online.ge');
  */
 \GNZ11\Document\Text::camelCase($str, $noStrip) ;
  ```
+
 ##### Удалить пробелы html - сущностей &nbsp ; <a name="trimSpace"></a>
  ```php
 /**
@@ -265,6 +260,7 @@ $stringHTML = 'Epson M3180&nbsp;';
 \GNZ11\Document\Text::trimSpace($stringHTML) ;
 // return Epson M3180
  ```
+
 ##### Удалить повторение слов в строке идущие друг за другом <a name="removeNextDuplicate"></a>
  ```php
 /**
@@ -278,7 +274,11 @@ $str = 'Ремонт принтера Epson Epson M3180';
 // return Ремонт принтера Epson M3180
  ```
 
-##### ***************************************************************************************
+
+***************************************************************************************
+
+
+
 
 ## События GNZ11
 **GNZ11Loaded** - Библиотека загружена и готова к работе
