@@ -209,14 +209,35 @@ fancybox, вероятно, самый популярный в мире скри
 ```javascript
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (a) {
-    a.open( html ,{
-        baseClass: "gjContactPhones",	// Класс основного элемента 
-        touch : false , 				// полностью отключить сенсорные жесты default : true
-        // Events
-        beforeShow   : function(instance, current)   {}, 	// Перед началом анимации открытия 
-        afterShow   : function(instance, current)   {},		// Когда контент загружен и анимирован
-        beforeClose  : function () {}, 						// Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
-        afterClose  : function () {},						// После того, как экземпляр был закрыт
+    a.open( html , {
+       baseClass: "gjContactPhones",	// Класс основного элемента 
+       touch: false, 				// полностью отключить сенсорные жесты default : true
+
+       // Эффект перехода между слайдами false - disable
+       // "fade" "slide" "circular" "tube" "zoom-in-out" "rotate"
+       transitionEffect: "slide",
+
+       // Events
+
+       // После инициализации 
+       onInit : function( instance ) {
+          // время смены слайда
+          var duration =  0 ;
+          // Переход к выбранному элементу галереи
+          if ( typeof indexImgGoTo !== "undefined" && indexImgGoTo ) instance.jumpTo( indexImgGoTo , duration );
+       },
+       // Перед началом анимации открытия 
+       beforeShow: function (instance, current) {
+       },
+       // Когда контент загружен и анимирован
+       afterShow: function (instance, current) {
+       },
+       // Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
+       beforeClose: function () {
+       },
+       // После того, как экземпляр был закрыт
+       afterClose: function () {
+       },						
 
 
     });
