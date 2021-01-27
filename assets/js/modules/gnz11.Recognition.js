@@ -146,8 +146,6 @@ GNZ11Recognition = function () {
 
             self.Config.SpeechRecognition.afterInsertButton( self , $btnTmpl );
         });
-
-
     };
     /**
      * Начало воспроизведение текста

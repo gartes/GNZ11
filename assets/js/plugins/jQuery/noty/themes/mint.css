@@ -13,7 +13,9 @@
 .noty_theme__mint.noty_type__notification {
     background-color: #fff;
     border-bottom: 1px solid #D1D1D1;
-    color: #2F2F2F; }
+    color: #2F2F2F;
+    box-shadow: -1px -1px 4px 0.5px #616161;
+}
 
 .noty_theme__mint.noty_type__warning {
     background-color: #FFAE42;

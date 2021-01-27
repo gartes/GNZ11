@@ -2,7 +2,8 @@
 	namespace GNZ11\Document;
 	use Akeeba\Engine\Driver\Joomla;
 	use DOMDocument;
-	use Exception;
+    use DOMElement;
+    use Exception;
 	use JFactory;
 	use stdClass;
 	use DomXPath;
@@ -49,6 +50,7 @@
             $_source = mb_convert_encoding( $source, 'HTML-ENTITIES', $encoding);
             @parent::loadHTML(''.$_source);
         }
+
         public function saveHTML(){
             return html_entity_decode( parent::saveHTML() );
         }
@@ -175,13 +177,13 @@
          * @param string $tag
          * @param string $value
          * @param array $attr
-         * @return \DOMElement
+         * @return DOMElement
          * @since 3.9
          * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
          * @date 25.08.2020 21:03
          *
          */
-        public static function _setBottomHeadTag(Dom $dom, string $tag, string $value, array $attr = null ): \DOMElement
+        public static function _setBottomHeadTag(Dom $dom, string $tag, string $value, array $attr = null ): DOMElement
         {
             $xpath = new DomXPath($dom);
             $parent = $xpath->query('//head');
@@ -192,43 +194,40 @@
             return $newTag;
         }
 
+        /**
+         * Создать новый тег и вставить его в экз. DOM и вставить его в начале тега <head>
+         * @param Dom $dom
+         * @param string $tag       - имя тэга
+         * @param string $value     - содержание тега
+         * @param array|null $attr  - атребуты
+         * @return DOMElement
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 10.10.2020 23:48
+         *
+         */
+        public static function _setTopHeadTag ( Dom $dom , string $tag, string $value, array $attr = null): DOMElement
+        {
+            $xpath = new DomXPath($dom);
+            $parent = $xpath->query('//head');
+            $firstChilding = $parent->item(0)->firstChild;
 
-		/**
-		 * Добавить тег в тело документа перед закрывающемся тегом </noscript>
-		 *
-		 * @param   string  $tag    название тега
-		 * @param   string  $value  контент тега
-		 * @param   array   $attr   атребуты тега
-		 *
-		 * @throws Exception
-		 * @since 3.9
-		 */
-		public static function writeDownNosciptTag($tag , $value , $attr=[]){
-			$app = JFactory::getApplication() ;
-			$body                = $app->getBody();
-			$dom = new self();
-			$dom->loadHTML( $body );
-			
-			$newTag =  $dom->createElement( $tag , htmlentities( $value ) );
-			
-			# add class attribute
-			self::fetchAttr($dom ,$newTag , $attr );
-			
-			$xpath = new DomXPath($dom);
-			$parent = $xpath->query( '//noscript');
-			
-			$parent->item(0)->appendChild( $newTag );
-			$body =   $dom->saveHTML() ;
-			
-			$app->setBody($body);
-		}#END FN
+            $newTag = $dom->createElement($tag, htmlentities($value));
+            # Установка атрибутов узла
+            self::fetchAttr($dom, $newTag, $attr);
+
+            $parent->item(0)->insertBefore( $newTag , $firstChilding ) ;
+            return $newTag;
+        }
+
+
 
 		/**
 		 * Создание тегов в начале тега <head>
 		 *
-		 * @param       $tag
-		 * @param       $value
-		 * @param array $attr
+		 * @param       $tag    - Название тега
+		 * @param       $value  - Содержимое тега
+		 * @param array $attr   - Атребуты
 		 *
 		 * @throws Exception
 		 * @author    Gartes
@@ -254,7 +253,37 @@
 			$body =   $dom->saveHTML() ;
 			$app->setBody($body);
 		}#END FN
-		
+
+        /**
+         * Добавить тег в тело документа перед закрывающемся тегом </noscript>
+         *
+         * @param   string  $tag    название тега
+         * @param   string  $value  контент тега
+         * @param   array   $attr   атребуты тега
+         *
+         * @throws Exception
+         * @since 3.9
+         */
+        public static function writeDownNosciptTag($tag , $value , $attr=[]){
+            $app = JFactory::getApplication() ;
+            $body                = $app->getBody();
+            $dom = new self();
+            $dom->loadHTML( $body );
+
+            $newTag =  $dom->createElement( $tag , htmlentities( $value ) );
+
+            # add class attribute
+            self::fetchAttr($dom ,$newTag , $attr );
+
+            $xpath = new DomXPath($dom);
+            $parent = $xpath->query( '//noscript');
+
+            $parent->item(0)->appendChild( $newTag );
+            $body =   $dom->saveHTML() ;
+
+            $app->setBody($body);
+        }#END FN
+
 		/**
 		 * Установка атрибутов узла
 		 * @param       $dom
@@ -267,6 +296,7 @@
 		 * @copyright 02.01.19
 		 */
 		public static function fetchAttr ( $dom , &$elem , $attrs=[] ){
+
 			if ( !count( (array)$attrs ) ) { return ; }
 			$exclTypeArr = ['text/javascript','text/css'] ;
 			$log = [] ;
@@ -279,28 +309,30 @@
 					case 'media':
 					case 'as' :
 					case 'onload' :
-						if ( !$attrVal ) {continue ; }
+						if ( !$attrVal ) {continue 2 ; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , $attrVal );
 					break ;
 					
 					case 'crossorigin' :
-						if ( !$attrVal ) { continue; }
+						if ( !$attrVal ) { continue 2; }
 						self::AddAttribute($dom, $elem, ''.$name , 'anonymous' );
-						
-						break ;
+                        continue 2;
+//						break ;
 					
 					case 'async':
 					case 'defer':
-						if ( !$attrVal ) { continue; }
+						if ( !$attrVal ) { continue 2; }
 						$log[$name] = $attrVal ;
 						self::AddAttribute($dom, $elem, ''.$name , false );
-					break ;
+                    continue 2;
+//					break ;
 					case 'type':
-						if ( in_array( $attrVal , $exclTypeArr) || empty( $attrVal )  ) continue ;
+						if ( in_array( $attrVal , $exclTypeArr) || empty( $attrVal )  ) continue 2 ;
 						self::AddAttribute($dom, $elem,    ''.$name      , $attrVal );
 						$log[$name] = $attrVal ;
-					break ;
+                        continue 2;
+//					break ;
 					
 					default :
 						
@@ -312,7 +344,9 @@
 							
 							
 						}#END IF
-						
+
+
+
 						
 						self::AddAttribute($dom, $elem,    ''.$name ,$attrVal );
 						$log[$name] = $attrVal ;

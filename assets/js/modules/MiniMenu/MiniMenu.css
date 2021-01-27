@@ -1,0 +1,132 @@
+/*******************************************************************************************************************
+ *     ╔═══╗ ╔══╗ ╔═══╗ ╔════╗ ╔═══╗ ╔══╗        ╔══╗  ╔═══╗ ╔╗╔╗ ╔═══╗ ╔╗   ╔══╗ ╔═══╗ ╔╗  ╔╗ ╔═══╗ ╔╗ ╔╗ ╔════╗
+ *     ║╔══╝ ║╔╗║ ║╔═╗║ ╚═╗╔═╝ ║╔══╝ ║╔═╝        ║╔╗╚╗ ║╔══╝ ║║║║ ║╔══╝ ║║   ║╔╗║ ║╔═╗║ ║║  ║║ ║╔══╝ ║╚═╝║ ╚═╗╔═╝
+ *     ║║╔═╗ ║╚╝║ ║╚═╝║   ║║   ║╚══╗ ║╚═╗        ║║╚╗║ ║╚══╗ ║║║║ ║╚══╗ ║║   ║║║║ ║╚═╝║ ║╚╗╔╝║ ║╚══╗ ║╔╗ ║   ║║
+ *     ║║╚╗║ ║╔╗║ ║╔╗╔╝   ║║   ║╔══╝ ╚═╗║        ║║─║║ ║╔══╝ ║╚╝║ ║╔══╝ ║║   ║║║║ ║╔══╝ ║╔╗╔╗║ ║╔══╝ ║║╚╗║   ║║
+ *     ║╚═╝║ ║║║║ ║║║║    ║║   ║╚══╗ ╔═╝║        ║╚═╝║ ║╚══╗ ╚╗╔╝ ║╚══╗ ║╚═╗ ║╚╝║ ║║    ║║╚╝║║ ║╚══╗ ║║ ║║   ║║
+ *     ╚═══╝ ╚╝╚╝ ╚╝╚╝    ╚╝   ╚═══╝ ╚══╝        ╚═══╝ ╚═══╝  ╚╝  ╚═══╝ ╚══╝ ╚══╝ ╚╝    ╚╝  ╚╝ ╚═══╝ ╚╝ ╚╝   ╚╝
+ *------------------------------------------------------------------------------------------------------------------
+ * @author Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+ * @date 12.01.2021 16:00
+ * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @license    GNU General Public License version 2 or later;
+ ******************************************************************************************************************/
+.cart-actions__toggle {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    position: absolute;
+    right: 0;
+    top: -21px;
+    cursor: pointer;
+}
+.cart-actions__list {
+    position: absolute;
+    z-index: 5;
+    right: 0;
+    top: 0;
+    width: 250px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,.25);
+    box-shadow: 0 2px 4px rgba(0,0,0,.25);
+}
+[data-controls_mod="RecentlyViewed"] .cart-actions__list{
+    width: 285px;
+}
+.cart-actions__item {
+    position: relative;
+    padding: 0;
+}
+.button--link, .button_type_link {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    text-decoration: none;
+    color: #3e77aa;
+    cursor: pointer;
+}
+.button--with-icon svg, .button_with_icon svg {
+    flex-shrink: 0;
+    fill: currentColor;
+    /* margin: 12px; */
+    position: absolute;
+    top: 7px;
+    left: -6px;
+    padding: 0 0 0 0px;
+}
+.button--link:hover, .button_type_link:hover {
+    color: #ff7878;
+}
+.button--medium, .button_size_medium {
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    padding: 10px 15px;
+}
+.button--green, .button_color_green {
+    background-color: #be1e2d;
+    color: #fff;
+    transition:background-color .3s;
+    cursor:pointer ;
+}
+button.button, input.button {
+    line-height: normal;
+}
+
+.modal-product-list ul{
+    list-style: none;
+}
+
+.button, .button:hover {
+    text-decoration: none;
+}
+.cart-actions__button {
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 19px;
+    padding: 0 0 0 26px;
+    /* position: relative; */
+}
+@media (hover: hover){
+    .button--green:hover, .button_color_green:hover {
+        background-color: #d82f3e;;
+        color: #fff;
+    }
+}
+.button--link:hover, .button_type_link:hover {
+    color: #ff7878;
+}
+.button--link:hover > svg{
+    fill: #ff7878 !important;
+}
+
+
+
+
+
+
+
+
+

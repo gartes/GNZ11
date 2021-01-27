@@ -81,8 +81,9 @@ class Tasks
     }
 
 
+
     /**
-     * Удалить файлы перечисленные в массиве
+     * Удалить файлы перечисленные в массиве указанныве в XML манифисте файле
      * @param $filesArr
      *
      *
@@ -91,18 +92,24 @@ class Tasks
      */
     public function DelFiles($filesArr){
 
+        # Для удаление файлов указанных в массиве self::$RemoveFiles - файла script.php расширения
+        if ( is_array( $filesArr ))
+        {
+            $tempArr = new \stdClass() ;
+            $tempArr->filename = $filesArr ;
+            $filesArr = $tempArr ;
+        }#END IF
+
 
 
         foreach ((array)$filesArr->filename as $file ){
             $DS = DIRECTORY_SEPARATOR ;
+
             if (!is_array( $file ))
             {
                 $file_temp[] = $file ;
                 $file = $file_temp ;
             }#END IF
-
-
-
 
             foreach ( $file as $item)
             {
@@ -112,6 +119,7 @@ class Tasks
                     $item = $DS . $item ;
                 }#END IF
                 $filePath = JPATH_ROOT . $item ;
+
 
                 if( \Joomla\CMS\Filesystem\File::exists( $filePath ) )
                 {
@@ -124,6 +132,8 @@ class Tasks
                 }#END IF
             }#END FOREACH
         }
+
+
     }
 
     /**

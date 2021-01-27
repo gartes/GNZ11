@@ -20,6 +20,9 @@
 	 */
 	class Text extends \Joomla\CMS\Language\Text
 	{
+
+
+
         /**
          * Обрезка строки до длины
          * \GNZ11\Document\Text::truncation($str, $length);
@@ -38,8 +41,6 @@
             $words = explode(" ", $str);                //Разбиваем по словам
             $cloneWords = $words ;
 
-//            echo'<pre>';print_r( $words );echo'</pre>'.__FILE__.' '.__LINE__;
-
             array_splice($words, -1);                //Удаляем последнее слово
             $last = array_pop($cloneWords );                //Получаем последнее слово
 
@@ -56,7 +57,93 @@
         }
 
         /**
+         * Транслетирация строки
+         * @param $string
+         *
+         * @return string
+         *
+         * @since version
+         */
+        public static function rus2translite ( $string )
+        {
+            $converter = array(
+                'а' => 'a', 'б' => 'b', 'в' => 'v',
+                'г' => 'g', 'д' => 'd', 'е' => 'e',
+                'ё' => 'e', 'ж' => 'zh', 'з' => 'z',
+                'и' => 'i', 'й' => 'y', 'к' => 'k',
+                'л' => 'l', 'м' => 'm', 'н' => 'n',
+                'о' => 'o', 'п' => 'p', 'р' => 'r',
+                'с' => 's', 'т' => 't', 'у' => 'u',
+                'ф' => 'f', 'х' => 'h', 'ц' => 'c',
+                'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch',
+                'ь' => '\'', 'ы' => 'y', 'ъ' => '\'',
+                'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
+
+                'А' => 'A', 'Б' => 'B', 'В' => 'V',
+                'Г' => 'G', 'Д' => 'D', 'Е' => 'E',
+                'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z',
+                'И' => 'I', 'Й' => 'Y', 'К' => 'K',
+                'Л' => 'L', 'М' => 'M', 'Н' => 'N',
+                'О' => 'O', 'П' => 'P', 'Р' => 'R',
+                'С' => 'S', 'Т' => 'T', 'У' => 'U',
+                'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
+                'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sch',
+                'Ь' => '\'', 'Ы' => 'Y', 'Ъ' => '\'',
+                'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
+            );
+            return strtr( $string, $converter );
+        }
+
+        /**
+         * Траслителтрует строку для использования в Url
+         * @param $str string
+         *
+         * @return string
+         *
+         * @since version
+         */
+        public static function str2url ( $str )
+        {
+            // переводим в транслит
+            $str = self::rus2translite( $str );
+            // в нижний регистр
+            $str = strtolower( $str );
+            // заменям все ненужное нам на "-"
+            $str = preg_replace( '~[^-a-z0-9_]+~u', '-', $str );
+            // удаляем начальные и конечные '-'
+            $str = trim( $str, "-" );
+            return $str;
+        }
+
+        /**
+         * PHP Склонение числительных
+         *
+         * USE :
+         *
+         * $titles = array(' %d товар', ' %d товара', ' %d товаров');
+         * $number = INT ;
+         * $checkText = \GNZ11\Document\Text::declOfNum( $number , $titles );
+         *
+         * @see   https://gist.github.com/Neolot/3964380
+         *
+         * @param $number int - число для склонения
+         * @param $titles array - массив подбираемых слов
+         *                array(' %d товар', ' %d товара', ' %d товаров')
+         *
+         * @return string ( 1 товар| 2 товара | 8 товаров )
+         * @since 3.9
+         */
+        public static function declOfNum ( $number, $titles )
+        {
+            $cases = array( 2, 0, 1, 1, 1, 2 );
+            $format = $titles[ ( $number % 100 > 4 && $number % 100 < 20 ) ? 2 : $cases[ min( $number % 10, 5 ) ] ];
+            return sprintf( $format, $number );
+        }
+
+        /**
          * Получить количество слов в строке
+         * \GNZ11\Document\Text::getCountWord($string);
+         *
          * @param string $string
          * @return int - Количество слов
          * @since 3.9
@@ -92,91 +179,8 @@
         }
 
         /**
-		 * PHP Склонение числительных
-		 *
-		 * USE :
-		 *
-		 * $titles = array(' %d товар', ' %d товара', ' %d товаров');
-		 * $number = INT ;
-		 * $checkText = \GNZ11\Document\Text::declOfNum( $number , $titles );
-		 *
-		 * @see   https://gist.github.com/Neolot/3964380
-		 *
-		 * @param $number int - число для склонения
-		 * @param $titles array - массив подбираемых слов
-		 *                array(' %d товар', ' %d товара', ' %d товаров')
-		 *
-		 * @return string ( 1 товар| 2 товара | 8 товаров )
-		 * @since 3.9
-		 */
-		public static function declOfNum ( $number, $titles )
-		{
-			$cases = array( 2, 0, 1, 1, 1, 2 );
-			$format = $titles[ ( $number % 100 > 4 && $number % 100 < 20 ) ? 2 : $cases[ min( $number % 10, 5 ) ] ];
-			return sprintf( $format, $number );
-		}
-		
-		/**
-		 * Транслетирация строки
-		 * @param $string
-		 *
-		 * @return string
-		 *
-		 * @since version
-		 */
-		public static function rus2translite ( $string )
-		{
-			$converter = array(
-				'а' => 'a', 'б' => 'b', 'в' => 'v',
-				'г' => 'g', 'д' => 'd', 'е' => 'e',
-				'ё' => 'e', 'ж' => 'zh', 'з' => 'z',
-				'и' => 'i', 'й' => 'y', 'к' => 'k',
-				'л' => 'l', 'м' => 'm', 'н' => 'n',
-				'о' => 'o', 'п' => 'p', 'р' => 'r',
-				'с' => 's', 'т' => 't', 'у' => 'u',
-				'ф' => 'f', 'х' => 'h', 'ц' => 'c',
-				'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch',
-				'ь' => '\'', 'ы' => 'y', 'ъ' => '\'',
-				'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
-				
-				'А' => 'A', 'Б' => 'B', 'В' => 'V',
-				'Г' => 'G', 'Д' => 'D', 'Е' => 'E',
-				'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z',
-				'И' => 'I', 'Й' => 'Y', 'К' => 'K',
-				'Л' => 'L', 'М' => 'M', 'Н' => 'N',
-				'О' => 'O', 'П' => 'P', 'Р' => 'R',
-				'С' => 'S', 'Т' => 'T', 'У' => 'U',
-				'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
-				'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sch',
-				'Ь' => '\'', 'Ы' => 'Y', 'Ъ' => '\'',
-				'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
-			);
-			return strtr( $string, $converter );
-		}
-		
-		/**
-		 * Траслителтрует строку для использования в Url
-		 * @param $str string
-		 *
-		 * @return string
-		 *
-		 * @since version
-		 */
-		public static function str2url ( $str )
-		{
-			// переводим в транслит
-			$str = self::rus2translite( $str );
-			// в нижний регистр
-			$str = strtolower( $str );
-			// заменям все ненужное нам на "-"
-			$str = preg_replace( '~[^-a-z0-9_]+~u', '-', $str );
-			// удаляем начальные и конечные '-'
-			$str = trim( $str, "-" );
-			return $str;
-		}
-
-        /**
          * Найти слово из массива в заданной строке
+         * GNZ11\Document\Text::strpos_array($haystack , $needles) ;
          * ALIAS \GNZ11\Document\Arrays::strpos_array($haystack , $needles) ;
          * @param $haystack
          * @param $needles
@@ -191,7 +195,7 @@
 
         /**
          * Проверит, что первая строка начинается со второй
-         *
+         * GNZ11\Document\Text::isStart($str, $substr)
          * @param string $str      основная строка
          * @param string $substr   та, которая может содержаться внутри основной
          * @return bool  True -    Если сторка начинается с $substr
@@ -210,8 +214,8 @@
         /**
          * Разбить многобайтовую строку на отдельные символы.
          * Используется для разбиения строки состоящих из символов кирилицы в массив
+         * GNZ11\Document\Text::mbStringToArray ($string , $encofing = "UTF-8" )
          * @param $string Строка с кирилицей
-         *
          * @param string $encofing Кодировка ( default - UTF-8 )
          * @return array массив символов строки
          *
@@ -232,12 +236,14 @@
          * Проверить емеет ли строка  длину
          * Check if have a string with a length
          *
-         * @input	string   The string to check
+         * GNZ11\Document\Text::checkString($string)
          *
-         * @returns bool true on success
+         * @param string $string The string to check
+         *
+         * @return bool
          * @since 3.9
          */
-        public static function checkString($string)
+        public static function checkString(string $string)
         {
             if (isset($string) && is_string($string) && strlen($string) > 0)
             {
@@ -259,7 +265,6 @@
          * @since 3.9
          * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
          * @date 31.08.2020 16:38
-         *
          */
         public static function getAfter($str, $inthat)
         {
@@ -277,7 +282,6 @@
          * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
          * @date 31.08.2020 20:08
          * @{url : http://www.mendoweb.be/blog/php-convert-string-to-camelcase-string/ }
-         *
          */
         public static function camelCase($str, array $noStrip = [])
         {
@@ -290,6 +294,91 @@
             $str = lcfirst($str);
 
             return $str;
+        }
+
+        /**
+         * Удалить пробелы html - сущностей
+         * \GNZ11\Document\Text::trimSpace($stringHTML) ;
+         * @param string|array $stringHTML
+         * @return string|array
+         * @since  3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date   18.12.2020 12:11
+         */
+        public static function trimSpace( $stringHTML ){
+            if( !is_array($stringHTML) )
+            {
+                return self::_converted($stringHTML) ;
+            }#END IF
+            foreach ( $stringHTML as $k  => $item)
+            {
+                $stringHTML[$k] = self::_converted($item) ;
+            }#END FOREACH
+            return $stringHTML ;
+        }
+
+        /**
+         * Удалить повторение слов в строке идущие друг за другом
+         * $str = 'Ремонт принтера Epson Epson M3180';
+         * \GNZ11\Document\Text::removeNextDuplicate($str) ;
+         *  // return Ремонт принтера Epson M3180
+         * @param string $str строка
+         * @param string $delimiter разделитель слов ( default ' ' )
+         * @return string
+         * @since  3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date   18.12.2020 12:47
+         */
+        public static function removeNextDuplicate(string $str , string $delimiter = ' ' ): string
+        {
+            $arrString = explode( $delimiter , $str ) ;
+
+            $prev = null ;
+            foreach ( $arrString as $i => $item)
+            {
+                if( $item == $prev )
+                {
+                    unset( $arrString[$i] ) ;
+                }#END IF
+                $prev = $item ;
+            }#END FOREACH
+
+            return implode( $delimiter , $arrString) ;
+        }
+
+        /**
+         * Первая буква в верхнем регистре для кириллицы
+         * \GNZ11\Document\Text::mb_ucfirst( $word ) ;
+         * @param $word
+         *
+         * @return string
+         * @since  3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date   14.01.2021 23:49
+         *
+         */
+        public static function mb_ucfirst ($word): string
+        {
+            return mb_strtoupper(mb_substr($word, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr(mb_convert_case($word, MB_CASE_LOWER, 'UTF-8'), 1, mb_strlen($word), 'UTF-8');
+        }
+
+
+
+
+        /**
+         * Удалить пробелы html - сущностей
+         * @param $stringHTML
+         *
+         * @return string
+         * @since  3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date   18.12.2020 12:33
+         *
+         */
+        protected static function _converted ($stringHTML): string
+        {
+            $converted = strtr( $stringHTML , array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)));
+            return trim($converted, chr(0xC2).chr(0xA0));
         }
 
 	}

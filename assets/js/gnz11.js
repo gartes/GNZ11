@@ -2,7 +2,8 @@
  * IE9 fix console
  */
 if(!window.console)var console={trace:function(){},info:function(){},log:function(){},warn:function(){},warn:function(){},error:function(){},time:function(){},timeEnd:function(){}};
-
+// Полифилл Date.now
+if (!Date.now) { Date.now = function now() { return new Date().getTime(); };}
 /**
  * IE9+
  * You can polyfill the CustomEvent() constructor functionality in Internet Explorer 9 and higher with the following code:
@@ -136,11 +137,43 @@ Jpro = window.Jpro || {};
 
 var GNZ11_defSetting = {
     debug: false ,
+    gnzlib_path_api: '/libraries/GNZ11/Api',
     gnzlib_path_file_corejs: "/libraries/GNZ11/assets/js/gnz11.js",
     gnzlib_path_file_corejs_min: "/libraries/GNZ11/assets/js/gnz11.min.js",
     gnzlib_path_modules: "/libraries/GNZ11/assets/js/modules",
     gnzlib_path_plugins: "/libraries/GNZ11/assets/js/plugins",
+    gnzlib_path_sprite : "libraries/GNZ11/assets/img/_sprite1111.svg",
 };
+/**
+ * Храненние SVG - Symbol
+ * @type {{}}
+ */
+window._SpriteCollection = {} ;
+/**
+ * История Svg елементов которые уже были добавлены
+ * @type {*[]}
+ * @private
+ */
+window._SpriteHistory = [];
+
+
+// TODO - Новое хранение коллекции SVG Sprites
+window.__SpriteCollection =  {
+    isLoaded : false ,
+    load : false ,
+    added : [] ,
+};
+
+
+
+window.GNZ11_isLoad = {
+    script: [],
+    link: [],
+    img: [],
+    // TODO------------------
+    svg : [] ,
+};
+
 
 /**
  * @constructor
@@ -157,22 +190,25 @@ window.GNZ11 = function (options_setting) {
         PATH_API : null
     } ;
     this._defaults = {
-        PATH_API: '/libraries/GNZ11/Api'
-
+        PATH_API: 'libraries/GNZ11/Api'
     };
-
     this.WGNZ11INIT = function () {
+
         if ( typeof options_setting === 'undefined') options_setting = {} ;
         self.WGNZ11INIT_OPTS = Object.assign({}  , self._defaults , options_setting  );
-    };
 
-    (function () { })();
+
+
+
+    };
     this._siteUrl = null ;
     this.set_siteUrl = function (Url) {
         this._siteUrl = Url ;
         Joomla.loadOptions({ 'siteUrl' : Url })
     };
-
+    /**
+     * Установка настроек для объекта GNZ11
+     */
     this.Options = (function () {
         var opt = Joomla.getOptions('GNZ11')
         if ( typeof opt === 'undefined'){
@@ -181,23 +217,6 @@ window.GNZ11 = function (options_setting) {
         return Joomla.getOptions('GNZ11')
     })();
     this.init = function () {};
-    /**
-     * Обект работы с текстом
-     */
-    this.TEXT = {
-        /**
-         * специальное кодирование, требуемое для заголовков сервера
-         * @param str
-         */
-        'encodeRFC5987ValueChars' : function (str){
-            return encodeURIComponent(str).
-                // Замечание: хотя RFC3986 резервирует "!", RFC5987 это не делает, так что нам не нужно избегать этого
-                replace(/['()]/g, escape). // i.e., %27 %28 %29
-                replace(/\*/g, '%2A').
-                // Следующее не требуется для кодирования процентов для RFC5987, так что мы можем разрешить немного больше читаемости через провод: |`^
-                replace(/%(?:7C|60|5E)/g, unescape);
-        }
-    };
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /**
      * Загрузка Ajax модуля (GNZ11Ajax)
@@ -207,46 +226,84 @@ window.GNZ11 = function (options_setting) {
         console.warn('GNZ11.getAjax is deprecated!!! Use GNZ11.getModul("Ajax")');
         return this.getModul('Ajax');
     };
+
+
+
+
+
+
     /**
-     * Загрузка css, img, js
+     * Загрузка css, img, js , svg
+     *
+     *  wgnz11.load.css('')
+     *  wgnz11.load.js('')
+     *  wgnz11.load.svg('')
+     *  DOC :
+     *      window.__SpriteCollection - объект коллекции SVG
+     *
+     * TODO добавить обработку изображений wgnz11.load.img('')
      * @type {{css, img, js}}
      */
     this.load = (function () {
-        var LIB = this;
+        var selectorSpriteSymbols = '__SpriteSymbols'
+        var element ;
+
+
         // Function which returns a function: https://davidwalsh.name/javascript-functions
         function _load(tag) {
+
             return function (url) {
                 // This promise will be used by Promise.all to determine success or failure
                 return new Promise(function(resolve, reject) {
-                    if (typeof window.GNZ11_isLoad === 'undefined'){
-                        window.GNZ11_isLoad = {
-                            script: [],
-                            link: [],
-                            img: []
-                        };
-                    }
-                    // console.log( url )
-                    if ( $.inArray(url, window.GNZ11_isLoad[tag]) !== -1 )  return resolve( url );
-                    window.GNZ11_isLoad[tag].push( url );
-                    var element = document.createElement(tag);
+                    // Проверяем в истории
+                    if ($.inArray(url, window.GNZ11_isLoad[tag]) !== -1) return resolve(url);
+
+
+                    element = document.createElement(tag);
                     var parent = 'body';
                     var attr = 'src';
-                    // Important success and error for the promise
-                    element.onload = function() { resolve(url);  };
-                    element.onerror = function() { reject(url); };
-
+                    console.log(tag)
                     // Need to set different attributes depending on tag type
-                    switch( tag ) {
+                    switch (tag) {
                         case 'script':
                             element.async = true;
                             break;
-
                         case 'link':
                             element.type = 'text/css';
                             element.rel = 'stylesheet';
                             attr = 'href';
                             parent = 'head';
+                            break;
+                        case 'svg' :
+
+                            if ( !window.__SpriteCollection.isLoaded ){
+                                _loadSvgSprite().then(function (r) {
+                                    console.log( 'GNZ11.load:url' , url )
+                                    setTimeout(function (){
+                                        setSvg(  url );
+                                        resolve(url);
+                                    },500)
+                                }, function (err) { console.log(err) });
+                            }else {
+                                console.log( 'GNZ11.load:url+' , url )
+                                setSvg(  url );
+                                resolve(url);
+                            }
+
+
+
+
+
                     }
+                    // Important success and error for the promise
+                    element.onload = function () {
+                        // Добавить в историю
+                        window.GNZ11_isLoad[tag].push(url);
+                        resolve(url);
+                    };
+                    element.onerror = function () {
+                        reject(url);
+                    };
                     // Inject into document to kick off loading
                     element[attr] = url;
                     document[parent].appendChild(element);
@@ -254,14 +311,119 @@ window.GNZ11 = function (options_setting) {
             };
         }
 
+        /**
+         * Загрузка файла спрайта SVG
+         * @private
+         */
+        function _loadSvgSprite(){
+            return new Promise(function(resolve, reject) {
+                if ( window.__SpriteCollection.isLoaded ) {
+                    // console.trace('_loadSvgSprite:trace2');
+                    resolve( window.__SpriteCollection );
+                    return ;
+                }
+
+                if (window.__SpriteCollection.load)  {
+                    resolve( window.__SpriteCollection );
+                    return;
+                };
+                window.__SpriteCollection.load = true;
+
+                // Путь к файлу SpriteSymbols
+                var gnzlib_path_sprite = Joomla.getOptions('GNZ11').gnzlib_path_sprite ;
+                var url =  Joomla.getOptions('GNZ11').Ajax.siteUrl + gnzlib_path_sprite ;
+
+
+                var $defs = $('<defs />' , { id : '__SpriteSymbols', class : 'gnz11' });
+                var $svg = $('<svg />' , {style : 'display: none;',html : $defs ,});
+                $('body').append($svg);
+
+                var t = new XMLHttpRequest;
+                t.open('GET', url, !0);
+                t.onload = function () {
+                    t.readyState === t.DONE && 200 === t.status && function (e) {
+                        // Загружаем svg обьекты в переменную
+                        for ( var t = (new DOMParser).parseFromString(e, 'text/xml')
+                            .getElementsByTagName('symbol'), n = 0; n < t.length; n++) {
+                            var o = t.item(n).cloneNode(!0);
+                            var id = o.getAttribute('id');
+                            window.__SpriteCollection['#'+id] = o ;
+                        }
+                        window.__SpriteCollection.isLoaded = true ;
+                        resolve(window.__SpriteCollection);
+                    }(t.responseText);
+                }
+                t.send();
+            });
+        }
+        /**
+         * Установка Svg в элемент хранения
+         */
+        function setSvg(   spriteId ) {
+            // Элемент который хранит HTML SVG
+            var $SpriteSymbols = $('#__SpriteSymbols');
+
+            if ( typeof spriteId === 'object'){
+                $.each( spriteId , function (i,Id){
+                    if ( !window.__SpriteCollection.isLoaded ) {
+                        window.__SpriteCollection.added.push( Id )
+                    }
+                    // Устанавливаем SVG в тело документа
+                    __append (Id) ;
+                })
+                return ;
+            }
+
+            if ($.inArray(spriteId, window.GNZ11_isLoad['svg']) !== -1) return ;
+            // Устанавливаем SVG в тело документа
+            __append (spriteId) ;
+
+
+
+            function __append (spriteId){
+                if ($.inArray( spriteId , window.GNZ11_isLoad['svg']) !== -1) return ;
+
+                var svgElement = window.__SpriteCollection[spriteId]
+                if ( typeof svgElement === 'undefined'){
+                    window.__SpriteCollection.added.push(spriteId)
+                }
+                console.log( '_loadSvgSprite:svgElement', svgElement )
+
+                $SpriteSymbols.append( svgElement );
+                window.GNZ11_isLoad.svg.push(spriteId);
+            }
+        }
         return {
             css: _load('link'),
             js: _load('script'),
             script: _load('script'),
+            svg : _load('svg'),
+            initSvg : function (){
+                var arr = [] ;
+                $('svg use').each(function (i,a) {
+                    var id = $(a).attr('xlink:href');
+                    if ( !self.ARRAY.inArray( id , arr) ){
+                        arr.push(id)
+                    }
+                });
+                self.load.svg(arr).then(function (r){
+
+                },function (err){console.log(err)});
+            },
             img: _load('img')
         };
     })();
 
+    /**
+     * Загрузка GTagManager
+     * TODO - доделать передачу GTagManager ID
+     */
+    this.setGTagManager = function() {
+        var t = this.doc.createElement("script");
+        t.type = "text/javascript",
+            t.innerHTML = "(function (w, d, s, l, i) {w[l] = w[l] || [];w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js',});var f = d.getElementsByTagName(s)[0],j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';j.async = true;j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl;f.parentNode.insertBefore(j, f);})(window, document, 'script', 'dataLayer', 'GTM-XXXXXXXX');",
+            this.doc.getElementsByTagName("head")[0].appendChild(t)
+    }
     /**
      * Склонение числительных в javascript
      * @param number
@@ -270,86 +432,87 @@ window.GNZ11 = function (options_setting) {
      *
      * @url https://gist.github.com/realmyst/1262561
      */
-     this.declOfNum = function(number, titles) {
+    this.declOfNum = function(number, titles) {
         cases = [2, 0, 1, 1, 1, 2];
         return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];
-     };
+    };
     /**
      * Переписать числа словами
      * @param Summ
      * @param currency
      * @returns {*}
      */
-     this.getLettersSumm = function (Summ , currency ) {
-         return sum_letters( Summ ) ;
-         function num_letters(k, d) {  // целое число прописью, это основа
-             var i = '', e = [
-                 ['','тысяч','миллион','миллиард','триллион','квадриллион','квинтиллион','секстиллион','септиллион','октиллион','нониллион','дециллион'],
-                 ['а','и',''],
-                 ['','а','ов']
-             ];
-             if (k == '' || k == '0') return ' ноль'; // 0
-             k = k.split(/(?=(?:\d{3})+$)/);  // разбить число в массив с трёхзначными числами
-             if (k[0].length == 1) k[0] = '00'+k[0];
-             if (k[0].length == 2) k[0] = '0'+k[0];
-             for (var j = (k.length - 1); j >= 0; j--) {  // соединить трёхзначные числа в одно число, добавив названия разрядов с окончаниями
-                 if (k[j] != '000') {
-                     i = (((d && j == (k.length - 1)) || j == (k.length - 2)) && (k[j][2] == '1' || k[j][2] == '2') ? t(k[j],1) : t(k[j])) + declOfNum(k[j], e[0][k.length - 1 - j], (j == (k.length - 2) ? e[1] : e[2])) + i;
-                 }
-             }
-             function t(k, d) {  // преобразовать трёхзначные числа
-                 var e = [
-                     ['',' один',' два',' три',' четыре',' пять',' шесть',' семь',' восемь',' девять'],
-                     [' десять',' одиннадцать',' двенадцать',' тринадцать',' четырнадцать',' пятнадцать',' шестнадцать',' семнадцать',' восемнадцать',' девятнадцать'],
-                     ['','',' двадцать',' тридцать',' сорок',' пятьдесят',' шестьдесят',' семьдесят',' восемьдесят',' девяносто'],
-                     ['',' сто',' двести',' триста',' четыреста',' пятьсот',' шестьсот',' семьсот',' восемьсот',' девятьсот'],
-                     ['',' одна',' две']
-                 ];
-                 return e[3][k[0]] + (k[1] == 1 ? e[1][k[2]] : e[2][k[1]] + (d ? e[4][k[2]] : e[0][k[2]]));
-             }
-             return i;
-         }
-         function declOfNum(n, t, o) {  // склонение именительных рядом с числительным: число (typeof = string), корень (не пустой), окончание
-             var k = [2,0,1,1,1,2,2,2,2,2];
-             return (t == '' ? '' : ' ' + t + (n[n.length-2] == "1"?o[2]:o[k[n[n.length-1]]]));
-         }
-         function razUp(e) {  // сделать первую букву заглавной и убрать лишний первый пробел
-             return e[1].toUpperCase() + e.substring(2);
-         }
-         function sum_letters(a) {
-             a = Number(a).toFixed(2).split('.');  // округлить до сотых и сделать массив двух чисел: до точки и после неё
+    this.getLettersSumm = function (Summ , currency ) {
+        return sum_letters( Summ ) ;
+        function num_letters(k, d) {  // целое число прописью, это основа
+            var i = '', e = [
+                ['','тысяч','миллион','миллиард','триллион','квадриллион','квинтиллион','секстиллион','септиллион','октиллион','нониллион','дециллион'],
+                ['а','и',''],
+                ['','а','ов']
+            ];
+            if (k == '' || k == '0') return ' ноль'; // 0
+            k = k.split(/(?=(?:\d{3})+$)/);  // разбить число в массив с трёхзначными числами
+            if (k[0].length == 1) k[0] = '00'+k[0];
+            if (k[0].length == 2) k[0] = '0'+k[0];
+            for (var j = (k.length - 1); j >= 0; j--) {  // соединить трёхзначные числа в одно число, добавив названия разрядов с окончаниями
+                if (k[j] != '000') {
+                    i = (((d && j == (k.length - 1)) || j == (k.length - 2)) && (k[j][2] == '1' || k[j][2] == '2') ? t(k[j],1) : t(k[j])) + declOfNum(k[j], e[0][k.length - 1 - j], (j == (k.length - 2) ? e[1] : e[2])) + i;
+                }
+            }
+            function t(k, d) {  // преобразовать трёхзначные числа
+                var e = [
+                    ['',' один',' два',' три',' четыре',' пять',' шесть',' семь',' восемь',' девять'],
+                    [' десять',' одиннадцать',' двенадцать',' тринадцать',' четырнадцать',' пятнадцать',' шестнадцать',' семнадцать',' восемнадцать',' девятнадцать'],
+                    ['','',' двадцать',' тридцать',' сорок',' пятьдесят',' шестьдесят',' семьдесят',' восемьдесят',' девяносто'],
+                    ['',' сто',' двести',' триста',' четыреста',' пятьсот',' шестьсот',' семьсот',' восемьсот',' девятьсот'],
+                    ['',' одна',' две']
+                ];
+                return e[3][k[0]] + (k[1] == 1 ? e[1][k[2]] : e[2][k[1]] + (d ? e[4][k[2]] : e[0][k[2]]));
+            }
+            return i;
+        }
+        function declOfNum(n, t, o) {  // склонение именительных рядом с числительным: число (typeof = string), корень (не пустой), окончание
+            var k = [2,0,1,1,1,2,2,2,2,2];
+            return (t == '' ? '' : ' ' + t + (n[n.length-2] == "1"?o[2]:o[k[n[n.length-1]]]));
+        }
+        function razUp(e) {  // сделать первую букву заглавной и убрать лишний первый пробел
+            return e[1].toUpperCase() + e.substring(2);
+        }
+        function sum_letters(a) {
+            a = Number(a).toFixed(2).split('.');  // округлить до сотых и сделать массив двух чисел: до точки и после неё
 
-             if (typeof currency ==='undefined' )  a[1] = '' ;
-             switch (currency) {
-                 case 'р' :
-                     currencyText = [
-                         declOfNum(a[0], 'рубл', ['ь', 'я', 'ей']),
-                         declOfNum(a[1], 'копе', ['йка', 'йки', 'ек']),
-                     ];
-                     break;
-                 default :
-                     currencyText = [ '' , '' ];
-             }
+            if (typeof currency ==='undefined' )  a[1] = '' ;
+            switch (currency) {
+                case 'р' :
+                    currencyText = [
+                        declOfNum(a[0], 'рубл', ['ь', 'я', 'ей']),
+                        declOfNum(a[1], 'копе', ['йка', 'йки', 'ек']),
+                    ];
+                    break;
+                default :
+                    currencyText = [ '' , '' ];
+            }
 
-             return razUp(num_letters(a[0]) + currencyText[0] + ' ' + a[1] + currencyText[1]);
-         }
-     }
-
-
+            return razUp(num_letters(a[0]) + currencyText[0] + ' ' + a[1] + currencyText[1]);
+        }
+    }
     /**
      *  ## Joomla Plugins Обработка плагинов  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     *
+     * Получение данных из Joomla.LocalStorage - для плагинов которые наследуют объект GNZ11
+     * TODO - добавить возможность для наследия модулями
      * @param key
      * @returns {mixed|*}
      * @constructor
      */
-     this.JoomlaStoragePlugin = function ( key ){
+    this.JoomlaStoragePlugin = function ( key ){
         var opt =  Joomla.getOptions( this.__plugin );
         if (typeof key === 'undefined')  return  opt ;
         return  opt[key] ;
-     }
+    }
+
+
     /**
      * Звгрузка модулей GNZ11
      * @param moduleName
@@ -364,9 +527,9 @@ window.GNZ11 = function (options_setting) {
         var pathModules =  siteUrl + this.Options.gnzlib_path_modules;
         var Module = 'GNZ11'+moduleName ;
         var returnModule ;
-        // console.log( typeof Module );
-        // console.log( moduleName );
 
+        console.log('gnz11:getModul' , typeof Module );
+        console.log('gnz11:getModul' ,   Module );
 
         //
         // Если модуль еще не был загружен
@@ -384,7 +547,7 @@ window.GNZ11 = function (options_setting) {
                     var testClass = moduleName.match(/_class/);
                     // console.log(testClass)
                     if ( testClass && testClass[0] ){
-                        resolve(moduleName);
+                        setTimeout(function (){ resolve(moduleName); },200)
                         return ;
                     }
 
@@ -411,32 +574,27 @@ window.GNZ11 = function (options_setting) {
     };
     /**
      * Загрузка елементов API
+     * @param classApi
      * @param nameApi str Имя API  e.t. NovaPoshta
      * @param options obj ?????
      */
     this.getApi = function ( classApi , nameApi , options ) {
         const _JS_ = '/assets/js' ;
-        var file = self.WGNZ11INIT_OPTS.PATH_API+'/'+classApi+'/'+nameApi + _JS_ +'/'+nameApi+'.js' ;
+        const Host = Joomla.getOptions('siteUrl') ;
+        console.log('gnz11:WGNZ11INIT' , wgnz11.WGNZ11INIT_OPTS )
+        var file = Host + wgnz11.WGNZ11INIT_OPTS.PATH_API+'/'+classApi+'/'+nameApi + _JS_ +'/'+nameApi+'.js' ;
+
+        console.log('gnz11:getApi' , file  )
+
         return new Promise(function (resolve, reject) {
             Promise.all([
                 wgnz11.load.js( file ),
             ]).then(function (a) {
                 resolve( true );
-            },function (reject) {
-                reject();
+            },function (err) {
+                reject(err);
             })
         })
-
-
-
-        /*return new Promise(function(resolve, reject) {
-            return wgnz11.load.js( file ).then( function (res) {
-                return resolve ;
-            },function (err) {
-                return reject ;
-            }) ;
-        });*/
-
     }
     /**
      * Загрузка плагинов библиотеки GNZ11
@@ -515,6 +673,7 @@ window.GNZ11 = function (options_setting) {
                     Promise.all([
                         $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/noty.css'),
                         $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/themes/metroui.css'),
+                        $this.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/noty/themes/mint.css'),
                         $this.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/noty/noty.js'),
                     ]).then(function (a) {
                         var i = setInterval(function () {
@@ -625,23 +784,24 @@ window.GNZ11 = function (options_setting) {
                 });
             })
         }
-
     };
+
+
+    /**
+     * Запуск отложенной загрузки ресурсов Jpro
+     */
     this.loadJpro = function () {
         var optJpro = Joomla.getOptions('Jpro');
         if (typeof optJpro === 'undefined' || typeof  optJpro.load !== 'object') return ;
         optJpro.load.forEach(function(item, i, arr) {
             setTimeout(function () {
-
-
                 if (typeof item.t === 'undefined' ){
                     var parseResult = gnz11.parseURL(item.u  );
                     item.t = parseResult.extension;
-
                 }
 
-
                 wgnz11.load[item.t](item.u).then(function (a) {
+
                     /*if ( item.u  === '/modules/mod_virtuemart_zif_filter/assets/js/mod_virtuemart_zif_filter.js' ){
                         console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
                         console.log(parseResult)
@@ -664,20 +824,28 @@ window.GNZ11 = function (options_setting) {
                     }
 
                 });
-            },500)
+            },100)
         });
     };
-
-    this.debug=function ( value , namespase ) {
+    /**
+     * Вывод отладочной информации
+     * Перед использованием включаем отладку для объекта wgnz11
+     *    wgnz11.Options.debug = true
+     *    wgnz11.debug(111111111 , 'test' )
+     *
+     * @param value     - значение для вывода
+     * @param namespace - название для консольной группы
+     *
+     */
+    this.debug = function ( value , namespace ) {
         if (!this.Options.debug) return ;
-        if (typeof namespase === 'undefined' ){
+        if (typeof namespace === 'undefined' ){
             console.log( value );
             return;
         }
-        console.groupCollapsed(namespase);
+        console.groupCollapsed(namespace);
         console.log( value );
         console.groupEnd();
-
     };
     /**
      * Парсинг Url Строки
@@ -709,7 +877,7 @@ window.GNZ11 = function (options_setting) {
             extension : filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)
         };
     };
-     // radio btn - init
+    // radio btn - init
     this.checkBoxRadioInit = function  (){
         var $=jQuery;
         // Turn radios into btn-group
@@ -858,49 +1026,183 @@ window.GNZ11 = function (options_setting) {
         }
         return obj1;
     }
-    /**
-     * получить строку между двумя символами
-     */
-    this.getBetween = function (str,start,finish ) {
-        return str.substring(
-            str.lastIndexOf(start) + 1,
-            str.lastIndexOf(finish)
-        )
-    };
-    /**
-     * Serializes - форм || элементов форм не вложенных в тег <form>
-     * Serializes form or any other element with jQuery.serialize
-     * @param el - <form> OR <div>
-     */
-    this.serialize = function(el) {
-        var serialized = $(el).serialize();
-        if (!serialized) // not a form
-            serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
-        return serialized;
+
+    this.Optimizing = {
+        /**
+         * Проверка полной видимости элемента
+         * @param  $element
+         * @url https://vk-book.ru/proverit-vidimost-elementa-s-pomoshhyu-jquery/
+         */
+        checkPosition   : function ($element){
+            // координаты дива
+            var div_position = $element.offset();
+            // отступ сверху
+            var div_top = div_position.top;
+            // отступ слева
+            var div_left = div_position.left;
+            // ширина
+            var div_width = $element.width();
+            // высота
+            var div_height = $element.height();
+
+            // проскроллено сверху
+            var top_scroll = $(document).scrollTop()  + 200 ;
+            // проскроллено слева
+            var left_scroll = $(document).scrollLeft();
+            // ширина видимой страницы
+            var screen_width = $(window).width();
+            // высота видимой страницы
+            var screen_height = $(window).height();
+
+            // координаты углов видимой области
+            var see_x1 = left_scroll;
+            var see_x2 = screen_width + left_scroll; // Правый верхний угол
+            var see_y1 = top_scroll;
+            var see_y2 = screen_height + top_scroll;
+
+            // координаты углов искомого элемента
+            // ширина
+            var div_x1 = div_left;
+            // var div_x2 = div_left + div_height ;
+            var div_x2 = div_left + div_width  ;
+
+            // высота
+            var div_y1 = div_top;
+            // var div_y2 = div_top + div_width;
+            var div_y2 = div_top + div_height;
+
+            // проверка - виден див полностью или нет
+            if( div_x1 >= see_x1 && div_x2 <= see_x2 && div_y1 >= see_y1 && div_y2 <= see_y2 ){
+                // если виден
+                return true;
+                // $element.css({'background-color': 'green'});
+            }else{
+                // если не виден
+                return false;
+                // $element.css({'background-color': 'red'});
+            }
+        },
+        fromTemplate    : function ( templateSelector , formSelector ){
+            var $template  = $( templateSelector ) ;
+            if (!$template[0]){
+                console.warn('Tag <template /> selector ("'+templateSelector+'") not found!!!')
+                return ;
+            }
+            var htmlTemplate = $template.html().trim();
+            var TemplateClone = $(htmlTemplate);
+
+            if ( typeof formSelector === 'undefined' ){
+                $template.parent().append(TemplateClone);
+            }else{
+                $(formSelector).append(TemplateClone);
+            }
+            $template.remove();
+        }
     }
 
     /**
      * Извлечение из тега <Template />
      */
-    this.fromTemplate = function (templateSelector , formSelector ) {
-        var $template  = $( templateSelector ) ;
-        if (!$template[0]){
-            console.warn('Tag <template /> selector ("'+templateSelector+'") not found')
-            return ;
-        }
-        var htmlTemplate = $template.html().trim();
-        var TemplateClone = $(htmlTemplate);
+    this.fromTemplate = function ( templateSelector , formSelector ) {
+        alert('fromTemplate')
 
-        if ( typeof form === 'undefined' ){
-            $template.parent().append(TemplateClone);
-        }else{
-            $(formSelector).append(TemplateClone);
-        }
-
-        $template.remove();
     }
 
 
+
+
+
+
+
+
+
+    /**
+     * Обекты ---------------------------------------------------------------------------------------------------
+     *
+     * ----------------------------------------------------------------------------------------------------------
+     */
+    this.ARRAY = {
+        /**
+         * Эквивалент PHP in_array ()
+         * @param needle
+         * @param haystack
+         * @returns {boolean}
+         */
+        inArray : function (needle, haystack){
+            var length = haystack.length;
+            for(var i = 0; i < length; i++) {
+                if(haystack[i] == needle) return true;
+            }
+            return false;
+        }
+    };
+    /**
+     * Обект работы с текстом
+     */
+    this.TEXT = {
+        /**
+         * специальное кодирование, требуемое для заголовков сервера
+         * @param str
+         */
+        encodeRFC5987ValueChars : function (str){
+            return encodeURIComponent(str).
+                // Замечание: хотя RFC3986 резервирует "!", RFC5987 это не делает, так что нам не нужно избегать этого
+                replace(/['()]/g, escape). // i.e., %27 %28 %29
+                replace(/\*/g, '%2A').
+                // Следующее не требуется для кодирования процентов для RFC5987, так что мы можем разрешить немного больше читаемости через провод: |`^
+                replace(/%(?:7C|60|5E)/g, unescape);
+        },
+        /** Javascript and jQuery
+         *  Аналог PHP функции implode Объединяет элементы массива в строку
+         * @param glue
+         * @param arr
+         * @url https://javascript.ru/php/implode
+         */
+        implode : function (glue, arr ){
+            return ( ( arr instanceof Array ) ? arr.join ( glue ) : arr );
+        },
+        /**
+         * получить строку между двумя символами
+         */
+        getBetween : function (str,start,finish ) {
+            return str.substring(
+                str.lastIndexOf(start) + 1,
+                str.lastIndexOf(finish)
+            )
+        },
+    };
+    /**
+     * Объект работы с формами
+     * @type {{serialize: (function(*=): *), getFormDataToJson: (function(*): {})}}
+     */
+    this.Form = {
+        /**
+         * Данные формы в Json
+         * @param $form
+         * @returns {{}}
+         */
+        getFormDataToJson : function ($form){
+            var unindexed_array = $form.serializeArray();
+            var indexed_array = {};
+
+            $.map(unindexed_array, function(n, i){
+                var name = n['name'] ;
+                indexed_array[ name ] = n['value'];
+            });
+            return indexed_array;
+        },
+        /**
+         * Serializes - форм || элементов форм не вложенных в тег <form>
+         * Serializes form or any other element with jQuery.serialize
+         * @param el - <form> OR <div>
+         */
+        serialize : function(el) {
+            var serialized = $(el).serialize();
+            if (!serialized) // not a form
+                serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
+            return serialized;
+        }
+    };
 };
 
 
@@ -918,11 +1220,19 @@ window.GNZ11 = function (options_setting) {
  *
  */
 (function () {
+
     window.wgnz11 = new GNZ11();
     wgnz11.WGNZ11INIT();
+    setTimeout(function (){
+        // Загрузка спрайта
+        // wgnz11.loadSprite();
+        wgnz11.load.initSvg();
 
-    window.wgnz11.loadJpro();
-    document.dispatchEvent(new Event('GNZ11Loaded'))
+        window.wgnz11.loadJpro();
+        document.dispatchEvent(new Event('GNZ11Loaded'));
+    },100);
+
+
 })();
 /*===========================================================*/
 /*===========================================================*/

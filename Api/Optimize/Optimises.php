@@ -216,7 +216,7 @@ class Optimises
             \GNZ11\Document\Dom::writeDownTag( $dom , 'script', '',  $item );
         }#END FOREACH
 
-        #Созадть Тег Скрипт с собанысм скриптами - разделенные переносом строк
+        #Созадть Тег Скрипт с собраными скриптами - разделенные переносом строк
         $scriptDeclaration = implode("\r\n" , $this->_scriptDeclarationCollection['javascript'] ) ;
         \GNZ11\Document\Dom::writeDownTag( $dom , 'script', $scriptDeclaration  );
 

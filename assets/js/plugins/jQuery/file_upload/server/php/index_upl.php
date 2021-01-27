@@ -49,11 +49,26 @@
 		
 
 	}#END IF
+
+
+
+
 	if( $_SERVER['REQUEST_METHOD'] == 'DELETE' )
 	{
 		$task = '_delete' ;
 	}#END IF
-	
+
+    if( $_REQUEST['task'] == 'loadForm' )
+    {
+        $task = 'loadForm' ;
+    }#END IF
+
+
+//    echo'<pre>';print_r( $_REQUEST['task'] );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+//    echo'<pre>';print_r( $task );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+//    die(__FILE__ .' '. __LINE__ );
+
+
 	$options = array_merge_recursive( (array)$_default_request, $_default );
 	
 	
@@ -78,7 +93,12 @@
 		# Если добавление файла
 		case 'fileuploadsubmit':
 			
-			
+
+
+
+
+
+
 			
 			/**
 			 * Получить данные о файлах
@@ -86,7 +106,12 @@
 			 * возвращает массив - без печати ответа в body
 			 */
 			
-			$product = $indexUploadHandler->addFileProduct( $product, $response );
+//			$product = $indexUploadHandler->addFileProduct( $product , $response );
+
+
+//            echo'<pre>';print_r( $product );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+//            die(__FILE__ .' '. __LINE__ );
+
 			$dirRoot = str_replace( '/libraries/GNZ11/assets/js/plugins/jQuery/file_upload/server/php' , '' ,__DIR__  ) ;
 			
 			$json = json_encode($response);
@@ -136,5 +161,27 @@
 		}
 		
 	}
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	

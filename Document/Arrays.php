@@ -33,7 +33,7 @@ defined('_JEXEC') or die; // No direct access to this file
 class Arrays
 {
     /**
-     * Массив в объект (Joomla)
+     * Конверт массив => объект (Joomla)
      * \GNZ11\Document\Arrays::arrToObj( $arr ) ;
      *
      * \GNZ11\Document\Arrays::filterElemByKey($arr , $filterOutKeys) ;

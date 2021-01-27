@@ -25,6 +25,7 @@
 			'gnzlib_path_file_corejs_min'=>'/libraries/GNZ11/assets/js/gnz11.min.js',
 			'gnzlib_path_modules'=>'/libraries/GNZ11/assets/js/modules' ,
 			'gnzlib_path_plugins'=>'/libraries/GNZ11/assets/js/plugins' ,
+            'gnzlib_path_sprite' => "libraries/GNZ11/assets/img/_sprite1111.svg",
 			'gnzlib_debug'=>false ,
 		] ;
 		
@@ -37,16 +38,21 @@
 		 */
 		protected function __construct ( $params = null )
 		{
+
 			$this->app = JFactory::getApplication() ;
 			if( !$params )
 			{
 				$params = new \Joomla\Registry\Registry;
 			}#END IF
 			$this->paramsComponent = $params ;
-			
+
+
+
 			if( $this->CoreJs_isLoaded ) return  null ;  #END IF
-			
+
+
 			$this->setConfig_GNZ11 ();
+
 
 
 
@@ -62,6 +68,7 @@
 		 */
 		public static function instance ( $params = null  )
 		{
+
 			if( self::$instance === null )
 			{
 				self::$instance = new self( $params  );
@@ -105,8 +112,11 @@
 			$gnzlib_path_file_corejs_min = $this->paramsComponent->get( 'gnzlib_path_file_corejs_min' , self::$GNZ11[ 'gnzlib_path_file_corejs_min' ] );
 			$gnzlib_path_modules         = $this->paramsComponent->get( 'gnzlib_path_modules' , self::$GNZ11[ 'gnzlib_path_modules' ] );
 			$gnzlib_path_plugins         = $this->paramsComponent->get( 'gnzlib_path_plugins' , self::$GNZ11[ 'gnzlib_path_plugins' ] );
+			$gnzlib_path_sprite         = $this->paramsComponent->get( 'gnzlib_path_sprite' , self::$GNZ11[ 'gnzlib_path_sprite' ] );
+
 			$GNZ11_options =  $doc->getScriptOptions('GNZ11') ;
 			$data = [
+                'gnzlib_path_sprite' => $gnzlib_path_sprite ,
 				'gnzlib_path_file_corejs' => $gnzlib_path_file_corejs ,
 				'gnzlib_path_modules' => $gnzlib_path_modules ,
 				'gnzlib_path_plugins' => $gnzlib_path_plugins ,
@@ -281,6 +291,53 @@
 			];
 			$doc->addScriptOptions('Jpro' , $Jpro ) ;
 		}
+        protected static $JproLoaded = [] ;
+
+        /**
+         * Добавить в отложенную загрузку файлы рессурсов ( CSS or JS )
+         * @param $Assets   string Url - ресурса
+         * @param bool $Callback string Callback после загрузки ( для JS файлов )
+         * @param bool $Trigger string  Trigger - для ожидания загрузки
+         * @since 3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date 07.10.2020 18:21
+         * @depecated
+         */
+		public static function addJproLoad(string $Assets, $Callback = false , $Trigger = false ){
+            $doc = \Joomla\CMS\Factory::getDocument();
+            $Jpro = $doc->getScriptOptions('Jpro') ;
+
+		    $_assets=[];
+            $_assets[] = $Assets ;
+		    if ( is_array( $Assets ))
+            {
+                $_assets = $Assets ;
+            }#END IF
+
+            foreach ( $_assets as $asset)
+            {
+                if ( in_array( $asset , self::$JproLoaded  )) continue ;  #END IF
+
+                $assetExt = strtok( $asset, '?') ;
+                $Ext = \Joomla\CMS\Filesystem\File::getExt($assetExt);
+                $params =[
+                    'u' => $asset ,     // Путь к файлу
+                    't' => $Ext ,       // Тип загружаемого ресурса
+                ];
+
+                if ( $Callback  ) $params['c'] = $Callback  ; #END IF
+                if ( $Trigger   ) $params['r'] = $Trigger   ; #END IF
+
+                $Jpro['load'][] = $params ;
+
+                $doc->addScriptOptions('Jpro' , $Jpro ) ;
+
+                self::$JproLoaded[] = $asset ;
+
+            }#END FOREACH
+
+
+        }
 
 		/**
 		 * создать загрузчик javascript файла

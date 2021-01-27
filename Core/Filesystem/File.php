@@ -5,6 +5,7 @@ namespace GNZ11\Core\Filesystem;
 use GNZ11\Document\Text;
 use Joomla\CMS\Factory;
 
+
 class File extends \Joomla\CMS\Filesystem\File
 {
     /**
@@ -25,6 +26,7 @@ class File extends \Joomla\CMS\Filesystem\File
      *
      * @return  string   On success
      *
+     * @throws \Exception
      * @since 3.9
      */
     public static function getFileContents($path, $none = '')
@@ -68,6 +70,42 @@ class File extends \Joomla\CMS\Filesystem\File
             }
         }
         return $none;
+    }
+
+    /**
+     * Проверить является файл или ссылка внутренней
+     * @param $url
+     * @return bool
+     * @since 3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date 08.10.2020 00:55
+     *
+     */
+    public static function isInternal($url)
+    {
+        return ! self::isExternal($url);
+    }
+
+    /**
+     * Проверить является файл или ссылка внешней
+     * Todo Добавить для CMS Joomla - операции из метода checkLocalHost  файл : Helpers/Assets/Links_assets.php
+     * @param string $url
+     * @return bool
+     * @since 3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date 08.10.2020 00:45
+     */
+    public static function isExternal(string $url)
+    {
+        if (strpos($url, '://') === false)
+        {
+            return false;
+        }
+
+        // hostname: отдать предпочтение SERVER_NAME, потому что это включает субдомены
+        $hostname = ($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+
+        return ! (strpos(\GNZ11\Core\RegEx::replace('^.*?://', '', $url), $hostname) === 0);
     }
 
 }

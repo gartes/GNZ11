@@ -210,21 +210,25 @@ fancybox, вероятно, самый популярный в мире скри
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (a) {
     a.open( html , {
-       baseClass: "gjContactPhones",	// Класс основного элемента 
-       touch: false, 				// полностью отключить сенсорные жесты default : true
+       baseClass: "gjContactPhones", // Класс основного элемента 
+       touch: false, 				 // полностью отключить сенсорные жесты default : true
 
        // Эффект перехода между слайдами false - disable
        // "fade" "slide" "circular" "tube" "zoom-in-out" "rotate"
        transitionEffect: "slide",
 
-       // Events
 
+       /**
+        * Events
+        */
        // После инициализации 
-       onInit : function( instance ) {
-          // время смены слайда
-          var duration =  0 ;
+       onInit: function (instance) {
+          // время смены слайда ms.
+          var duration = 0;
           // Переход к выбранному элементу галереи
-          if ( typeof indexImgGoTo !== "undefined" && indexImgGoTo ) instance.jumpTo( indexImgGoTo , duration );
+          if (typeof indexImgGoTo !== "undefined" && indexImgGoTo) {
+             instance.jumpTo(indexImgGoTo, duration);
+          }
        },
        // Перед началом анимации открытия 
        beforeShow: function (instance, current) {
@@ -237,9 +241,7 @@ wgnz11.__loadModul.Fancybox().then(function (a) {
        },
        // После того, как экземпляр был закрыт
        afterClose: function () {
-       },						
-
-
+       },
     });
 });
 ```

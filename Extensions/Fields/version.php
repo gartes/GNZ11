@@ -17,6 +17,14 @@ defined('_JEXEC') or die; // No direct access to this file
 
 jimport('joomla.form.formfield');
 
+/**
+ * Создание поля с версией расшерения
+ * Class JFormFieldVersion
+ * @since 3.9
+ * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+ * @date 08.10.2020 17:20
+ *
+ */
 // The class name must always be the same as the filename (in camel case)
 class JFormFieldVersion extends JFormField {
 
@@ -58,9 +66,6 @@ class JFormFieldVersion extends JFormField {
         $dom = new DOMDocument("1.0", "utf-8");
         $dom->load($xml_file);
         $version = $dom->getElementsByTagName('version')->item(0)->textContent;
-
-
-
 
         // get relevant attributes which were defined in the XML form definition
         $attr = !empty($this->class) ? ' class="' . $this->class . '"' : '';

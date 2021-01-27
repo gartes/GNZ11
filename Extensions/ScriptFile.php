@@ -8,7 +8,10 @@
  */
 
 namespace GNZ11\Extensions;
+use Exception;
 use GNZ11\Core\Filesystem\File;
+use Joomla\CMS\Installer\Adapter\TemplateAdapter;
+
 /**
  * Класс для работы с файлом ScriptFile - расшерений
  * @package     GNZ11\Extensions
@@ -60,16 +63,40 @@ class ScriptFile
 
     /**
      * Задачи перед обновлением
-     * @param $typeExt
-     * @param $parent
+     * @param $typeExt string тип операци ( update )
+     * @param TemplateAdapter $parent Object
      *
      *
+     * @throws Exception
      * @since version
      */
-    public static function updateProcedure($typeExt, $parent){
+    public static function updateProcedure($typeExt,  TemplateAdapter $parent){
         $app = \Joomla\CMS\Factory::getApplication();
         $Registry = new \Joomla\Registry\Registry();
         $Tasks = \GNZ11\Extensions\ScriptFile\Tasks::instance();
+
+        # Название класса файла script.php
+        $className = (string)$parent->manifest->name . 'InstallerScript' ;
+
+        /* @var $className::$RemoveFiles array */
+        # Если есть файлы для удаленияуказанные в файле script.php
+        # Удаление файлов указанных в массиве self::$RemoveFiles - файла script.php расширения
+        try
+        {
+            // Code that may throw an Exception or Error.
+            if (count( $className::$RemoveFiles )) $Tasks->DelFiles( $className::$RemoveFiles ); #END IF
+            // throw new Exception('Code Exception '.__FILE__.':'.__LINE__) ;
+        }
+        catch (Exception $e)
+        {
+            // Executed only in PHP 5, will not be reached in PHP 7
+            echo 'Выброшено исключение: ',  $e->getMessage(), "\n";
+            echo'<pre>';print_r( $e );echo'</pre>'.__FILE__.' '.__LINE__;
+            die(__FILE__ .' '. __LINE__ );
+        }
+
+
+
 
 
         /**
@@ -83,17 +110,9 @@ class ScriptFile
         }#END IF
 
 
-
-
         $filePath = false ;
         if( !isset( $parent->get('manifest')->config ) ) return ; #END IF
-
-
         $config = $parent->get('manifest')->config->fields->fieldset[0];
-
-
-
-
 
         foreach ($config as $conf){
             $name = self::xml_attribute( $conf , 'name' );
@@ -108,8 +127,6 @@ class ScriptFile
         $filePath = JPATH_ROOT .  $filePath . '/files.json' ;
         $dataSetting = $Registry->loadFile( $filePath ) ;
 
-
-        
         $taskArray = $dataSetting->toArray();
         if( !$taskArray || !is_array( $taskArray ) || empty( $taskArray ) || !count( $taskArray )  ) return ; #END IF
 
@@ -147,7 +164,7 @@ class ScriptFile
     /**
      * Проверка директории TMP
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      * @since 3.9
      */
     public static function checkTmpDir(){

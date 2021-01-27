@@ -1,6 +1,7 @@
 <?php
 	namespace GNZ11\Api\Optimize ;
 	use Exception;
+
 	
 	/**
 	 *
@@ -81,6 +82,31 @@
 				'content' => http_build_query( array('input' => $content) ) ) );
 			return file_get_contents($url, false, stream_context_create($postdata));
 		}#END FN
-		
+
+
+
+        /**
+         * @var Minify\CSS
+         */
+//        private $minifier;
+
+        public static function mergeCss( $fileArr ){
+
+/*
+            \JLoader::registerNamespace('MatthiasMullie\Minify',JPATH_LIBRARIES.'/GNZ11/Api/Optimize/Assets/Js_css/MatthiasMullie',$reset=false,$prepend=false,$type='psr4');
+            $minifier = new \MatthiasMullie\Minify\CSS($fileArr[0]) ;
+
+
+            echo'<pre>';print_r(  $minifier->minify()  );echo'</pre>'.__FILE__.' '.__LINE__;
+            die(__FILE__ .' '. __LINE__ );*/
+
+            
+            
+
+
+
+
+		    return true ;
+        }
 		
 	}
