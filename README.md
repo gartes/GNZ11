@@ -1,6 +1,8 @@
 # GNZ11
 <!-- ## Table of Contents -->
 
+## Instal : 
+1. Joomla : https://github.com/gartes/GNZ11/archive/master.zip
 
 ## Содержание
 1. [Javascript and jQuery.](#JavascriptjQuery)

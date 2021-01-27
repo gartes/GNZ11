@@ -63,14 +63,15 @@ class ScriptFile
 
     /**
      * Задачи перед обновлением
+     *
      * @param $typeExt string тип операци ( update )
-     * @param TemplateAdapter $parent Object
+     * @param $parent  Object
      *
      *
      * @throws Exception
      * @since version
      */
-    public static function updateProcedure($typeExt,  TemplateAdapter $parent){
+    public static function updateProcedure($typeExt, object $parent){
         $app = \Joomla\CMS\Factory::getApplication();
         $Registry = new \Joomla\Registry\Registry();
         $Tasks = \GNZ11\Extensions\ScriptFile\Tasks::instance();
