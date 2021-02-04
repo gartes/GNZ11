@@ -5,23 +5,25 @@
 1. Joomla : https://github.com/gartes/GNZ11/archive/master.zip
 
 ## Содержание
+<!--
 1. [Javascript and jQuery.](#JavascriptjQuery)
     + [Text - текстовые операции в JS.](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
+-->
 
-1. [\GNZ11\Document\Text ( текстовые операции ).](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)
+1. [\GNZ11\Document\Text ( текстовые операции ).](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)<!-- @IGNORE PREVIOUS: link -->
     
       
 1. [Плагины]()
-    + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)
-1. [Модули](#модули)
-    + [Ajax](#Ajax);
-    + [Storage Class](#storage-class-) (Локальное хранилище браузера).
+    + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)<!-- @IGNORE PREVIOUS: link -->
+1. [Модули](#Модули)<!-- @IGNORE PREVIOUS: link -->
+    + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
+    + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
 1. [Joomla](Joomla)
 1. [Core](Core)
     + [Backup](Core\Backup)
-    + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)
-1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)
+    + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)<!-- @IGNORE PREVIOUS: link -->
+1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)<!-- @IGNORE PREVIOUS: link -->
     +
 ## <a name="Core"></a> Core
 ### <a name="Core\Backup"></a> Backup
@@ -70,7 +72,7 @@ var juri = wgnz11.JoomlaStoragePlugin( 'siteUrl' ) ;
 var sting = wgnz11.TEXT.implode(',' , arr )
 ```
 ###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM )
-+ [Simple application](#JavascriptjQuerySimpleLoad)
++ [Simple application](#JavascriptjQuerySimpleLoad)<!-- @IGNORE PREVIOUS: anchor -->
 1.  Simple application
 ```javascript
     wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
@@ -104,7 +106,7 @@ catch( Exception $e )
 * @param $Callback string|null Callback после загрузки ( для JS файлов )
 * @param bool $Trigger string  Trigger - для ожидания загрузки
 */
-\GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' , 'Callback' = false , $Trigger = false );
+\GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' ,   false ,   false );
 
 //@depecated  
 $doc = \Joomla\CMS\Factory::getDocument();
@@ -171,8 +173,8 @@ var Settings = {
 } 
 ```
 ***
-## Модули
 
+## Модули
 ### Ajax
 ```javascript
 /*
@@ -203,9 +205,6 @@ wgnz11.getModul("Ajax").then(function (Ajax) {
     })
 });
 ```
-
-
-
 ### Fancybox
 fancybox, вероятно, самый популярный в мире скрипт лайтбокса.
 ```javascript
@@ -253,11 +252,10 @@ wgnz11.__loadModul.Fancybox().then(function (a) {
  ```javascript
 // Set `touch: false` to disable panning/swiping
 touch: {
-    vertical: true, // Разрешить перетаскивать содержимое по вертикали
-        momentum: true // Продолжайте движение после отпускания мыши / касания при панорамировании
+    vertical: true , // Разрешить перетаскивать содержимое по вертикали
+     momentum : true // Продолжайте движение после отпускания мыши / касания при панорамировании
 }
 ```
-
 ### Tippy.js
 полное решение для всплывающих подсказок, всплывающих окон,
 выпадающих меню и меню для веб-сайтов, созданное на основе Popper
@@ -270,7 +268,6 @@ wgnz11.__loadModul.Tippy().then(function(a){
 })
 ``` 
 ***
-
 ### Storage Class [<img width="50" src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
 простой класс хранения для JavaScript
 ```javascript
@@ -334,6 +331,25 @@ this.afterDestroyDropLink = function (event) {
 
 
 ***
+
+## JS - Objects : <a name="JSObjects"></a>
+### ARRAY :
+
+***
+### FILE_SYSTEM :
+ [Получить расшерение файла из пути .](#получитьРасшерениеФайлаИзПути)
+ ###### Получить расшерение файла из пути  <a name="получитьРасшерениеФайлаИзПути"></a> (2021-01-27, 19:58)
+ ```javascript
+var path = '/path/to/file.ext' 
+ wgnz11.FILE_SYSTEM.getExtensionInPath(path) // return : "ext"
+ ```
+ [Содержание](#top)
+ ***
+***
+
+***
+
+
 
 ## API
 ###Shipment

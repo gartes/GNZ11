@@ -173,7 +173,7 @@ window.GNZ11_isLoad = {
     // TODO------------------
     svg : [] ,
 };
-
+window.GNZ11_isLoad_module = [];
 
 /**
  * @constructor
@@ -182,6 +182,7 @@ window.GNZ11 = function (options_setting) {
     var $=jQuery ;
     var self = this ;
     self.DEBAG = true ;
+    self.__v = "?v=0.5.5"
     /**
      * Хранение конфигурации библиотеки GNZ11
      * @type {{}}
@@ -227,11 +228,6 @@ window.GNZ11 = function (options_setting) {
         return this.getModul('Ajax');
     };
 
-
-
-
-
-
     /**
      * Загрузка css, img, js , svg
      *
@@ -255,9 +251,22 @@ window.GNZ11 = function (options_setting) {
             return function (url) {
                 // This promise will be used by Promise.all to determine success or failure
                 return new Promise(function(resolve, reject) {
-                    // Проверяем в истории
-                    if ($.inArray(url, window.GNZ11_isLoad[tag]) !== -1) return resolve(url);
 
+                    // Проверяем в истории
+                    if ($.inArray(url, window.GNZ11_isLoad[tag]) !== -1)  {
+                        resolve(url) ;
+                        return ;
+                    }
+
+
+
+
+                    /*if ( url === '/testvik/test/libraries/GNZ11/assets/js/modules/gnz11.Storage_class.js?v=0.5.5'){
+                        console.log('gnz11:window.GNZ11_isLoad[tag]' , $.inArray(url, window.GNZ11_isLoad[tag]) ); 
+                        console.log('gnz11:window.GNZ11_isLoad[tag]' , window.GNZ11_isLoad[tag] ); 
+
+
+                    }*/
 
                     element = document.createElement(tag);
                     var parent = 'body';
@@ -265,6 +274,7 @@ window.GNZ11 = function (options_setting) {
                     console.log(tag)
                     // Need to set different attributes depending on tag type
                     switch (tag) {
+
                         case 'script':
                             element.async = true;
                             break;
@@ -274,6 +284,13 @@ window.GNZ11 = function (options_setting) {
                             attr = 'href';
                             parent = 'head';
                             break;
+                        case 'style' :
+                            console.log('gnz11:add style tag' , url );
+
+                            element.type = 'text/css';
+                            element.appendChild(document.createTextNode(url));
+
+                            break ;
                         case 'svg' :
 
                             if ( !window.__SpriteCollection.isLoaded ){
@@ -289,12 +306,9 @@ window.GNZ11 = function (options_setting) {
                                 setSvg(  url );
                                 resolve(url);
                             }
-
-
-
-
-
                     }
+
+
                     // Important success and error for the promise
                     element.onload = function () {
                         // Добавить в историю
@@ -394,6 +408,7 @@ window.GNZ11 = function (options_setting) {
             }
         }
         return {
+            style : _load('style'),
             css: _load('link'),
             js: _load('script'),
             script: _load('script'),
@@ -424,18 +439,7 @@ window.GNZ11 = function (options_setting) {
             t.innerHTML = "(function (w, d, s, l, i) {w[l] = w[l] || [];w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js',});var f = d.getElementsByTagName(s)[0],j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';j.async = true;j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl;f.parentNode.insertBefore(j, f);})(window, document, 'script', 'dataLayer', 'GTM-XXXXXXXX');",
             this.doc.getElementsByTagName("head")[0].appendChild(t)
     }
-    /**
-     * Склонение числительных в javascript
-     * @param number
-     * @param titles
-     * @returns {*}
-     *
-     * @url https://gist.github.com/realmyst/1262561
-     */
-    this.declOfNum = function(number, titles) {
-        cases = [2, 0, 1, 1, 1, 2];
-        return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];
-    };
+
     /**
      * Переписать числа словами
      * @param Summ
@@ -471,7 +475,8 @@ window.GNZ11 = function (options_setting) {
             }
             return i;
         }
-        function declOfNum(n, t, o) {  // склонение именительных рядом с числительным: число (typeof = string), корень (не пустой), окончание
+        // склонение именительных рядом с числительным: число (typeof = string), корень (не пустой), окончание
+        function declOfNum(n, t, o) {
             var k = [2,0,1,1,1,2,2,2,2,2];
             return (t == '' ? '' : ' ' + t + (n[n.length-2] == "1"?o[2]:o[k[n[n.length-1]]]));
         }
@@ -513,6 +518,7 @@ window.GNZ11 = function (options_setting) {
     }
 
 
+
     /**
      * Звгрузка модулей GNZ11
      * @param moduleName
@@ -528,26 +534,60 @@ window.GNZ11 = function (options_setting) {
         var Module = 'GNZ11'+moduleName ;
         var returnModule ;
 
+
+
+
         console.log('gnz11:getModul' , typeof Module );
+        console.log('gnz11:getModul window.moduleName' , window[moduleName] );
+        console.log('gnz11:getModul typeof moduleName' , typeof window[moduleName] );
+        console.log('gnz11:getModul' , typeof Storage_class );
         console.log('gnz11:getModul' ,   Module );
 
         //
         // Если модуль еще не был загружен
-        if ( typeof Module !== 'function' ) {
-            return new Promise(function (resolve, reject) {
-                // console.log(pathModules +'/gnz11.'+moduleName+'.js');
-                Promise.all([
-                    $this.load.js( pathModules+'/gnz11.'+moduleName+'.js')
-                ]).then(function (r) {
+        if ( typeof Module !== "function" || typeof moduleName !== "function"  ) {
 
-                    /**
-                     * Проверка на класс
-                     * @type {void|*|RegExpMatchArray|Promise<Response | undefined>}
-                     */
-                    var testClass = moduleName.match(/_class/);
-                    // console.log(testClass)
-                    if ( testClass && testClass[0] ){
-                        setTimeout(function (){ resolve(moduleName); },200)
+            var moduleUrl = pathModules+'/gnz11.'+moduleName+'.js'+self.__v ;
+
+            /**
+             * Проверка на класс
+             * @type {void|*|RegExpMatchArray|Promise<Response | undefined>}
+             */
+            function _testClass(){
+                var testClass = moduleName.match(/_class/);
+                // console.log(testClass)
+                if ( testClass && testClass[0] ){
+                    return true ;
+                }
+                return false ;
+            }
+
+
+
+            return new Promise(function (resolve, reject) {
+
+                if ($.inArray( Module, window.GNZ11_isLoad_module ) !== -1 ){
+                    if (_testClass()){
+                        setTimeout(function (){
+                            resolve(moduleName);
+                        },200)
+
+                        return ;
+                    }
+
+                }
+                window.GNZ11_isLoad_module.push( Module )
+
+
+                Promise.all([
+                    $this.load.js( moduleUrl )
+                ]).then(function (r)
+                {
+
+                    if (_testClass()){
+                        setTimeout(function (){
+                            resolve(moduleName);
+                        },200)
                         return ;
                     }
 
@@ -568,6 +608,7 @@ window.GNZ11 = function (options_setting) {
             });
         }else {
             return new Promise(function (resolve, reject) {
+                alert('window[Module]')
                 resolve(new window[Module]());
             });
         }
@@ -795,35 +836,63 @@ window.GNZ11 = function (options_setting) {
         if (typeof optJpro === 'undefined' || typeof  optJpro.load !== 'object') return ;
         optJpro.load.forEach(function(item, i, arr) {
             setTimeout(function () {
+
+                console.log('gnz11:parseResult' , parseResult );
+
                 if (typeof item.t === 'undefined' ){
-                    var parseResult = gnz11.parseURL(item.u  );
+                    var parseResult = wgnz11.parseURL(item.u  );
                     item.t = parseResult.extension;
                 }
+                
+                var $body = $('body')
+                // тип файла JS || CSS
+                var type = item.t ;
+                // URL Ресурса
+                var url = item.u ;
 
-                wgnz11.load[item.t](item.u).then(function (a) {
 
-                    /*if ( item.u  === '/modules/mod_virtuemart_zif_filter/assets/js/mod_virtuemart_zif_filter.js' ){
-                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-                        console.log(parseResult)
-                        console.log(item )
-                        console.log(item.t)
-                        console.log(item.u)
-                        console.log(item.c)
-                        console.log(typeof window[item.c])
-                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+                /**
+                 * Если в параметрах ресурса установлен триггер для загрузки
+                 */
+                if (typeof item.r !=="undefined" ){
+                    var tigger = item.r ;
+                    $body.on( tigger , function(){
+                        wgnz11.load[type](url).then(function (r){
+                            // $body.trigger('__loadLaterCss');
+                            console.log('gnz11:item' , item );
+                        },function (err){console.log(err)});
+                    });
 
-                    }*/
-                    // Если fnCallback - не функция создаем событие fnCallback
-                    if (typeof window[item.c] !== 'function') {
-                        // Create the event
-                        var event = new CustomEvent(item.c, {'file': a});
-                        // console.log( event )
-                        document.dispatchEvent(event);
-                    }else {
-                        window[item.c](a);
-                    }
+                }else{
+                    // обычная загрузка ресурса
+                    wgnz11.load[type](url).then(function (a) {
 
-                });
+                        /*if ( item.u  === '/modules/mod_virtuemart_zif_filter/assets/js/mod_virtuemart_zif_filter.js' ){
+                            console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+                            console.log(parseResult)
+                            console.log(item )
+                            console.log(item.t)
+                            console.log(item.u)
+                            console.log(item.c)
+                            console.log(typeof window[item.c])
+                            console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+                        }*/
+                        // Если fnCallback - не функция создаем событие fnCallback
+                        if (typeof window[item.c] !== 'function') {
+                            // Create the event
+                            var event = new CustomEvent(item.c, {'file': a});
+                            // console.log( event )
+                            document.dispatchEvent(event);
+                        }else {
+                            window[item.c](a);
+                        }
+
+                    });
+                }
+
+                 
+
             },100)
         });
     };
@@ -865,17 +934,26 @@ window.GNZ11 = function (options_setting) {
             searchObject[split[0]] = split[1];
         }
         var filename = parser.pathname ;
+        
         return {
             protocol: parser.protocol,
             host: parser.host,
             hostname: parser.hostname,
             port: parser.port,
             pathname: parser.pathname,
+            // clear_filename : fileNameFromUrl(parser.pathname),
             search: parser.search,
             searchObject: searchObject,
             hash: parser.hash ,
             extension : filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)
         };
+        /*function fileNameFromUrl(url) {
+            var matches = url.match(/\/([^\/?#]+)[^\/]*$/);
+            if (matches.length > 1) {
+                return matches[1];
+            }
+            return null;
+        }*/
     };
     // radio btn - init
     this.checkBoxRadioInit = function  (){
@@ -1124,18 +1202,35 @@ window.GNZ11 = function (options_setting) {
     this.ARRAY = {
         /**
          * Эквивалент PHP in_array ()
-         * @param needle
-         * @param haystack
+         * @param needle str
+         * @param haystack []
          * @returns {boolean}
          */
         inArray : function (needle, haystack){
             var length = haystack.length;
             for(var i = 0; i < length; i++) {
-                if(haystack[i] == needle) return true;
+                if(haystack[i] === needle) return true;
             }
             return false;
         }
     };
+
+    this.FILE_SYSTEM = {
+        getExtensionInPath : function (path){
+            path = path.replace(/\?.+/,'');
+            var basename = path.split(/[\\/]/).pop(),  // extract file name from full path ...
+                // (supports `\\` and `/` separators)
+                pos = basename.lastIndexOf('.');       // get last position of `.`
+
+            if (basename === '' || pos < 1)            // if file name is empty or ...
+                return "";                             //  `.` not found (-1) or comes first (0)
+
+            return basename.slice(pos + 1);            // extract extension ignoring `.`
+        }
+    }
+
+
+
     /**
      * Обект работы с текстом
      */
@@ -1170,6 +1265,20 @@ window.GNZ11 = function (options_setting) {
                 str.lastIndexOf(finish)
             )
         },
+
+        /**
+         * Склонение числительных в javascript
+         * @param number
+         * @param titles
+         * @returns {*}
+         *
+         * @url https://gist.github.com/realmyst/1262561
+         */
+        declOfNum : function(number, titles) {
+            cases = [2, 0, 1, 1, 1, 2];
+            return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];
+        }
+
     };
     /**
      * Объект работы с формами

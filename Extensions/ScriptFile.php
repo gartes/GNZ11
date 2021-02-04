@@ -28,6 +28,8 @@ class ScriptFile
         'DelFiles' ,    # Удалять файлы
         'IncludeFiles', # Загрузить фалы PHP
     ];
+
+
     /**
      * Создать Json файл для удаления ненужных файлов при обновлении расшерения
      * @param $fileJson string - путь где создать файл files.json
@@ -80,7 +82,7 @@ class ScriptFile
         $className = (string)$parent->manifest->name . 'InstallerScript' ;
 
         /* @var $className::$RemoveFiles array */
-        # Если есть файлы для удаленияуказанные в файле script.php
+        # Если есть файлы для удаления указанные в файле script.php
         # Удаление файлов указанных в массиве self::$RemoveFiles - файла script.php расширения
         try
         {

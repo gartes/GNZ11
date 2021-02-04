@@ -29,6 +29,49 @@ class Storage_class {
     }
 
 }
+window.StorageUtilities_checkChangeObj = {} ;
+window.StorageUtilities = function() {
+    this.timeCheck = 1000 ;
+
+    this.checkChangeStorageData = function ( key , callback , storageName  ){
+
+        var dataStorage = Storage_class.get( key );
+        if( typeof window.StorageUtilities_checkChangeObj[key] === "undefined" ){
+            window.StorageUtilities_checkChangeObj[ key ] = dataStorage ;
+        }
+
+        var I = setInterval(function (){
+            dataStorage = Storage_class.get( key );
+            var localData = window.StorageUtilities_checkChangeObj[ key ] ;
+            console.log('gnz11.CountryFilter:' , dataStorage );
+
+            if (JSON.stringify(dataStorage) !== JSON.stringify( localData )    ){
+                clearInterval(I);
+                try {
+                   console.log('gnz11.CountryFilter:dataStorage' , dataStorage );
+                    
+                    callback(dataStorage);
+                } catch (e) {
+                    console.warn('gnz11.CountryFilter:checkChangeStorageData', e);
+                }
+            }
+
+        }, 3000)
+
+
+        /*
+
+        
+        console.log('gnz11.Storage_class:checkChangeStorageData' , key ); 
+         
+        console.log('gnz11.Storage_class:checkChangeStorageData' , callback  ); 
+         
+        console.log('gnz11.Storage_class:checkChangeStorageData' , storageName ); */
+         
+    }
+}
+
+
 /**********************************************************************************************************************/
 /**
  * Kailash Nadh (http://nadh.in)
@@ -70,7 +113,6 @@ class Storage_class {
             }
         }
 
-
         // ______________________ private methods
 
         // _________ database functions
@@ -103,7 +145,6 @@ class Storage_class {
             }
         }
 
-
         /**
          * количество таблиц в базе данных
          *
@@ -135,8 +176,6 @@ class Storage_class {
         function tableExists(table_name) {
             return db.tables[table_name] ? true : false;
         }
-
-
         /**
          * проверить, существует ли таблица, а если нет, выдать ошибку
          * check whether a table exists, and if not, throw an error
@@ -484,17 +523,14 @@ class Storage_class {
             commit: function() {
                 return commit();
             },
-
             // is this instance a newly created database?
             isNew: function() {
                 return db_new;
             },
-
             // delete the database
             drop: function() {
                 drop();
             },
-
             getItem: function(key) {
                 return getItem(key);
             },
@@ -502,22 +538,18 @@ class Storage_class {
             replace: function(data) {
                 replace(data);
             },
-
             // serialize the database
             serialize: function() {
                 return serialize();
             },
-
             // check whether a table exists
             tableExists: function(table_name) {
                 return tableExists(table_name);
             },
-
             // list of keys in a table
             tableFields: function(table_name) {
                 return tableFields(table_name);
             },
-
             // number of tables in the database
             tableCount: function() {
                 return tableCount();
@@ -526,7 +558,6 @@ class Storage_class {
             columnExists: function(table_name, field_name){
                 return columnExists(table_name, field_name);
             },
-
             // create a table
             createTable: function(table_name, fields) {
                 var result = false;
@@ -570,7 +601,6 @@ class Storage_class {
 
                 return result;
             },
-
             // Create a table using array of Objects @ [{k:v,k:v},{k:v,k:v},etc]
             createTableWithData: function(table_name, data) {
                 if(typeof data !== 'object' || !data.length || data.length < 1) {
@@ -593,19 +623,16 @@ class Storage_class {
                 }
                 return true;
             },
-
             // drop a table
             dropTable: function(table_name) {
                 tableExistsWarn(table_name);
                 dropTable(table_name);
             },
-
             // empty a table
             truncate: function(table_name) {
                 tableExistsWarn(table_name);
                 truncate(table_name);
             },
-
             // alter a table
             alterTable: function(table_name, new_fields, default_values) {
                 var result = false;
@@ -658,19 +685,16 @@ class Storage_class {
 
                 return result;
             },
-
             // number of rows in a table
             rowCount: function(table_name) {
                 tableExistsWarn(table_name);
                 return rowCount(table_name);
             },
-
             // insert a row
             insert: function(table_name, data) {
                 tableExistsWarn(table_name);
                 return insert(table_name, validateData(table_name, data) );
             },
-
             // insert or update based on a given condition
             insertOrUpdate: function(table_name, query, data) {
                 tableExistsWarn(table_name);
@@ -697,7 +721,6 @@ class Storage_class {
                     return ids;
                 }
             },
-
             // update rows
             update: function(table_name, query, update_function) {
                 tableExistsWarn(table_name);
@@ -712,7 +735,6 @@ class Storage_class {
                 }
                 return update(table_name, result_ids, update_function);
             },
-
             // select rows
             query: function(table_name, query, limit, start, sort, distinct) {
                 tableExistsWarn(table_name);
@@ -728,7 +750,6 @@ class Storage_class {
 
                 return select(table_name, result_ids, start, limit, sort, distinct);
             },
-
             // alias for query() that takes a dict of params instead of positional arrguments
             queryAll: function(table_name, params) {
                 if(!params) {
@@ -743,7 +764,6 @@ class Storage_class {
                     );
                 }
             },
-
             // delete rows
             deleteRows: function(table_name, query) {
                 tableExistsWarn(table_name);
@@ -757,7 +777,9 @@ class Storage_class {
                     result_ids = queryByFunction(table_name, query);
                 }
                 return deleteRows(table_name, result_ids);
-            }
+            },
+
+
         }
     }
 

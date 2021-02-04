@@ -144,13 +144,13 @@
 			$doc->addScriptOptions('GNZ11'  , $new_options ) ;
 			$doc->addScriptOptions('Jpro'  , [ 'load'=>[] ] ) ;
 			
-			$Jpro = $doc->getScriptOptions('Jpro') ;
+			/*$Jpro = $doc->getScriptOptions('Jpro') ;
 			$Jpro['load'][] = [
 				'u' => '/libraries/GNZ11/assets/js/alert_test.js' ,
 				't' => 'js' ,
 				'c' => 'testCallback' ,
 			];
-			$doc->addScriptOptions('Jpro' , $Jpro ) ;
+			$doc->addScriptOptions('Jpro' , $Jpro ) ;*/
 			
 			
 			if( $gnzlib_debug )
@@ -158,7 +158,7 @@
 				$gnzlib_path_file_corejs = $gnzlib_path_file_corejs_min ;
 			}#END IF
 			$sriptLoader = null ;
-			
+			# TODO : LOAD GNZ11 CORE
 			$sriptLoader .= $this->_getLoaderCoreJs( $gnzlib_path_file_corejs );
 			
 			$sriptLoader .="
@@ -306,7 +306,10 @@
 		public static function addJproLoad(string $Assets, $Callback = false , $Trigger = false ){
             $doc = \Joomla\CMS\Factory::getDocument();
             $Jpro = $doc->getScriptOptions('Jpro') ;
+            
 
+            
+            
 		    $_assets=[];
             $_assets[] = $Assets ;
 		    if ( is_array( $Assets ))
