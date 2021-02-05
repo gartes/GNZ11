@@ -4,7 +4,7 @@
         <description>Lib GNZ11 Desc</description>
         <type>library</type>
         <element>GNZ11</element>
-        <version>0.5.2</version>
+        <version>0.5.5</version>
         <client>0</client>
         <infourl title="Joomla!">https://www.joomla.org/announcements/release-news/5765-joomla-3-9-6-release.html</infourl>
         <downloads>

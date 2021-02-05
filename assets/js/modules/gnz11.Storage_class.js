@@ -31,8 +31,11 @@ class Storage_class {
 }
 window.StorageUtilities_checkChangeObj = {} ;
 window.StorageUtilities = function() {
+    var self = this ;
     this.timeCheck = 1000 ;
-
+    this._params = {
+        DEBAG: 0 ,
+    }
     this.checkChangeStorageData = function ( key , callback , storageName  ){
 
         var dataStorage = Storage_class.get( key );
@@ -43,12 +46,13 @@ window.StorageUtilities = function() {
         var I = setInterval(function (){
             dataStorage = Storage_class.get( key );
             var localData = window.StorageUtilities_checkChangeObj[ key ] ;
-            console.log('gnz11.CountryFilter:' , dataStorage );
+
+            if (self._params.DEBAG) console.log('gnz11.CountryFilter:' , dataStorage );
 
             if (JSON.stringify(dataStorage) !== JSON.stringify( localData )    ){
                 clearInterval(I);
                 try {
-                   console.log('gnz11.CountryFilter:dataStorage' , dataStorage );
+                    if (self._params.DEBAG) console.log('gnz11.CountryFilter:dataStorage' , dataStorage );
                     
                     callback(dataStorage);
                 } catch (e) {

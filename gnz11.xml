@@ -16,6 +16,7 @@
         <folder>Core</folder>
         <folder>Document</folder>
         <folder>Extensions</folder>
+        <folder>Joomla</folder>
         <folder>layouts</folder>
         <folder>sql</folder>
         <file>gnz11.xml</file>
