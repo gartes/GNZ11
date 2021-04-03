@@ -20,11 +20,13 @@ class Document
         'asFile' => false , // Загрузить как сcs файл  <link rel="stylesheet" />
     ] ;
     const IncludeScriptParams = [
-        'debug' => false ,  // Отображать в стлях пути к файлу из которого они вставлены
+        'debug' => false ,  // Отображать в стилях пути к файлу из которого они вставлены
         'asFile' => true , // Загрузить как сcs файл  <link rel="stylesheet" />
     ] ;
 
     public static $instance;
+    public static $preloaderData;
+    public static $ManifestVersion = [] ;
 
     protected static $svgSymbols = [] ;
 
@@ -57,12 +59,7 @@ class Document
         return self::$instance;
     }#END FN
 
-    public static function addSvgSymbol(){
-
-
-
-
-    }
+    public static function addSvgSymbol(){  }
 
     /**
      * Загрузка стилей в тег <style /> из файла
@@ -136,10 +133,6 @@ class Document
         $_params = array_merge(self::IncludeScriptParams , $params );
 
 
-
-        
-
-
         $root = Uri::root() ;
         $doc = Factory::getDocument();
 
@@ -178,5 +171,78 @@ class Document
         ob_end_clean();
         $doc->addScriptDeclaration( $script_output ) ;
     }
+
+    /**
+     * Получить версию из файла манифест расширения
+     * @param $filePath
+     *
+     * @return string
+     * @since  3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date   27.03.2021 09:46
+     *
+     */
+    public static function getManifestVersion( $filePath ): string
+    {
+        if( array_key_exists( $filePath , self::$ManifestVersion ) )
+        {
+            return self::$ManifestVersion[$filePath] ;
+        }#END IF
+        $xml_file = JPATH_ROOT .  $filePath ;
+        $dom = new \DOMDocument("1.0", "utf-8");
+        $dom->load($xml_file);
+        $v =  $dom->getElementsByTagName('version')->item(0)->textContent;
+        self::$ManifestVersion[$filePath] = $v ;
+        return $v ;
+    }
+
+    /**
+     * Добавить Preload Link tag
+     * @param $url
+     * @param $options
+     *
+     * @since  3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date   27.03.2021 09:43
+     *
+     */
+    public static function addPreloadLink( $url , $options ){
+        $doc = \Joomla\CMS\Factory::getDocument();
+
+        $GNZ11_OPT =  $doc->getScriptOptions('GNZ11' ) ;
+
+        $cloneUrl = $url ;
+
+        if( !isset( $options['version'] ) ) $options['version'] = '' ; #END IF
+
+        if( $options['version'] == 'GNZ11' )
+        {
+            $version = self::getManifestVersion('/libraries/GNZ11/gnz11.xml');
+            $options['version'] = md5( $version ) ;
+            $url .= '?' . $options['version'] ;
+        }#END IF
+
+        if( $doc->getType() == 'html' )
+        {
+            $html = '<link rel="preload" href="' . $url . '" as="' . $options['as'] . '">';
+            $doc->addCustomTag($html);
+            $GNZ11_OPT['Document']['_preload'][$cloneUrl] = $options ;
+            $doc->addScriptOptions('GNZ11' , $GNZ11_OPT) ;
+        }#END IF
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

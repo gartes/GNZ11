@@ -1478,6 +1478,14 @@
         <symbol id="i-view-mode--grid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">
             <path d="M27 31h4v-4h-4v4zM27 24h4v-4h-4v4zM27 17h4v-4h-4v4zM20 31h4v-4h-4v4zM20 24h4v-4h-4v4zM20 17h4v-4h-4v4zM13 31h4v-4h-4v4zM13 24h4v-4h-4v4zM13 17h4v-4h-4v4z"/>
         </symbol>
-
+        <symbol  id="icon-doors4" x="0px" y="0px" viewBox="0 0 489.451 489.451" style="enable-background:new 0 0 489.451 489.451;">
+            <path d="M428.217,474.09h-30.512V0H91.746v474.09H61.234v15.29h30.512v0.071h305.96v-0.071h30.512L428.217,474.09L428.217,474.09     z M382.272,474.02H107.177V15.432h275.094V474.02z" class="icon_menu"></path>
+            <path d="M351.833,244.796V45.873H137.617v198.923H351.833L351.833,244.796z M336.4,229.364h-183.35V61.305H336.4V229.364z" class="icon_menu"></path>
+            <path d="M137.688,443.508h214.075V313.535H137.688V443.508z M152.979,328.826h183.491v99.391H152.979V328.826z" class="icon_menu"></path>
+            <rect x="200.692" y="94.302" transform="matrix(0.7071 0.7071 -0.7071 0.7071 167.8612 -103.1205)" width="15.432" height="113.529" class="icon_menu"></rect>
+            <rect x="279.058" y="80.729" transform="matrix(0.7071 0.7071 -0.7071 0.7071 167.8374 -168.0504)" width="15.432" height="75.686" class="icon_menu"></rect>
+            <rect x="229.363" y="157.456" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 285.7356 454.8918)" width="15.432" height="21.624" class="icon_menu"></rect>
+            <rect x="137.689" y="267.662" width="38.227" height="15.291" class="icon_menu"></rect>
+        </symbol>
     </defs>
 </svg>

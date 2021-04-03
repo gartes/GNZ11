@@ -99,11 +99,11 @@ class Optimises
 //        die(__FILE__ .' '. __LINE__ );
 
 
-        # Перенос сериптов вниз страницы
+        # Перенос скриптов вниз страницы
         if ( $this->Params->get('downScript' , 0 ))  $this->downScript() ;#END IF
         # Выгрузка части страницы в html файл
         if ( !empty($this->Params->get('to_html_file' , [] ))) $this->toHtmlFile() ;#END IF
-        # Обварачивать элементы в тег <template /> : Array
+        # Обворачивать элементы в тег <template /> : Array
         if ( !empty($this->Params->get('to_templates' , [] ))) $this->toTemplates() ;#END IF
     }
 
@@ -113,7 +113,7 @@ class Optimises
      * @since 3.9
      */
     protected function toTemplates(){
-        $toTemplatesArr =$this->Params->get('to_templates' , [] );
+        $toTemplatesArr = $this->Params->get('to_templates' , [] );
         $body                = $this->app->getBody();
         $dom = new \GNZ11\Document\Dom();
         $dom->loadHTML($body) ;

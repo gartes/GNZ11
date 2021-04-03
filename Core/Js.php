@@ -38,23 +38,16 @@
 		 */
 		protected function __construct ( $params = null )
 		{
-
-			$this->app = JFactory::getApplication() ;
+            $this->app = JFactory::getApplication() ;
 			if( !$params )
 			{
 				$params = new \Joomla\Registry\Registry;
 			}#END IF
 			$this->paramsComponent = $params ;
 
-
-
 			if( $this->CoreJs_isLoaded ) return  null ;  #END IF
 
-
 			$this->setConfig_GNZ11 ();
-
-
-
 
 			return $this;
 		}#END FN
@@ -117,6 +110,7 @@
 			$gnzlib_path_sprite         = $this->paramsComponent->get( 'gnzlib_path_sprite' , self::$GNZ11[ 'gnzlib_path_sprite' ] );
 
 			$GNZ11_options =  $doc->getScriptOptions('GNZ11') ;
+			$version = \GNZ11\Document\Document::getManifestVersion('/libraries/GNZ11/gnz11.xml') ;
 			$data = [
                 'gnzlib_path_sprite' => $gnzlib_path_sprite ,
 				'gnzlib_path_file_corejs' => $gnzlib_path_file_corejs ,
@@ -134,7 +128,11 @@
 				],
 				'Document' => [
 					'Host' =>\JURI::root(true),
+                    '_preload' => [] ,
+
 				],
+                'version' => $version ,
+                'mediaVersion' => md5( $version ) ,
 			];
 			$new_options = array_merge($GNZ11_options , $data ) ;
 

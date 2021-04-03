@@ -10,7 +10,7 @@
  2. [Document](#Document) 
     + [Document](#Document/Document)
         + [Добавить Style содержимое CSS файла](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-style-%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%BC%D0%BE%D0%B5-css-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0)
-        
+        + [Add Preloader Link.](#addPreloaderLink) 
     + [Text](#Document/Text)
         + [Обрезка строки до длины](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%BE%D0%B1%D1%80%D0%B5%D0%B7%D0%BA%D0%B0-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8-%D0%B4%D0%BE-%D0%B4%D0%BB%D0%B8%D0%BD%D1%8B)
         + [Замена в строке кавычек на умные|елочки](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md#-%D0%B7%D0%B0%D0%BC%D0%B5%D0%BD%D0%B0-%D0%B2-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5-%D0%BA%D0%B0%D0%B2%D1%8B%D1%87%D0%B5%D0%BA-%D0%BD%D0%B0-%D1%83%D0%BC%D0%BD%D1%8B%D0%B5%D0%B5%D0%BB%D0%BE%D1%87%D0%BA%D0%B8)
@@ -59,6 +59,17 @@ $params = [ 'debug' => true ]
 \GNZ11\Document\Document::addIncludeStyleDeclaration( $pathCss , $params ) ;
 
 ```
+ ***
+ ###### Add Preloader Link <a name="addPreloaderLink"></a> (2021-03-27, 2:43)
+ Добавить в документ Preloader Link
+````php
+$opt = ['rel' => 'preload' , 'as' => 'style' ];
+\GNZ11\Document\Document::addPreloadLink(Uri::root() . 'libraries/GNZ11/assets/js/modules/Slick/slick.css' , $opt );
+ ````
+ [Содержание](#top)
+ ***
+
+
 
 #### <a name="Document/Text"></a> Document/Text 
 ***

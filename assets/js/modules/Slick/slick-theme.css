@@ -196,12 +196,20 @@
 .simple-slider__control:active svg {
     fill: #ff7878
 }
-@media (hover: hover) {
-    .simple-slider__control:hover svg {
-        fill:#ff7878
-    }
+button.simple-slider__control:hover{
+    background: -webkit-gradient(linear,left top,right top,color-stop(0,hsla(0,0%,100%,0)),to(#fff)) !important;
+    background: -webkit-linear-gradient(left,hsla(0,0%,100%,0) 0,#fff) !important;
+    background: -o-linear-gradient(left,hsla(0,0%,100%,0) 0,#fff) !important ;
+    background: linear-gradient(  90deg ,hsla(0,0%,100%,0) 0,#fff)  !important ;
 }
-.simple-slider__control {
+button.simple-slider__control:hover svg {
+    fill:#ff7878
+}
+
+
+
+.simple-slider__control,
+button.simple-slider__control {
     position: absolute;
     top: -3px;
     -ms-flex-negative: 0;
@@ -210,7 +218,7 @@
     -ms-flex-align: center;
     align-items: center;
     width: 24px;
-    height: 100%;
+    height: calc(100% - 6px);
     padding: 0;
     margin: 0;
     border: none;
@@ -219,6 +227,7 @@
     background: -o-linear-gradient(left,hsla(0,0%,100%,0) 0,#fff);
     background: linear-gradient(90deg,hsla(0,0%,100%,0) 0,#fff);
     z-index: 10;
+    outline: none;
     cursor: pointer;
 }
 .simple-slider,
@@ -238,17 +247,20 @@
     justify-content: flex-end
 }
 .simple-slider__control_type_prev {
-    left: -15px;
+    left: -1px;
     -webkit-transform: rotate(-180deg);
     -ms-transform: rotate(-180deg);
     transform: rotate(-180deg);
+}
+.simple-slider__control_type_next svg{
+    margin-right: 10px;
 }
 
 
 
 
 
-
+@media (hover: hover) {  }
 
 
 

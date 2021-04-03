@@ -114,22 +114,28 @@ Jpro = window.Jpro || {};
 
     Jpro.load = function ( url ,  callback  ) {
 
-        if (typeof GNZ11 === 'undefined'){
-            var opt = Joomla.getOptions('Jpro');
+        if ( typeof GNZ11 === 'undefined' )
+        {
+            var opt = Joomla.getOptions( 'Jpro' );
             var data = {
 
-                'u':url ,
+                'u' : url ,
                 'c' : callback
 
             };
-            opt.load.push(data);
-            Joomla.loadOptions({'Jpro':opt});
-        }else{
+            opt.load.push( data );
+            Joomla.loadOptions( { 'Jpro' : opt } );
+        }
+        else
+        {
             var gnz11 = new GNZ11();
-            gnz11.load[tag](url).then(function (a) {
-                if (typeof callback !== 'function') return ;
-                callback(a)
-            });
+            gnz11.load[tag]( url ).then( function ( a ) {
+                if ( typeof callback !== 'function' )
+                {
+                    return;
+                }
+                callback( a )
+            } );
         }
 
     }
@@ -228,6 +234,42 @@ window.GNZ11 = function (options_setting) {
         return this.getModul('Ajax');
     };
 
+    this.showAllIcon = function (  ){
+        var $b = $('body');
+        var S = window.__SpriteCollection ;
+        var gnzlib_path_sprite = Joomla.getOptions('GNZ11').gnzlib_path_sprite ;
+        var url =  Joomla.getOptions('GNZ11').Ajax.siteUrl + gnzlib_path_sprite ;
+        // $b.empty();
+        var t = new XMLHttpRequest;
+        t.open('GET', url, !0);
+        t.onload = function () {
+            t.readyState === t.DONE && 200 === t.status && function (e) {
+                // Загружаем svg обьекты в переменную
+                for ( var t = (new DOMParser).parseFromString(e, 'text/xml')
+                    .getElementsByTagName('symbol'), n = 0; n < t.length; n++) {
+                    var o = t.item(n).cloneNode(!0);
+                    var id = o.getAttribute('id');
+                    var $a = $(o).children();
+                    var html = '<svg style="width: 110px;" viewBox="0 0 100 100"   id="'+id+'"></svg>'
+                    $b.append( html  )
+                    $b.find( '#'+id ).append( $a  )
+                    console.log('gnz11:->o >>> ' , id );
+                    console.log('gnz11:->o >>> ' , html );
+
+                    window.__SpriteCollection['#'+id] = o ;
+                }
+                window.__SpriteCollection.isLoaded = true ;
+                // resolve(window.__SpriteCollection);
+            }(t.responseText);
+        }
+        t.send();
+        
+        
+        
+         
+
+    }
+
     /**
      * Загрузка css, img, js , svg
      *
@@ -252,31 +294,53 @@ window.GNZ11 = function (options_setting) {
                 // This promise will be used by Promise.all to determine success or failure
                 return new Promise(function(resolve, reject) {
 
+                    var __url ;
+                    if ( tag ==='script' ||tag ==='link' ||tag ==='script'   ){
+                        __url = chckInPreloader( url );
+                        if ( __url ) url = __url;
+                    }
+
                     // Проверяем в истории
-                    if ($.inArray(url, window.GNZ11_isLoad[tag]) !== -1)  {
+                    if ($.inArray( url, window.GNZ11_isLoad[tag] ) !== -1)  {
                         resolve(url) ;
                         return ;
                     }
+                    // Добавить в историю
+                    window.GNZ11_isLoad[tag].push(url);
 
+                    /**
+                     * Проверка если файл загружался в link preloader
+                     * @param url
+                     * @returns {boolean|*}
+                     */
+                    function chckInPreloader(url){
+                        var Opt = Joomla.getOptions('GNZ11')
+                        // Проверяем если файл из JS модулей библиотеки
+                        // то устанавливаем mediaVersion - от номера версии gnz11 lib
+                        var m = url.match('libraries/GNZ11/assets/js/modules')
+                        if ( m ){
+                            return url + '?'+ Opt.mediaVersion
+                        }
+                        var opt_preload = Opt.Document._preload;
 
+                        if ( typeof opt_preload[url] === "undefined" ) return false ;
+                        if ( !opt_preload[url].version.length ) return url ;
+                        url += '?'+ opt_preload[url].version
+                        return url ;
+                    }
 
-
-                    /*if ( url === '/testvik/test/libraries/GNZ11/assets/js/modules/gnz11.Storage_class.js?v=0.5.5'){
-                        console.log('gnz11:window.GNZ11_isLoad[tag]' , $.inArray(url, window.GNZ11_isLoad[tag]) ); 
-                        console.log('gnz11:window.GNZ11_isLoad[tag]' , window.GNZ11_isLoad[tag] ); 
-
-
-                    }*/
 
                     element = document.createElement(tag);
                     var parent = 'body';
                     var attr = 'src';
-                    console.log(tag)
+
+
                     // Need to set different attributes depending on tag type
                     switch (tag) {
 
                         case 'script':
                             element.async = true;
+
                             break;
                         case 'link':
                             element.type = 'text/css';
@@ -285,14 +349,12 @@ window.GNZ11 = function (options_setting) {
                             parent = 'head';
                             break;
                         case 'style' :
-                            console.log('gnz11:add style tag' , url );
-
+                            // console.log('gnz11:add style tag' , url );
                             element.type = 'text/css';
                             element.appendChild(document.createTextNode(url));
 
                             break ;
                         case 'svg' :
-
                             if ( !window.__SpriteCollection.isLoaded ){
                                 _loadSvgSprite().then(function (r) {
                                     console.log( 'GNZ11.load:url' , url )
@@ -306,13 +368,25 @@ window.GNZ11 = function (options_setting) {
                                 setSvg(  url );
                                 resolve(url);
                             }
+                            break ;
+                        case 'json':
+                            var t = new XMLHttpRequest;
+                            t.open('GET', url , !0);
+                            t.onload = function () {
+                                t.readyState === t.DONE && 200 === t.status && function (e) {
+                                    resolve({file : url , data : e });
+                                }(t.responseText);
+                            }
+                            t.send();
+                            console.log('gnz11:url' , url ); 
+
+                            break ;
                     }
 
 
                     // Important success and error for the promise
                     element.onload = function () {
-                        // Добавить в историю
-                        window.GNZ11_isLoad[tag].push(url);
+
                         resolve(url);
                     };
                     element.onerror = function () {
@@ -340,16 +414,15 @@ window.GNZ11 = function (options_setting) {
                 if (window.__SpriteCollection.load)  {
                     resolve( window.__SpriteCollection );
                     return;
-                };
+                }
                 window.__SpriteCollection.load = true;
 
                 // Путь к файлу SpriteSymbols
                 var gnzlib_path_sprite = Joomla.getOptions('GNZ11').gnzlib_path_sprite ;
                 var url =  Joomla.getOptions('GNZ11').Ajax.siteUrl + gnzlib_path_sprite ;
 
-
                 var $defs = $('<defs />' , { id : '__SpriteSymbols', class : 'gnz11' });
-                var $svg = $('<svg />' , {style : 'display: none;',html : $defs ,});
+                var $svg = $('<svg />' , {style : 'display: none;' , html : $defs ,});
                 $('body').append($svg);
 
                 var t = new XMLHttpRequest;
@@ -425,7 +498,8 @@ window.GNZ11 = function (options_setting) {
 
                 },function (err){console.log(err)});
             },
-            img: _load('img')
+            img: _load('img') , 
+            json: _load('json')
         };
     })();
 
@@ -516,9 +590,6 @@ window.GNZ11 = function (options_setting) {
         if (typeof key === 'undefined')  return  opt ;
         return  opt[key] ;
     }
-
-
-
     /**
      * Звгрузка модулей GNZ11
      * @param moduleName
@@ -826,8 +897,6 @@ window.GNZ11 = function (options_setting) {
             })
         }
     };
-
-
     /**
      * Запуск отложенной загрузки ресурсов Jpro
      */
@@ -1229,8 +1298,6 @@ window.GNZ11 = function (options_setting) {
         }
     }
 
-
-
     /**
      * Обект работы с текстом
      */
@@ -1265,7 +1332,6 @@ window.GNZ11 = function (options_setting) {
                 str.lastIndexOf(finish)
             )
         },
-
         /**
          * Склонение числительных в javascript
          * @param number

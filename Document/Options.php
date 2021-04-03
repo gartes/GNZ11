@@ -10,6 +10,7 @@
 		 * Добавить параметры для плагина
 		 * @param $pluginName string - нвзвание плагина
 		 * @param $option   - опции для добавления
+         * @since 3.9
 		 */
 		public static function addPluginOptions( $pluginName , $option ){
 			$doc = \Joomla\CMS\Factory::getDocument();

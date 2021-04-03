@@ -16,6 +16,28 @@ class File extends \Joomla\CMS\Filesystem\File
      */
     protected static $curlErrorLoaded = false;
 
+    /**
+     * Копировать файл - если в пути отсутствуют директории создаем
+     *
+     * @param       $src            - путь к оригинал файлу
+     * @param       $dest           - путь для копирования
+     * @param int   $permissionsDir - права для директорий
+     * @param null  $path
+     * @param false $use_streams
+     *
+     * @return bool - true в случае успеха
+     * @since  3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date   03.03.2021 14:27
+     */
+    public static function copyFile($src, $dest, $permissionsDir = 0777 , $path = null, $use_streams = false): bool
+    {
+        $pathInfo = pathinfo($dest);
+        if (!file_exists($pathInfo['dirname'])) {
+            mkdir( $pathInfo['dirname'], $permissionsDir , true );
+        }
+        return  \Joomla\CMS\Filesystem\File::copy( $src , $dest , $path , $use_streams );
+    }
 
     /**
      * получить содержимое файла
