@@ -290,7 +290,12 @@ window.GNZ11 = function (options_setting) {
         // Function which returns a function: https://davidwalsh.name/javascript-functions
         function _load(tag) {
 
-            return function (url) {
+
+            return function ( url , media ) {
+
+
+
+
                 // This promise will be used by Promise.all to determine success or failure
                 return new Promise(function(resolve, reject) {
 
@@ -343,6 +348,11 @@ window.GNZ11 = function (options_setting) {
 
                             break;
                         case 'link':
+                            if ( typeof media !== "undefined" ){
+                                element.media = media ;
+                                console.log('gnz11:_load->media >>> ' , url );
+                                console.log('gnz11:_load->media >>> ' , media );
+                            }
                             element.type = 'text/css';
                             element.rel = 'stylesheet';
                             attr = 'href';
@@ -357,14 +367,14 @@ window.GNZ11 = function (options_setting) {
                         case 'svg' :
                             if ( !window.__SpriteCollection.isLoaded ){
                                 _loadSvgSprite().then(function (r) {
-                                    console.log( 'GNZ11.load:url' , url )
+                                    // console.log( 'GNZ11.load:url' , url )
                                     setTimeout(function (){
                                         setSvg(  url );
                                         resolve(url);
                                     },500)
                                 }, function (err) { console.log(err) });
                             }else {
-                                console.log( 'GNZ11.load:url+' , url )
+                                // console.log( 'GNZ11.load:url+' , url )
                                 setSvg(  url );
                                 resolve(url);
                             }
@@ -474,7 +484,7 @@ window.GNZ11 = function (options_setting) {
                 if ( typeof svgElement === 'undefined'){
                     window.__SpriteCollection.added.push(spriteId)
                 }
-                console.log( '_loadSvgSprite:svgElement', svgElement )
+                // console.log( '_loadSvgSprite:svgElement', svgElement )
 
                 $SpriteSymbols.append( svgElement );
                 window.GNZ11_isLoad.svg.push(spriteId);
@@ -482,7 +492,7 @@ window.GNZ11 = function (options_setting) {
         }
         return {
             style : _load('style'),
-            css: _load('link'),
+            css: _load('link'   ),
             js: _load('script'),
             script: _load('script'),
             svg : _load('svg'),
@@ -494,6 +504,7 @@ window.GNZ11 = function (options_setting) {
                         arr.push(id)
                     }
                 });
+                if ( !arr.length ) return ;
                 self.load.svg(arr).then(function (r){
 
                 },function (err){console.log(err)});
@@ -608,11 +619,11 @@ window.GNZ11 = function (options_setting) {
 
 
 
-        console.log('gnz11:getModul' , typeof Module );
-        console.log('gnz11:getModul window.moduleName' , window[moduleName] );
-        console.log('gnz11:getModul typeof moduleName' , typeof window[moduleName] );
-        console.log('gnz11:getModul' , typeof Storage_class );
-        console.log('gnz11:getModul' ,   Module );
+        // console.log('gnz11:getModul' , typeof Module );
+        // console.log('gnz11:getModul window.moduleName' , window[moduleName] );
+        // console.log('gnz11:getModul typeof moduleName' , typeof window[moduleName] );
+        // console.log('gnz11:getModul' , typeof Storage_class );
+        // console.log('gnz11:getModul' ,   Module );
 
         //
         // Если модуль еще не был загружен
@@ -906,7 +917,7 @@ window.GNZ11 = function (options_setting) {
         optJpro.load.forEach(function(item, i, arr) {
             setTimeout(function () {
 
-                console.log('gnz11:parseResult' , parseResult );
+                // console.log('gnz11:parseResult' , parseResult );
 
                 if (typeof item.t === 'undefined' ){
                     var parseResult = wgnz11.parseURL(item.u  );
@@ -918,6 +929,8 @@ window.GNZ11 = function (options_setting) {
                 var type = item.t ;
                 // URL Ресурса
                 var url = item.u ;
+                var media = item.m ;
+                console.log('gnz11:->item >>> ' , item );
 
 
                 /**
@@ -926,7 +939,7 @@ window.GNZ11 = function (options_setting) {
                 if (typeof item.r !=="undefined" ){
                     var tigger = item.r ;
                     $body.on( tigger , function(){
-                        wgnz11.load[type](url).then(function (r){
+                        wgnz11.load[type](url , media ).then(function (r){
                             // $body.trigger('__loadLaterCss');
                             console.log('gnz11:item' , item );
                         },function (err){console.log(err)});
@@ -934,7 +947,7 @@ window.GNZ11 = function (options_setting) {
 
                 }else{
                     // обычная загрузка ресурса
-                    wgnz11.load[type](url).then(function (a) {
+                    wgnz11.load[type]( url , media  ).then(function (a) {
 
                         /*if ( item.u  === '/modules/mod_virtuemart_zif_filter/assets/js/mod_virtuemart_zif_filter.js' ){
                             console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
@@ -1229,26 +1242,41 @@ window.GNZ11 = function (options_setting) {
                 // $element.css({'background-color': 'red'});
             }
         },
-        fromTemplate    : function ( templateSelector , formSelector ){
-            var $template  = $( templateSelector ) ;
-            if (!$template[0]){
-                console.warn('Tag <template /> selector ("'+templateSelector+'") not found!!!')
-                return ;
-            }
-            var htmlTemplate = $template.html().trim();
-            var TemplateClone = $(htmlTemplate);
+        /**
+         * Извлечение из тега <Template /> - Разтеплатить єлемент
+         * @param templateSelector
+         * @param formSelector  - Селектор єлемента для вставки
+         * @param repeatedUseTemplate - false - Если нужно удалить тег <template />
+         */
+        fromTemplate    : function ( templateSelector , formSelector , repeatedUseTemplate  ){
+            return new Promise(function ( resolve, reject){
+                if ( typeof repeatedUseTemplate === "undefined" ) repeatedUseTemplate = false ;
+                var $template  = $( templateSelector ) ;
+                if (!$template[0]){
+                    console.warn('Tag <template /> selector ("'+templateSelector+'") not found!!!')
+                    return ;
+                }
+                var htmlTemplate = $template.html().trim();
+                var TemplateClone = $(htmlTemplate);
 
-            if ( typeof formSelector === 'undefined' ){
-                $template.parent().append(TemplateClone);
-            }else{
-                $(formSelector).append(TemplateClone);
-            }
-            $template.remove();
+                if ( typeof formSelector === 'undefined' ){
+                    $template.parent().append(TemplateClone);
+                }else{
+                    $(formSelector).append(TemplateClone);
+                }
+                if ( !repeatedUseTemplate ){
+                    $template.remove();
+                }
+                resolve( TemplateClone )
+            })
+
+
+
         }
     }
 
     /**
-     * Извлечение из тега <Template />
+     *
      */
     this.fromTemplate = function ( templateSelector , formSelector ) {
         alert('fromTemplate')
@@ -1346,6 +1374,11 @@ window.GNZ11 = function (options_setting) {
         }
 
     };
+    this.DEVICE = {
+        isMobile : function (){
+            return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase() )
+        }
+    }
     /**
      * Объект работы с формами
      * @type {{serialize: (function(*=): *), getFormDataToJson: (function(*): {})}}
@@ -1378,6 +1411,7 @@ window.GNZ11 = function (options_setting) {
             return serialized;
         }
     };
+
 };
 
 

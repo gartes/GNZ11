@@ -37,9 +37,17 @@
 		public function Minified($url, $content){
 			
 			$res = [] ;
-			
+
+
+
+
+
 			$resContent = $this->getMinified($url, $content) ;
-			# Емли в ответе сообщение об ошибки
+
+
+
+
+			# Если в ответе сообщение об ошибки
 			if (preg_match("/^\/\/ Error :/i", $resContent )) {
 				$find =['// Error :' , '//'];
 				$replace =['Error :' , '<br>'];
@@ -76,7 +84,10 @@
 		 * @copyright 08.01.19
 		 */
 		public function getMinified($url, $content) {
-			$postdata = array('http' => array(
+
+
+
+		    $postdata = array('http' => array(
 				'method'  => 'POST',
 				'header'  => 'Content-type: application/x-www-form-urlencoded',
 				'content' => http_build_query( array('input' => $content) ) ) );

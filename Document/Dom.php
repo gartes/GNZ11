@@ -302,7 +302,15 @@
 			$log = [] ;
 			foreach ($attrs as $name => $attrVal  ){
 				if ( !in_array($name , self::$attrArrName) )  continue ;
-				
+
+               /* if( $name == 'media' && $attrVal != 'all' )
+                {
+                    echo'<pre>';print_r( $name );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+                    echo'<pre>';print_r( $attrVal );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+                    die(__FILE__ .' '. __LINE__ );
+
+
+                }#END IF*/
 				switch ($name){
 					case 'id':
 					case 'class':

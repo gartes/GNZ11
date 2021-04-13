@@ -10,12 +10,15 @@
 
 	use Exception;
 	use JFactory;
-	use JSession;
+    use Joomla\Registry\Registry;
+    use JSession;
 	use JUri;
 	use RegularLabs\AdvancedModules\Document;
 
 	class Js
 	{
+	    private static $GNZ11_params ;
+
 		private $app;
 		public static $instance;
 		private $paramsComponent ;
@@ -38,10 +41,25 @@
 		 */
 		protected function __construct ( $params = null )
 		{
+            self::$GNZ11_params = new Registry() ;
+            $Manifest = \GNZ11\Extensions\Manifest::instance();
+            $Manifest->addPath(JPATH_LIBRARIES . '/GNZ11/gnz11.xml');
+//            \Joomla\CMS\Profiler\Profiler::getInstance('Application')->mark('beforeLoad');
+            $version = $Manifest->getValue();
+            self::$GNZ11_params->set('version' , $version ) ;
+            self::$GNZ11_params->set('versionHash' , md5( $version ) ) ;
+            $debug = $Manifest->getValue('debug');
+            self::$GNZ11_params->set('debug' , $debug ) ;
+//            \Joomla\CMS\Profiler\Profiler::getInstance('Application')->mark('afterLoad');
+//            $Buffer = \Joomla\CMS\Profiler\Profiler::getInstance('Application')->getBuffer();
+
+
+
+
             $this->app = JFactory::getApplication() ;
 			if( !$params )
 			{
-				$params = new \Joomla\Registry\Registry;
+				$params = new Registry;
 			}#END IF
 			$this->paramsComponent = $params ;
 
@@ -95,10 +113,18 @@
 		private function setConfig_GNZ11 ()
 		{
 			$doc = JFactory::getDocument();
+
+			$debug = self::$GNZ11_params->get('debug' , 0 ) ;
 			
-			$gnzlib_debug = $this->paramsComponent->get( 'gnzlib_debug' , self::$GNZ11['gnzlib_debug'] );
+
+
+
+			
 			$gnzlib_path_file_corejs     = $this->paramsComponent->get( 'gnzlib_path_file_corejs' , self::$GNZ11[ 'gnzlib_path_file_corejs' ] );
-            $gnzlib_path_file_corejs .= '?v=0.5.5';
+            $gnzlib_path_file_corejs .= '?v='.self::$GNZ11_params->get('versionHash' , 1 );
+
+
+
 
 
 
@@ -117,7 +143,7 @@
 				'gnzlib_path_modules' => $gnzlib_path_modules ,
 				'gnzlib_path_plugins' => $gnzlib_path_plugins ,
 				'gnzlib_path_file_corejs_min' => $gnzlib_path_file_corejs_min ,
-				'debug' => $gnzlib_debug ,
+				'debug' => $debug ,
 				'Ajax' => [
 					'siteUrl' => \GNZ11\Core\Uri\Uri::root() ,
 					'noty_auto_render_message' => false   ,
@@ -136,24 +162,13 @@
 			];
 			$new_options = array_merge($GNZ11_options , $data ) ;
 
-
-
-
-
-
 			$doc->addScriptOptions('GNZ11'  , $new_options ) ;
 			$doc->addScriptOptions('Jpro'  , [ 'load'=>[] ] ) ;
 			
-			/*$Jpro = $doc->getScriptOptions('Jpro') ;
-			$Jpro['load'][] = [
-				'u' => '/libraries/GNZ11/assets/js/alert_test.js' ,
-				't' => 'js' ,
-				'c' => 'testCallback' ,
-			];
-			$doc->addScriptOptions('Jpro' , $Jpro ) ;*/
+
 			
 			
-			if( $gnzlib_debug )
+			if( $debug )
 			{
 				$gnzlib_path_file_corejs = $gnzlib_path_file_corejs_min ;
 			}#END IF
@@ -252,14 +267,21 @@
 			{
 				$domain = \Joomla\CMS\Uri\Uri::root(true) ;
 			}#END IF
-			
-			
+
+            $hashVer = self::$GNZ11_params->get('versionHash') ;
+            $fileCoreJs = $domain . self::$GNZ11['gnzlib_path_file_corejs'] .'?'.$hashVer ;
+
+            /*echo'<pre>';print_r( $fileCoreJs );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+            echo'<pre>';print_r( self::$GNZ11['gnzlib_path_file_corejs'] );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+            echo'<pre>';print_r( self::$GNZ11_params );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+            echo'<pre>';print_r( $gnzlib_path_file_corejs );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+            die(__FILE__ .' '. __LINE__ );*/
 
 			
 			$sriptLoader = "document.addEventListener('DOMContentLoaded', function () {";
 			$sriptLoader .= "var n = document.createElement('script');";
 			$sriptLoader .= "n.setAttribute('type', 'text/javascript');";
-			$sriptLoader .= "n.setAttribute('src', '" . $domain . $gnzlib_path_file_corejs . "');";
+			$sriptLoader .= "n.setAttribute('src', '" . $fileCoreJs . "');";
 			$sriptLoader .= "n.setAttribute('async', true);";
 			$sriptLoader .= "n.onerror = function() { n.onerror = null; };";
 			$sriptLoader .= "n.onload = n.onreadystatechange = function() {
@@ -303,12 +325,10 @@
          * @date 07.10.2020 18:21
          * @depecated
          */
-		public static function addJproLoad(string $Assets, $Callback = false , $Trigger = false ){
+		public static function addJproLoad(string $Assets, $Callback = false , $Trigger = false , $__params = false ){
             $doc = \Joomla\CMS\Factory::getDocument();
             $Jpro = $doc->getScriptOptions('Jpro') ;
-            
 
-            
             
 		    $_assets=[];
             $_assets[] = $Assets ;
@@ -317,12 +337,31 @@
                 $_assets = $Assets ;
             }#END IF
 
+            $_exlArr = [
+                'https://www.googletagmanager.com/gtag/js'
+            ];
+
             foreach ( $_assets as $asset)
             {
                 if ( in_array( $asset , self::$JproLoaded  )) continue ;  #END IF
 
                 $assetExt = strtok( $asset, '?') ;
+
                 $Ext = \Joomla\CMS\Filesystem\File::getExt($assetExt);
+
+                if( in_array( $assetExt , $_exlArr ) )
+                {
+                    $Ext = 'js' ;
+                }#END IF
+                
+               /* if( $Assets == 'https://www.googletagmanager.com/gtag/js?id=UA-90953502-1' )
+                {
+                    echo'<pre>';print_r( $Ext );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+                    echo'<pre>';print_r( $assetExt );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+                    echo'<pre>';print_r( $Assets );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
+                    die(__FILE__ .' '. __LINE__ );
+                }#END IF*/
+
                 $params =[
                     'u' => $asset ,     // Путь к файлу
                     't' => $Ext ,       // Тип загружаемого ресурса
@@ -330,6 +369,14 @@
 
                 if ( $Callback  ) $params['c'] = $Callback  ; #END IF
                 if ( $Trigger   ) $params['r'] = $Trigger   ; #END IF
+
+
+                if( isset( $__params['media'] ) &&  $__params['media'] != 'all'  )
+                {
+                    $params['m'] = $__params['media'] ;
+                }#END IF
+
+
 
                 $Jpro['load'][] = $params ;
 
