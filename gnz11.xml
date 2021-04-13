@@ -24,21 +24,21 @@
         <file>GNZ11_update_server.xml</file>
         <file>README.md</file>
     </files>
-    <install> <!-- Runs on install -->
+    <!--<install> &lt;!&ndash; Runs on install &ndash;&gt;
         <sql>
             <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
         </sql>
     </install>
-    <uninstall> <!-- Runs on uninstall -->
+    <uninstall> &lt;!&ndash; Runs on uninstall &ndash;&gt;
         <sql>
             <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
         </sql>
     </uninstall>
-    <update> <!-- Runs on update; New since J2.5 -->
+    <update> &lt;!&ndash; Runs on update; New since J2.5 &ndash;&gt;
         <schemas>
             <schemapath type="mysql">sql/updates/mysql</schemapath>
         </schemas>
-    </update>
+    </update>-->
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
         <server type="extension" enabled="1" priority="1" name="Lib GNZ11 Update Site">https://raw.githubusercontent.com/gartes/GNZ11/master/GNZ11_update_server.xml</server>
