@@ -207,45 +207,49 @@ wgnz11.getModul("Ajax").then(function (Ajax) {
 ```
 ### Fancybox
 fancybox, вероятно, самый популярный в мире скрипт лайтбокса.
+
 ```javascript
 var html = $('#npw-map-wrapper');
-wgnz11.__loadModul.Fancybox().then(function (a) {
-    a.open( html , {
-       baseClass: "gjContactPhones", // Класс основного элемента 
-       touch: false, 				 // полностью отключить сенсорные жесты default : true
+wgnz11.__loadModul.Fancybox().then(function (Modal) {
+   Modal.open(html, {
+      baseClass: "gjContactPhones", // Класс основного элемента 
+      touch: false, 				 // полностью отключить сенсорные жесты default : true
 
-       // Эффект перехода между слайдами false - disable
-       // "fade" "slide" "circular" "tube" "zoom-in-out" "rotate"
-       transitionEffect: "slide",
+      // Эффект перехода между слайдами false - disable
+      // "fade" "slide" "circular" "tube" "zoom-in-out" "rotate"
+      transitionEffect: "slide",
 
 
-       /**
-        * Events
-        */
-       // После инициализации 
-       onInit: function (instance) {
-          // время смены слайда ms.
-          var duration = 0;
-          // Переход к выбранному элементу галереи
-          if (typeof indexImgGoTo !== "undefined" && indexImgGoTo) {
-             instance.jumpTo(indexImgGoTo, duration);
-          }
-       },
-       // Перед началом анимации открытия 
-       beforeShow: function (instance, current) {
-       },
-       // Когда контент загружен и анимирован
-       afterShow: function (instance, current) {
-       },
-       // Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
-       beforeClose: function () {
-       },
-       // После того, как экземпляр был закрыт
-       afterClose: function () {
-       },
-    });
+      /**
+       * Events
+       */
+      // После инициализации 
+      onInit: function (instance) {
+         // время смены слайда ms.
+         var duration = 0;
+         // Переход к выбранному элементу галереи
+         if (typeof indexImgGoTo !== "undefined" && indexImgGoTo) {
+            instance.jumpTo(indexImgGoTo, duration);
+         }
+      },
+      // Перед началом анимации открытия 
+      beforeShow: function (instance, current) {
+         Modal.setTimeOut(8000); // Окно будет закрыто через 8 секунд 
+      },
+      // Когда контент загружен и анимирован
+      afterShow: function (instance, current) {
+         a.setTimeOut(8000); // Окно будет закрыто через 8 секунд 
+      },
+      // Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
+      beforeClose: function () {
+      },
+      // После того, как экземпляр был закрыт
+      afterClose: function () {
+      },
+   });
 });
 ```
+
 Параметры :
 * baseClass - Класс основного элемента
 * touch  (смавхивание)
