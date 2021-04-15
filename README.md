@@ -85,7 +85,7 @@ wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.c
 ```javascript
 wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
 ```
-Если для javascript файлов нужен конкретный CollBack после загрузки его можно получить как Promise : 
+Если для javascript файлов нужен конкретный CallBack после загрузки его можно получить как Promise : 
 ```javascript
 wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js').then(function (r){
     alert('Файл ' + r + ' загружен');            
