@@ -2,8 +2,7 @@
  * IE9 fix console
  */
 if(!window.console)var console={trace:function(){},info:function(){},log:function(){},warn:function(){},warn:function(){},error:function(){},time:function(){},timeEnd:function(){}};
-// Полифилл Date.now
-if (!Date.now) { Date.now = function now() { return new Date().getTime(); };}
+
 /**
  * IE9+
  * You can polyfill the CustomEvent() constructor functionality in Internet Explorer 9 and higher with the following code:

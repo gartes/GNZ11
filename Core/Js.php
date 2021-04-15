@@ -50,9 +50,6 @@
             self::$GNZ11_params->set('versionHash' , md5( $version ) ) ;
             $debug = $Manifest->getValue('debug');
             self::$GNZ11_params->set('debug' , $debug ) ;
-//            \Joomla\CMS\Profiler\Profiler::getInstance('Application')->mark('afterLoad');
-//            $Buffer = \Joomla\CMS\Profiler\Profiler::getInstance('Application')->getBuffer();
-
 
 
 
