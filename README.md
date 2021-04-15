@@ -74,11 +74,28 @@ var sting = wgnz11.TEXT.implode(',' , arr )
 ###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM )
 + [Simple application](#JavascriptjQuerySimpleLoad)<!-- @IGNORE PREVIOUS: anchor -->
 1.  Simple application
+`javascript`
 ```javascript
-    wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
+wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
+```
+Для CSS файлов вторым параметром можно передать атрибут media (к примеру для размера устройств)
+```javascript
+wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css' , 'only screen and (max-width:480px)' );
+```
+```javascript
 wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
 ```
+Если для javascript файлов нужен конкретный CollBack после загрузки его можно получить как Promise : 
+```javascript
+wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js').then(function (r){
+    alert('Файл ' + r + ' загружен');            
+},function (err){
+    // обработка ошибок загрузки файла
+    console.log(err)
+});
+```
 ****************************
+`PHP`
 ```php
 <?php
 /**
