@@ -5,17 +5,18 @@
 1. Joomla : https://github.com/gartes/GNZ11/archive/master.zip
 
 ## Содержание
-<!--
+ 
 1. [Javascript and jQuery.](#JavascriptjQuery)
     + [Text - текстовые операции в JS.](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
--->
+ 
 
-1. [\GNZ11\Document\Text ( текстовые операции ).](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)<!-- @IGNORE PREVIOUS: link -->
+1. [\GNZ11\Document\Text  текстовые операции .](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)<!-- @IGNORE PREVIOUS: link -->
     
       
 1. [Плагины]()
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)<!-- @IGNORE PREVIOUS: link -->
+    +  [Noty Сообщения.](#notyСообщения)
 1. [Модули](#Модули)<!-- @IGNORE PREVIOUS: link -->
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
     + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
@@ -277,6 +278,25 @@ touch: {
      momentum : true // Продолжайте движение после отпускания мыши / касания при панорамировании
 }
 ```
+***
+ 
+ ###### Noty Сообщения <a name="notyСообщения"></a> (2021-04-18, 21:4)
+[https://ned.im/noty](https://ned.im/noty/#/api)
+ ```javascript
+ var param = {
+   type: 'info',            // Тип сообщений - alert, success, warning, error, info/information
+   layout:'bottomRight' ,   // Позиция вывода top, topLeft, topCenter, topRight, center, centerLeft, centerRight, bottom, bottomLeft, bottomCenter, bottomRight
+   timeout : 10000  ,       // Время отображения
+}
+self.__loadModul.Noty(param).then(function(Noty){
+   Noty.options.text = 'Товар добавлен в Список желаний' ;
+   Noty.show();
+})
+ ```
+ [Содержание](#top)
+ ***
+***
+
 ### Tippy.js
 полное решение для всплывающих подсказок, всплывающих окон,
 выпадающих меню и меню для веб-сайтов, созданное на основе Popper
