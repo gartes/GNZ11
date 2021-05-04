@@ -11,11 +11,11 @@
     + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
  
 
-1. [\GNZ11\Document\Text  текстовые операции .](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)<!-- @IGNORE PREVIOUS: link -->
+1. [\GNZ11\Document\Text  текстовые операции .](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)
     
       
 1. [Плагины]()
-    + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox)<!-- @IGNORE PREVIOUS: link -->
+    + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox) 
     +  [Noty Сообщения.](#notyСообщения)
 1. [Модули](#Модули)<!-- @IGNORE PREVIOUS: link -->
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
@@ -24,8 +24,10 @@
 1. [Core](Core)
     + [Backup](Core\Backup)
     + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)<!-- @IGNORE PREVIOUS: link -->
-1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md)<!-- @IGNORE PREVIOUS: link -->
+1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md) 
     +
+   
+**************************************************
 ## <a name="Core"></a> Core
 ### <a name="Core\Backup"></a> Backup
 INIT :
@@ -113,7 +115,6 @@ catch( Exception $e )
     {
         $this->app->enqueueMessage('Должна быть установлена библиотека GNZ11' , 'error');
     }#END IF
-    throw new \Exception('Должна быть установлена библиотека GNZ11' , 400 ) ; 
 }
 ?>
 ```
@@ -285,7 +286,10 @@ touch: {
  ```javascript
  var param = {
    type: 'info',            // Тип сообщений - alert, success, warning, error, info/information
-   layout:'bottomRight' ,   // Позиция вывода top, topLeft, topCenter, topRight, center, centerLeft, centerRight, bottom, bottomLeft, bottomCenter, bottomRight
+   
+   layout:'bottomRight' ,   // Позиция вывода top, topLeft, topCenter, topRight, center, centerLeft, centerRight, 
+                            // bottom, bottomLeft, bottomCenter, bottomRight
+   
    timeout : 10000  ,       // Время отображения
 }
 self.__loadModul.Noty(param).then(function(Noty){
