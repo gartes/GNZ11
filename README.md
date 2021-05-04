@@ -17,16 +17,24 @@
 1. [Плагины]()
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox) 
     +  [Noty Сообщения.](#notyСообщения)
-1. [Модули](#Модули)<!-- @IGNORE PREVIOUS: link -->
+
+1. [Модули.](#модули)<!-- @IGNORE PREVIOUS: link -->
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
-    + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
+    + [Fancybox](#Fancybox)<!-- @IGNORE PREVIOUS: link -->
+    + [Noty Сообщения](#notyСообщения)<!-- @IGNORE PREVIOUS: link -->
+    
+   + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
+
 1. [Joomla](Joomla)
 1. [Core](Core)
     + [Backup](Core\Backup)
     + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)<!-- @IGNORE PREVIOUS: link -->
 1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md) 
     +
-   
+ 
+ 
+ [Содержание](#top)
+ ***
 **************************************************
 ## <a name="Core"></a> Core
 ### <a name="Core\Backup"></a> Backup
@@ -192,9 +200,21 @@ var Settings = {
 } 
 ```
 ***
+ 
+ [comment]: <> (----------------------------------------------------------)
+   ## Модули <a name="модули"></a>
+   * [Ajax.](#ajax)
+   * [Fancybox](Fancybox)
 
-## Модули
-### Ajax
+ [comment]: <> (* []&#40;#&#41;)
+ ***
+ [comment]: <> (----------------------------------------------------------)
+ ***
+ [Содержание](#top)
+
+
+ ***
+   ### Ajax <a name="ajax"></a>
 ```javascript
 /*
 AjaxDefaul для плагина
@@ -224,9 +244,11 @@ wgnz11.getModul("Ajax").then(function (Ajax) {
     })
 });
 ```
-### Fancybox
-fancybox, вероятно, самый популярный в мире скрипт лайтбокса.
+   [Содержание](#top)
+   ***
 
+   ### Fancybox <a name="Fancybox"></a>
+fancybox, вероятно, самый популярный в мире скрипт лайтбокса.
 ```javascript
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (Modal) {
@@ -279,10 +301,11 @@ touch: {
      momentum : true // Продолжайте движение после отпускания мыши / касания при панорамировании
 }
 ```
-***
- 
- ###### Noty Сообщения <a name="notyСообщения"></a> (2021-04-18, 21:4)
-[https://ned.im/noty](https://ned.im/noty/#/api)
+   [Содержание](#top)
+   ***
+
+   ### Noty Сообщения <a name="notyСообщения"></a> (2021-04-18, 21:4)
+   [https://ned.im/noty](https://ned.im/noty/#/api)
  ```javascript
  var param = {
    type: 'info',            // Тип сообщений - alert, success, warning, error, info/information
@@ -300,6 +323,10 @@ self.__loadModul.Noty(param).then(function(Noty){
  [Содержание](#top)
  ***
 ***
+   [Содержание](#top)
+   ***
+
+
 
 ### Tippy.js
 полное решение для всплывающих подсказок, всплывающих окон,
@@ -313,6 +340,7 @@ wgnz11.__loadModul.Tippy().then(function(a){
 })
 ``` 
 ***
+
 ### Storage Class [<img width="50" src="http://178.209.70.115/images/logos/gist_github_large.png">](https://gist.github.com/gartes/30819b797838ce277ca6519cee730703)
 простой класс хранения для JavaScript
 ```javascript
@@ -376,6 +404,15 @@ this.afterDestroyDropLink = function (event) {
 
 
 ***
+
+
+
+
+
+
+
+
+
 
 ## JS - Objects : <a name="JSObjects"></a>
 ### ARRAY :
