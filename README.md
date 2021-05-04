@@ -337,7 +337,7 @@ self.__loadModul.Noty(param).then(function(Noty){
  *  
  */
 wgnz11.getModul('MiniMenu').then(function (MiniMenu){
-    MiniMenu.createMenu( $el , self.ListData.template.shoppingCartActions[type] )
+    MiniMenu.createMenu( $el , html )
 },function (err){console.log(err)}); 
  ```
 Пример UL : 
