@@ -22,7 +22,9 @@
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
     + [Fancybox](#Fancybox)<!-- @IGNORE PREVIOUS: link -->
     + [Noty Сообщения](#notyСообщения)<!-- @IGNORE PREVIOUS: link -->
-    
+    + [Mini Menu.](#miniMenu)
+      
+
    + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
 
 1. [Joomla](Joomla)
@@ -205,6 +207,8 @@ var Settings = {
    ## Модули <a name="модули"></a>
    * [Ajax.](#ajax)
    * [Fancybox](Fancybox)
+     
+   * [Mini Menu.](#miniMenu)
 
  [comment]: <> (* []&#40;#&#41;)
  ***
@@ -320,8 +324,61 @@ self.__loadModul.Noty(param).then(function(Noty){
    Noty.show();
 })
  ```
- [Содержание](#top)
- ***
+   [Содержание](#top)
+   ***
+   
+ 
+ ### Mini Menu <a name="miniMenu"></a> (2021-05-5, 1:53)
+ Создать меню под кнопкой  
+ ```javascript
+/**
+ * $el  - jQuery елемент под которым отобразить меню
+ * html - string - UL список 
+ *  
+ */
+wgnz11.getModul('MiniMenu').then(function (MiniMenu){
+    MiniMenu.createMenu( $el , self.ListData.template.shoppingCartActions[type] )
+},function (err){console.log(err)}); 
+ ```
+Пример UL : 
+```html
+<ul _ngcontent-c88="" class="cart-actions__list" id="shoppingCartActions">
+    <li _ngcontent-c88="" class="cart-actions__item">
+        <button _ngcontent-c88="" data-action="removeFromList"
+                class="button button--medium button--with-icon button--link cart-actions__button"
+                type="button">
+            <svg _ngcontent-c88="" aria-hidden="true" height="24" pointer-events="none" width="24">
+                <use _ngcontent-c88="" pointer-events="none" xmlns:xlink="http://www.w3.org/1999/xlink"
+                     xlink:href="#icon-trash"></use>
+            </svg>
+            Удалить из списка
+        </button>
+    </li><!---->
+    <li _ngcontent-c88="" data-action="cancel" class="cart-actions__item">
+        <button _ngcontent-c88=""  class="button button--medium button--with-icon button--link cart-actions__button"
+                type="button">
+            <svg _ngcontent-c88="" aria-hidden="true" height="24" pointer-events="none" width="24">
+                <use _ngcontent-c88="" pointer-events="none" xmlns:xlink="http://www.w3.org/1999/xlink"
+                     xlink:href="#icon-remove"></use>
+            </svg>
+            Отменить
+        </button>
+    </li>
+</ul>
+```
+   [Содержание](#top)
+   ***
+
+
+
+
+
+
+
+
+
+
+
 ***
    [Содержание](#top)
    ***
