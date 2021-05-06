@@ -304,11 +304,26 @@ window.GNZ11 = function (options_setting) {
                         if ( __url ) url = __url;
                     }
 
+                   /* var m = url.match(/slick/)
+                    if (tag === 'script' && m ){
+                        if (url.match(/\.min/)){
+                            console.log('gnz11:->url >>> min - ver' , m );
+                        }else{
+                            console.log('gnz11:->url >>> NO - min - ver' , m );
+                        }
+                        // console.log('gnz11:->url >>> ' , m );
+                        // console.log('gnz11:->url >>> ' , url );
+                        // console.log('gnz11:->url >>> ' , tag );
+                    }*/
+
+
+                    
                     // Проверяем в истории
-                    if ($.inArray( url, window.GNZ11_isLoad[tag] ) !== -1)  {
+                    if ($.inArray( url , window.GNZ11_isLoad[tag] ) !== -1)  {
                         resolve(url) ;
                         return ;
                     }
+
                     // Добавить в историю
                     window.GNZ11_isLoad[tag].push(url);
 
@@ -318,7 +333,12 @@ window.GNZ11 = function (options_setting) {
                      * @returns {boolean|*}
                      */
                     function chckInPreloader(url){
-                        var Opt = Joomla.getOptions('GNZ11')
+                        var Opt = Joomla.getOptions('GNZ11');
+
+                        // TODO - добавить на стороне сервера по умолчанию Document
+                        // TODO - Вызывает ошибку на стороне администратора
+                        if ( typeof Opt.Document === "undefined") return false ;
+
                         // Проверяем если файл из JS модулей библиотеки
                         // то устанавливаем mediaVersion - от номера версии gnz11 lib
                         var m = url.match('libraries/GNZ11/assets/js/modules')
@@ -787,8 +807,9 @@ window.GNZ11 = function (options_setting) {
             var NotySettingDefault = $this.Options.Noty ;
             var setting = {};
             $.extend(  true , setting ,  NotySettingDefault  , param   );
+            console.log('gnz11:Noty->setting >>> ' , setting ); 
 
-            console.log( setting );
+
 
             if ( typeof  Noty === 'undefined' ){
                 return new Promise(function (resolve, reject) {

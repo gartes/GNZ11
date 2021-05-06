@@ -112,10 +112,10 @@ window.GNZ11MiniMenu = function () {
     };
 
     /**
-     * Удалить список действий у товара в списке
+     * Удалить Меню список действий у товара в списке
      */
     this.onClickRemoveActionList = function (){
-        $(this).closest('button').data( 'expanded',false );
+        $(this).closest('button').data( 'expanded' , false );
         $(this).closest('ul').remove();
         self.removeBodyWaitClose();
         return false ;

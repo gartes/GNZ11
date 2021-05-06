@@ -4,7 +4,7 @@
         <description>Lib GNZ11 Desc</description>
         <type>library</type>
         <element>GNZ11</element>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
         <client>0</client>
         <infourl title="Joomla!">https://github.com/gartes/GNZ11#readme</infourl>
         <downloads>

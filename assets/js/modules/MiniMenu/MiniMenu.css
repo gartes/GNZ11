@@ -62,14 +62,15 @@
     color: #3e77aa;
     cursor: pointer;
 }
-.button--with-icon svg, .button_with_icon svg {
-    flex-shrink: 0;
-    fill: currentColor;
+.cart-actions__list .button--with-icon svg,
+.cart-actions__list .button_with_icon svg {
+    /* flex-shrink: 0; */
+    /* fill: currentColor; */
     /* margin: 12px; */
-    position: absolute;
-    top: 7px;
-    left: -6px;
-    padding: 0 0 0 0px;
+     position: absolute;
+    /* top: 7px; */
+     left: -6px;
+    /* padding: 0 0 0 0px; */
 }
 .button--link:hover, .button_type_link:hover {
     color: #ff7878;
@@ -81,13 +82,13 @@
     padding: 10px 15px;
 }
 .button--green, .button_color_green {
-    background-color: #be1e2d;
-    color: #fff;
+    /* background-color: #be1e2d; */
+    /* color: #fff; */
     transition:background-color .3s;
-    cursor:pointer ;
+    cursor:pointer;
 }
 button.button, input.button {
-    line-height: normal;
+    /* line-height: normal; */
 }
 
 .modal-product-list ul{
@@ -105,13 +106,13 @@ button.button, input.button {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     text-align: left;
-    font-size: 19px;
+    font-size: 18px;
     padding: 0 0 0 26px;
     /* position: relative; */
 }
 @media (hover: hover){
     .button--green:hover, .button_color_green:hover {
-        background-color: #d82f3e;;
+        background-color: #00bc52;
         color: #fff;
     }
 }
