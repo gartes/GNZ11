@@ -28,6 +28,7 @@ if(!window.console)var console={trace:function(){},info:function(){},log:functio
 // Browser Support IE8+, Chrome, Firefox, IOS 4+, Safari 5+, Opera
 // https://www.npmjs.com/package/promise-polyfill
 
+console.log('gnz11:->document.createElement >>> ' , document.createElement );
 
 Joomla = window.Joomla || {};
 Jpro = window.Jpro || {};
@@ -47,10 +48,10 @@ Jpro = window.Jpro || {};
         if (!Joomla.optionsStorage) {
             Joomla.loadOptions();
         }
-
         return Joomla.optionsStorage[key] !== undefined ? Joomla.optionsStorage[key] : def;
     };
     Joomla.optionsStorage = Joomla.optionsStorage || null;
+
     Joomla.loadOptions = function( options ) {
         // Load form the script container
         if (!options) {
@@ -76,6 +77,7 @@ Jpro = window.Jpro || {};
                 return;
             }
         }
+
         // Initial loading
         if (!Joomla.optionsStorage) {
             Joomla.optionsStorage = options || {};
@@ -108,6 +110,9 @@ Jpro = window.Jpro || {};
 
         return destination;
     };
+
+    console.log('gnz11:->Joomla >>> ' , Joomla );
+
     Joomla.loadOptions();
 
 
@@ -117,10 +122,8 @@ Jpro = window.Jpro || {};
         {
             var opt = Joomla.getOptions( 'Jpro' );
             var data = {
-
                 'u' : url ,
                 'c' : callback
-
             };
             opt.load.push( data );
             Joomla.loadOptions( { 'Jpro' : opt } );
@@ -208,20 +211,24 @@ window.GNZ11 = function (options_setting) {
 
     };
     this._siteUrl = null ;
+
     this.set_siteUrl = function (Url) {
         this._siteUrl = Url ;
         Joomla.loadOptions({ 'siteUrl' : Url })
     };
+
+
     /**
      * Установка настроек для объекта GNZ11
      */
     this.Options = (function () {
-        var opt = Joomla.getOptions('GNZ11')
-        if ( typeof opt === 'undefined'){
+        if ( typeof Joomla.getOptions('GNZ11') === 'undefined'){
             Joomla.loadOptions({ 'GNZ11' : GNZ11_defSetting })
         }
+
         return Joomla.getOptions('GNZ11')
     })();
+
     this.init = function () {};
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /**
@@ -262,10 +269,10 @@ window.GNZ11 = function (options_setting) {
             }(t.responseText);
         }
         t.send();
-        
-        
-        
-         
+
+
+
+
 
     }
 
@@ -317,7 +324,7 @@ window.GNZ11 = function (options_setting) {
                     }*/
 
 
-                    
+
                     // Проверяем в истории
                     if ($.inArray( url , window.GNZ11_isLoad[tag] ) !== -1)  {
                         resolve(url) ;
@@ -391,7 +398,9 @@ window.GNZ11 = function (options_setting) {
                                         setSvg(  url );
                                         resolve(url);
                                     },500)
-                                }, function (err) { console.log(err) });
+                                }, function (err) {
+                                    console.log(err)
+                                });
                             }else {
                                 // console.log( 'GNZ11.load:url+' , url )
                                 setSvg(  url );
@@ -407,7 +416,7 @@ window.GNZ11 = function (options_setting) {
                                 }(t.responseText);
                             }
                             t.send();
-                            console.log('gnz11:url' , url ); 
+                            console.log('gnz11:url' , url );
 
                             break ;
                     }
@@ -528,7 +537,7 @@ window.GNZ11 = function (options_setting) {
 
                 },function (err){console.log(err)});
             },
-            img: _load('img') , 
+            img: _load('img') ,
             json: _load('json')
         };
     })();
@@ -807,7 +816,7 @@ window.GNZ11 = function (options_setting) {
             var NotySettingDefault = $this.Options.Noty ;
             var setting = {};
             $.extend(  true , setting ,  NotySettingDefault  , param   );
-            console.log('gnz11:Noty->setting >>> ' , setting ); 
+            console.log('gnz11:Noty->setting >>> ' , setting );
 
 
 
@@ -943,14 +952,14 @@ window.GNZ11 = function (options_setting) {
                     var parseResult = wgnz11.parseURL(item.u  );
                     item.t = parseResult.extension;
                 }
-                
+
                 var $body = $('body')
                 // тип файла JS || CSS
                 var type = item.t ;
                 // URL Ресурса
                 var url = item.u ;
                 var media = item.m ;
-                console.log('gnz11:->item >>> ' , item );
+
 
 
                 /**
@@ -993,7 +1002,7 @@ window.GNZ11 = function (options_setting) {
                     });
                 }
 
-                 
+
 
             },100)
         });
@@ -1036,7 +1045,7 @@ window.GNZ11 = function (options_setting) {
             searchObject[split[0]] = split[1];
         }
         var filename = parser.pathname ;
-        
+
         return {
             protocol: parser.protocol,
             host: parser.host,
@@ -1409,25 +1418,135 @@ window.GNZ11 = function (options_setting) {
          * @param $form
          * @returns {{}}
          */
-        getFormDataToJson : function ($form){
+        getFormDataToJson : function ( $form ) {
             var unindexed_array = $form.serializeArray();
             var indexed_array = {};
 
-            $.map(unindexed_array, function(n, i){
-                var name = n['name'] ;
-                indexed_array[ name ] = n['value'];
-            });
+            $.map( unindexed_array , function ( n , i ) {
+                var name = n['name'];
+                indexed_array[name] = n['value'];
+            } );
             return indexed_array;
-        },
+        } ,
         /**
          * Serializes - форм || элементов форм не вложенных в тег <form>
          * Serializes form or any other element with jQuery.serialize
          * @param el - <form> OR <div>
          */
-        serialize : function(el) {
-            var serialized = $(el).serialize();
-            if (!serialized) // not a form
-                serialized = $(el).find('input[name],select[name],textarea[name]').serialize();
+        /*jslint continue:true*/
+        /**
+         * Adapted from {@link http://www.bulgaria-web-developers.com/projects/javascript/serialize/}
+         * Changes:
+         *     Ensures proper URL encoding of name as well as value
+         *     Preserves element order
+         *     XHTML and JSLint-friendly
+         *     Disallows disabled form elements and reset buttons as per HTML4 [successful controls]{@link http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2}
+         *         (as used in jQuery). Note: This does not serialize <object>
+         *         elements (even those without a declare attribute) or
+         *         <input type="file" />, as per jQuery, though it does serialize
+         *         the <button>'s (which are potential HTML4 successful controls) unlike jQuery
+         * @license MIT/GPL
+         */
+        serialize  : function ( form ) {
+            'use strict';
+            var i , j , len , jLen , formElement , q = [];
+
+            function urlencode( str ) {
+                // http://kevin.vanzonneveld.net
+                // Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current
+                // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
+                return encodeURIComponent( str ).replace( /!/g , '%21' ).replace( /'/g , '%27' ).replace( /\(/g , '%28' ).replace( /\)/g , '%29' ).replace( /\*/g , '%2A' ).replace( /%20/g , '+' );
+            }
+
+            function addNameValue( name , value ) {
+                q.push( urlencode( name ) + '=' + urlencode( value ) );
+            }
+
+            if ( !form || !form.nodeName || form.nodeName.toLowerCase() !== 'form' )
+            {
+                throw 'You must supply a form element';
+            }
+
+            for ( i = 0, len = form.elements.length; i < len; i++ )
+            {
+                formElement = form.elements[i];
+                if ( formElement.name === '' || formElement.disabled )
+                {
+                    continue;
+                }
+
+
+
+                switch ( formElement.nodeName.toLowerCase() )
+                {
+                    case 'div' :
+                        console.log('gnz11:serialize->formElement >>> ' , formElement );
+                         alert('div')
+                        break ;
+                    case 'input':
+                        switch ( formElement.type )
+                        {
+                            case 'text':
+                            case 'hidden':
+                            case 'password':
+                            case 'button': // Not submitted when submitting form manually, though jQuery does serialize this and it can be an HTML4 successful control
+                            case 'submit':
+                                addNameValue( formElement.name , formElement.value );
+                                break;
+                            case 'checkbox':
+                            case 'radio':
+                                if ( formElement.checked )
+                                {
+                                    addNameValue( formElement.name , formElement.value );
+                                }
+                                break;
+                            case 'file':
+                                // addNameValue(formElement.name, formElement.value); // Will work and part of HTML4 "successful controls", but not used in jQuery
+                                break;
+                            case 'reset':
+                                break;
+                        }
+                        break;
+                    case 'textarea':
+                        addNameValue( formElement.name , formElement.value );
+                        break;
+                    case 'select':
+                        switch ( formElement.type )
+                        {
+                            case 'select-one':
+                                addNameValue( formElement.name , formElement.value );
+                                break;
+                            case 'select-multiple':
+                                for ( j = 0, jLen = formElement.options.length; j < jLen; j++ )
+                                {
+                                    if ( formElement.options[j].selected )
+                                    {
+                                        addNameValue( formElement.name , formElement.options[j].value );
+                                    }
+                                }
+                                break;
+                        }
+                        break;
+                    case 'button': // jQuery does not submit these, though it is an HTML4 successful control
+                        switch ( formElement.type )
+                        {
+                            case 'reset':
+                            case 'submit':
+                            case 'button':
+                                addNameValue( formElement.name , formElement.value );
+                                break;
+                        }
+                        break;
+                }
+            }
+            return q.join( '&' );
+        } ,
+        _serialize : function ( el ) {
+            var serialized = $( el ).serialize();
+            if ( !serialized ) // not a form
+            {
+                serialized = $( el ).find( 'input[name],select[name],textarea[name]' ).serialize();
+            }
             return serialized;
         }
     };

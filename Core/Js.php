@@ -30,6 +30,7 @@
 			'gnzlib_path_plugins'=>'/libraries/GNZ11/assets/js/plugins' ,
             'gnzlib_path_sprite' => "libraries/GNZ11/assets/img/_sprite1111.svg",
 			'gnzlib_debug'=>false ,
+
 		] ;
 		
 		
@@ -299,8 +300,17 @@
 			
 			return $sriptLoader;
 		}
-		
+
+        /**
+         * TODO - УДАЛИТЬ !!!
+         * @since  3.9
+         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+         * @date   08.05.2021 06:29
+         *
+         */
 		public static function addTaskLazy(){
+		    die(__FILE__ .' '. __LINE__ );
+
 			$doc = JFactory::getDocument();
 			$Jpro = $doc->getScriptOptions('Jpro') ;
 			$Jpro['load'][] = [

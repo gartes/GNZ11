@@ -121,12 +121,18 @@ GNZ11Ajax = function () {
             var Options = Joomla.getOptions('GNZ11');
 
             // var siteUrl = (typeof Options.Ajax.siteUrl);
-            var siteUrl = ( (typeof Options.Ajax.siteUrl !== 'undefined' && Options.Ajax.siteUrl ) ? Options.Ajax.siteUrl : '/');
-            var token = Options.Ajax['csrf.token'];
-            if (typeof token === 'undefined'){
+
+            var siteUrl = ( ( typeof Options.Ajax !== "undefined" && typeof Options.Ajax.siteUrl !== 'undefined' && Options.Ajax.siteUrl ) ? Options.Ajax.siteUrl : '/');
+
+            var token = false ;
+            if ( typeof Options.Ajax !== "undefined" ){
+                token = Options.Ajax['csrf.token'];
+            }
+
+            if (!token){
                 token = Joomla.getOptions('csrf.token')
             }
-            var admin = ( (typeof Options.Ajax.isClient !== 'undefined' && Options.Ajax.isClient ) ? 'administrator/' : '');
+            var admin = ( ( typeof Options.Ajax !== "undefined" && typeof Options.Ajax.isClient !== 'undefined' && Options.Ajax.isClient ) ? 'administrator/' : '');
 
 
             // var Uri = siteUrl + admin + "index.php?"

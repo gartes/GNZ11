@@ -25,4 +25,4 @@ class JFormFieldLabels extends JFormField {
         return JHTML::_('select.genericlist', $elementes_select, $ctrl,'class="inputbox"','id', 'name', $value );
   }
 }
-?>
+

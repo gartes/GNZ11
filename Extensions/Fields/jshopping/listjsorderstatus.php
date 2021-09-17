@@ -1,5 +1,4 @@
 <?php
-
     /*******************************************************************************************************************
      *     ╔═══╗ ╔══╗ ╔═══╗ ╔════╗ ╔═══╗ ╔══╗        ╔══╗  ╔═══╗ ╔╗╔╗ ╔═══╗ ╔╗   ╔══╗ ╔═══╗ ╔╗  ╔╗ ╔═══╗ ╔╗ ╔╗ ╔════╗
      *     ║╔══╝ ║╔╗║ ║╔═╗║ ╚═╗╔═╝ ║╔══╝ ║╔═╝        ║╔╗╚╗ ║╔══╝ ║║║║ ║╔══╝ ║║   ║╔╗║ ║╔═╗║ ║║  ║║ ║╔══╝ ║╚═╝║ ╚═╗╔═╝
@@ -10,121 +9,108 @@
      *------------------------------------------------------------------------------------------------------------------
      *
      * @author     Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
-     * @date       13.04.2021 10:21
+     * @date       16.09.2021 22:19
      * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
      * @license    GNU General Public License version 2 or later;
      ******************************************************************************************************************/
-
-    namespace GNZ11\Extensions;
     defined('_JEXEC') or die; // No direct access to this file
 
-    use DOMDocument;
-    use Exception;
-    use JDatabaseDriver;
-    use Joomla\CMS\Application\CMSApplication;
-    use Joomla\CMS\Factory;
+
 
     /**
-     * Class Manifest
+     * =================================================================================================================
+     * ============== Список статусов заказов JoomShopping =============================================================
+     * =================================================================================================================
+     */
+
+
+    use Joomla\CMS\Application\CMSApplication;
+    use Joomla\CMS\Factory;
+    use Joomla\CMS\Form\FormHelper;
+    use Joomla\CMS\HTML\HTMLHelper;
+    use Joomla\CMS\Language\Text;
+
+
+    FormHelper::loadFieldClass('list');
+
+
+    /**
+     * Class JFormFieldListorderstatus
      *
-     * @package GNZ11\Extensions
-     * @since   3.9
-     * @auhtor  Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
-     * @date    13.04.2021 10:21
+     * @since  3.9
+     * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
+     * @date   16.09.2021 22:19
      *
      */
-    class Manifest
+    class JFormFieldListjsorderstatus extends JFormFieldList
     {
         /**
-         * @var string путь к файлу manifest.xml
+         * @var string Список категорий JoomShoping
          * @since 3.9
          */
-        private $path ;
+        public $type = 'listjsorderstatus';
 
-        /**
-         * @var CMSApplication|null
-         * @since 3.9
-         */
-        protected $app;
+        private $textKey = 'name_ru-RU' ;
+
         /**
          * @var JDatabaseDriver|null
          * @since 3.9
          */
         protected $db;
         /**
-         * Array to hold the object instances
-         *
-         * @var Manifest
-         * @since  1.6
+         * @var array|mixed
+         * @since 3.9
          */
-        public static $instance;
+        private $valueKey = 'status_id' ;
 
         /**
-         * Manifest constructor.
+         * JFormFieldListorderstatus constructor.
          *
          * @param $params array|object
          *
          * @throws Exception
          * @since 3.9
          */
-        public function __construct( $params = [] )
-        {
-//            $this->app = Factory::getApplication();
-//            $this->db = Factory::getDbo();
-            return $this;
-        }
+
+
 
         /**
-         * @param array $options
+         * Метод получения списка опций для ввода списка.
+         * Method to get a list of options for a list input.
          *
-         * @return Manifest
-         * @throws Exception
+         * @return    array     Массив параметров JHtml.
+         *                      An array of JHtml options.
          * @since 3.9
          */
-        public static function instance( $options = array() )
+        protected function getOptions()
         {
-            if( self::$instance === null )
+            $options = array();
+            $items = $this->getAllValues();
+            if( $items )
             {
-                self::$instance = new self($options);
+                // $options[] = JHtml::_('select.option', '', '');
+                foreach ($items as $item)
+                {
+                    $options[] = HTMLHelper::_('select.option' , $item->{$this->valueKey} , Text::_($item->{$this->textKey}));
+                }
             }
-            return self::$instance;
+            return $options;
         }
 
-        /**
-         * Установить путь к файлу manifest.xml
-         * @param $path
-         *
-         * @since  3.9
-         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
-         * @date   13.04.2021 10:24
-         *
-         */
-        public function addPath($path){
-            $this->path = $path ;
-        }
+        protected function getAllValues(){
+            $this->db = \Joomla\CMS\Factory::getDbo();
+            $Query = $this->db->getQuery(true) ;
+            $Query->select('*')
+                ->from( $this->db->quoteName('#__jshopping_order_status'));
+            $where = [];
+//            $Query->where($where);
+            # $Query->order( ' ASC' );
+            # $Query->order( ' DESC' );
+            $this->db->setQuery( $Query ) ;
+//            echo'<pre>';print_r( $Query->dump() );echo'</pre>'.__FILE__.' '.__LINE__ . PHP_EOL;
 
-        /**
-         *
-         * @param $path
-         *
-         * Profiler :
-         * Application 0.000 seconds (0.000); 9.30 MB (9.300) - beforeLoad
-         * Application 0.000 seconds (0.000); 9.30 MB (0.002) - afterLoad
-         *
-         * @since  3.9
-         * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
-         * @date   13.04.2021 10:38
-         *
-         */
-        public function getValue( $path = 'version' ){
-//            \Joomla\CMS\Profiler\Profiler::getInstance('Application')->mark('beforeLoad');
-
-            $dom = new DOMDocument("1.0", "utf-8");
-            $dom->load( $this->path );
-            return $dom->getElementsByTagName( $path )->item(0)->textContent;
-//            \Joomla\CMS\Profiler\Profiler::getInstance('Application')->mark('afterLoad');
-//            $Buffer = \Joomla\CMS\Profiler\Profiler::getInstance('Application')->getBuffer();
-
+            $res = $this->db->loadObjectList( );
+            return $res ;
 
 
 

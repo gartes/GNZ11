@@ -1,10 +1,10 @@
 <?php
-	
+
 	namespace GNZ11\Document;
-	
-	
+
+
 	use Exception;
-	
+
 	/**
 	 * USE :
 	 * - JOOMLA :
@@ -322,14 +322,16 @@
          * $str = 'Ремонт принтера Epson Epson M3180';
          * \GNZ11\Document\Text::removeNextDuplicate($str) ;
          *  // return Ремонт принтера Epson M3180
-         * @param string $str строка
+         *
+         * @param string $str       строка
          * @param string $delimiter разделитель слов ( default ' ' )
+         *
          * @return string
          * @since  3.9
          * @auhtor Gartes | sad.net79@gmail.com | Skype : agroparknew | Telegram : @gartes
          * @date   18.12.2020 12:47
          */
-        public static function removeNextDuplicate(string $str , string $delimiter = ' ' ): string
+        public static function removeNextDuplicate( string $str , string $delimiter = ' ' ): string
         {
             $arrString = explode( $delimiter , $str ) ;
 
