@@ -295,6 +295,7 @@ wgnz11.__loadModul.Fancybox().then(function (Modal) {
 });
 ```
 
+
 Параметры :
 * baseClass - Класс основного элемента
 * touch  (смавхивание)
@@ -304,7 +305,65 @@ touch: {
     vertical: true , // Разрешить перетаскивать содержимое по вертикали
      momentum : true // Продолжайте движение после отпускания мыши / касания при панорамировании
 }
+
+/**
+ * Запретить скрол страницы при открытом модальном окне
+ */
+beforeShow: function(){
+    $("body").css({'overflow':'hidden'});
+    $('body').css('position','fixed');
+},
+afterClose: function(){
+    $("body").css({'overflow-y':'visible'});
+    $('body').css('position','initial');
+}, 
+/*******************************************************/  
+
+// Пример програмного создания галереи
+this.onClickGalleryContainer = function (){
+    var indexJumpTo = 0 ;
+    var durationJumpTo = 500 ;
+    var $imgCollection = $('ul.gallery-thumbnails img')
+
+    var _srcArr = [];
+
+    $imgCollection.each(function(i,a){
+        // Находим Активный Слайд
+        var $parentLi = $(a).closest('li.gallery-thumbnails__item')
+        if ( $parentLi.hasClass('gallery-thumbnails__item--active') ) indexJumpTo = i ;
+        var o = {
+            // Основное изображение
+            src : $(a).data('popup-src'),
+            opts : {
+                // Подпись
+                caption : '',
+                // Превью
+                thumb : $(a).attr('src'),
+            },
+        };
+        _srcArr.push(o);
+    });
+
+    self.__loadModul.Fancybox().then(function (Modal) {
+        Modal.open( _srcArr , {
+            afterShow : function( instance, current ) {
+                // Если активное не первое - прыгаем
+                if ( indexJumpTo){
+                    instance.jumpTo( indexJumpTo, durationJumpTo );
+                    indexJumpTo = false ;
+                }
+            }
+        })
+    });
+
+
+}
+
+
 ```
+
+
+
    [Содержание](#top)
    ***
 
@@ -336,9 +395,20 @@ self.__loadModul.Noty(param).then(function(Noty){
  * html - string - UL список 
  *  
  */
-wgnz11.getModul('MiniMenu').then(function (MiniMenu){
-    MiniMenu.createMenu( $el , html )
-},function (err){console.log(err)}); 
+
+// Слушаем click на группе кнопок context-menu__toggle
+$('body').on('click', '.Gartes-Cart button.context-menu__toggle', function (e) {
+    console.log('gartes_scripts:->e >>> ' , $(e.target) );
+    // Получаем ту кнопку по которой кликнули
+    var $el = $(e.target);
+    // Загружаем html контекстного меню
+    var htmlContextMenu =  GartesCart.contextMenu();
+    // Создаем контекстное меню
+    wgnz11.getModul('MiniMenu').then(function (MiniMenu){
+        MiniMenu.createMenu( $el , htmlContextMenu )
+    },function (err){console.log(err)});
+});
+
  ```
 Пример UL : 
 ```html
@@ -366,6 +436,25 @@ wgnz11.getModul('MiniMenu').then(function (MiniMenu){
     </li>
 </ul>
 ```
+Для создания пункта для закрытя меню (самим модулем ) - Ul список должен содержать li такого вида 
+```html
+<li _ngcontent-c88="" data-action="cancel" class="cart-actions__item">
+        <button _ngcontent-c88="" class="button button--medium button--with-icon button--link cart-actions__button" type="button">
+            <svg _ngcontent-c88="" aria-hidden="true" height="24" pointer-events="none" width="24">
+                <use _ngcontent-c88="" pointer-events="none" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-remove"></use>
+            </svg>
+            Отменить
+        </button>
+    </li>
+```
+Options :
+
+**self.ContextMenu.Close()** - закрыть все открытые меню
+**self.ContextMenu.Close(e.target)** - закрыть меню с элементом 
+ 
+
+
+
    [Содержание](#top)
    ***
 
