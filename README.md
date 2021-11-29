@@ -283,7 +283,7 @@ wgnz11.__loadModul.Fancybox().then(function (Modal) {
       },
       // Когда контент загружен и анимирован
       afterShow: function (instance, current) {
-         a.setTimeOut(8000); // Окно будет закрыто через 8 секунд 
+         Modal.setTimeOut(8000); // Окно будет закрыто через 8 секунд 
       },
       // Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
       beforeClose: function () {
