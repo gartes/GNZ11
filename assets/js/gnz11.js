@@ -145,6 +145,9 @@ Jpro = window.Jpro || {};
 
 var GNZ11_defSetting = {
     debug: false ,
+    Ajax : {
+        siteUrl :  window.location.origin + '/' ,
+    },
     gnzlib_path_api: '/libraries/GNZ11/Api',
     gnzlib_path_file_corejs: "/libraries/GNZ11/assets/js/gnz11.js",
     gnzlib_path_file_corejs_min: "/libraries/GNZ11/assets/js/gnz11.min.js",
@@ -205,6 +208,9 @@ window.GNZ11 = function (options_setting) {
 
         if ( typeof options_setting === 'undefined') options_setting = {} ;
         self.WGNZ11INIT_OPTS = Object.assign({}  , self._defaults , options_setting  );
+
+        console.log('gnz11:WGNZ11INIT->this._siteUrl >>> ' , this._siteUrl );
+
 
 
 
@@ -769,7 +775,7 @@ window.GNZ11 = function (options_setting) {
      *
      * var gnz11 = new gn_z11;
      *
-     * gnz11.__loadModul.Noty().then(function(a){})
+     * gnz11.__loadModul.Noty(param).then(function(a){})
      * gnz11.__loadModul.Fancybox().then(function(a){})
      * gnz11.__loadModul.Bootstrap().then(function(a){})
      *
@@ -787,6 +793,9 @@ window.GNZ11 = function (options_setting) {
             function _init() {
                 var Inputmask = new GNZ11_Inputmask();
                 if (typeof param !== 'undefined' ){
+
+                    console.log('gnz11:_init->contact-form >>> ' , param );
+
                     var elSelector = param.element ;
                     return  Inputmask.Inint( elSelector , param );
                 }
@@ -810,6 +819,7 @@ window.GNZ11 = function (options_setting) {
                 })
             }
         },
+        
         Noty :  function (param) {
             //
             var $this = new GNZ11();
@@ -860,6 +870,7 @@ window.GNZ11 = function (options_setting) {
             }
         },
         Fancybox : function () {
+            var $ = jQuery
             var $this = new GNZ11() ;
             var siteUrl = Joomla.getOptions('siteUrlsiteUrl' , '' ) ;
             if (  typeof $.fancyboxqqq === 'undefined' ) {
@@ -878,6 +889,7 @@ window.GNZ11 = function (options_setting) {
                             'background-size: 80px 25px;' +
                             '}';
                         // $this.__addCss(css);
+
                         resolve($.fancyboxqqq);
                     });
                 })
@@ -1574,7 +1586,9 @@ window.GNZ11 = function (options_setting) {
     setTimeout(function (){
         // Загрузка спрайта
         // wgnz11.loadSprite();
-        wgnz11.load.initSvg();
+
+        // TODO - Рвзобраться с запуском на сайтах без Joomla
+        // wgnz11.load.initSvg();
 
         window.wgnz11.loadJpro();
         document.dispatchEvent(new Event('GNZ11Loaded'));

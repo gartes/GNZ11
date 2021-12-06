@@ -371,12 +371,19 @@ this.onClickGalleryContainer = function (){
    [https://ned.im/noty](https://ned.im/noty/#/api)
  ```javascript
  var param = {
-   type: 'info',            // Тип сообщений - alert, success, warning, error, info/information
-   
-   layout:'bottomRight' ,   // Позиция вывода top, topLeft, topCenter, topRight, center, centerLeft, centerRight, 
-                            // bottom, bottomLeft, bottomCenter, bottomRight
-   
-   timeout : 10000  ,       // Время отображения
+    /**
+    * Тип сообщений - alert, success, warning, error, info/information
+    */
+    type: 'info',
+    /**
+    * Позиция вывода top, topLeft, topCenter, topRight,
+    * center, centerLeft, centerRight, bottom, bottomLeft, bottomCenter, bottomRight
+    */
+    layout:'bottomRight' ,
+    /**
+    * Время отображения
+    */
+    timeout : 10000  ,
 }
 self.__loadModul.Noty(param).then(function(Noty){
    Noty.options.text = 'Товар добавлен в Список желаний' ;

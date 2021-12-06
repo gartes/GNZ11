@@ -113,8 +113,8 @@ var GNZ11_Inputmask = function ( elSelector , Settings ) {
     }
 
     /**
-     * Добавить обвертку к маркеруемому полю
-     * @param elSelector str - селектрор поля
+     * Добавить обвертку к маркируемому полю
+     * @param elSelector str - селектор поля
      */
     this.addWrap = function (elSelector) {
         var wrp = $('<div />' , {

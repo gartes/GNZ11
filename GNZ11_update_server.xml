@@ -1,7 +1,7 @@
 <updates>
     <update>
         <name>Lib GNZ11 By Gartes</name>
-        <description>Lib GNZ11 Desc</description>
+        <description>Lib GNZ11 Desc 0.6.2</description>
         <type>library</type>
         <element>GNZ11</element>
         <version>0.6.2</version>

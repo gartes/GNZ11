@@ -41,7 +41,7 @@ window.GNZ11MiniMenu = function () {
     this.ParamsDefaultData = {
         // Медиа версия
         __v: '1.0.0',
-        // Режим разработки 
+        // Режим разработки
         development_on: false,
     }
 
@@ -67,11 +67,12 @@ window.GNZ11MiniMenu = function () {
      * @param menuHtml
      */
     this.createMenu = function ( btn , menuHtml ){
+        var $btn = $(btn) ;
         self.load.css(host + 'libraries/GNZ11/assets/js/modules/MiniMenu/MiniMenu.css').then(function (r){
-            var $btn = $(btn) ;
-            if ( $btn.data( 'expanded') ) return ;
-            $btn.data( 'expanded',true );
-            $btn.append( $(menuHtml) );
+            if ( $btn.closest('.mini_menu--expanded')[0] ) return;
+            $btn.addClass('mini_menu--expanded').append( $('<gnz11 class="context-menu context-menu-body"></gnz11>') );
+            $btn.find('gnz11.context-menu').append( $(menuHtml) )
+
             self.addBodyWaitClose();
         },function (err){console.log(err)});
     };
@@ -82,6 +83,8 @@ window.GNZ11MiniMenu = function () {
         var $body = $('body') ;
         $body.off('click.MiniMenuWait');
     };
+
+
     /**
      * После открытия клик по любому элементу кроме открытого меню
      * закрываем меню
@@ -112,11 +115,31 @@ window.GNZ11MiniMenu = function () {
     };
 
     /**
-     * Удалить Меню список действий у товара в списке
+     * Покси для закрытия меню
+     * @param $element
+     * @constructor
      */
-    this.onClickRemoveActionList = function (){
-        $(this).closest('button').data( 'expanded' , false );
-        $(this).closest('ul').remove();
+    this.Close = function ($element){
+        self.onClickRemoveActionList($element);
+    }
+
+    /**
+     * Удадление Контекстного Меню
+     * @param $element
+     * @return {boolean}
+     */
+    this.onClickRemoveActionList = function ($element){
+
+        let $e;
+        if ( $element )
+        {
+            $e = typeof $element.target === 'undefined' ? $( $element ) : $( $element.target )
+        }else{
+            $e = $('.context-menu.context-menu-body').children()
+        }
+
+        $e.closest('.mini_menu--expanded').removeClass('mini_menu--expanded');
+        $e.closest('.context-menu.context-menu-body').remove();
         self.removeBodyWaitClose();
         return false ;
     }
@@ -126,7 +149,7 @@ window.GNZ11MiniMenu = function () {
      */
     this.loadAssets = function (){
        console.log('gnz11.MiniMenu:loadAssets' , 'Загрузка ресурсов' );
-        
+
         var iconsArr = [
             '#icon-vertical-dots' ,// Вертикальные точки
             '#icon-trash', // Мусорная корзина

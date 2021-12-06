@@ -117,6 +117,8 @@ GNZ11Ajax = function () {
 
 
 
+
+
         return new Promise(function (succeed, fail) {
             var Options = Joomla.getOptions('GNZ11');
 
@@ -137,6 +139,10 @@ GNZ11Ajax = function () {
 
             // var Uri = siteUrl + admin + "index.php?"
             var Uri = window.location.pathname + '?' ;
+
+            if ( typeof paramsAjax.URL !== 'undefined' ){
+                Uri = paramsAjax.URL + '?' ;
+            }
 
             $.ajax({
                 type: paramsAjax.method,
