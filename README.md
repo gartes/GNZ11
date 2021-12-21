@@ -363,10 +363,6 @@ this.onClickGalleryContainer = function (){
  ###### bxSlider <a name="bxSlider"></a> (2021-12-21, 17:36)
  ```javascript
  Promise.all([
-    // wgnz11.load.css('/libraries/GNZ11/assets/js/modules/Slick/slick.css'),
-    // wgnz11.load.css('/libraries/GNZ11/assets/js/modules/Slick/slick-theme.css'),
-    // wgnz11.load.js('/libraries/GNZ11/assets/js/modules/Slick/slick.js'),
-    
     wgnz11.load.css('/libraries/GNZ11/assets/js/modules/Bxslider/4.2.15/jquery.bxslider.min.css'),
     /**
      * TODO При  использовании локальной версии - плохо работает драг
