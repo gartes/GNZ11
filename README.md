@@ -21,6 +21,7 @@
 1. [Модули.](#модули)<!-- @IGNORE PREVIOUS: link -->
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
     + [Fancybox](#Fancybox)<!-- @IGNORE PREVIOUS: link -->
+    + [bxSlider.](#bxSlider)
     + [Noty Сообщения](#notyСообщения)<!-- @IGNORE PREVIOUS: link -->
     + [Mini Menu.](#miniMenu)
       
@@ -150,11 +151,6 @@ $doc->addScriptOptions('Jpro' , $Jpro ) ;
 
 
 *********************************************************************************
-
-
-
-
-
 
 ## События GNZ11
 **GNZ11Loaded** - Библиотека загружена и готова к работе
@@ -295,7 +291,6 @@ wgnz11.__loadModul.Fancybox().then(function (Modal) {
 });
 ```
 
-
 Параметры :
 * baseClass - Класс основного элемента
 * touch  (смавхивание)
@@ -361,11 +356,385 @@ this.onClickGalleryContainer = function (){
 
 
 ```
-
-
-
-   [Содержание](#top)
+  [Содержание](#top)
    ***
+
+ 
+ ###### bxSlider <a name="bxSlider"></a> (2021-12-21, 17:36)
+ ```javascript
+ Promise.all([
+    // wgnz11.load.css('/libraries/GNZ11/assets/js/modules/Slick/slick.css'),
+    // wgnz11.load.css('/libraries/GNZ11/assets/js/modules/Slick/slick-theme.css'),
+    // wgnz11.load.js('/libraries/GNZ11/assets/js/modules/Slick/slick.js'),
+    
+    wgnz11.load.css('/libraries/GNZ11/assets/js/modules/Bxslider/4.2.15/jquery.bxslider.min.css'),
+    /**
+     * TODO При  использовании локальной версии - плохо работает драг
+     */
+    // wgnz11.load.js('/libraries/GNZ11/assets/js/modules/Bxslider/4.2.15/jquery.bxslider.min.js'),
+    wgnz11.load.js('https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.15/jquery.bxslider.min.js'),
+]).then(function (r) {
+    
+    $('.scrollbar__inner').bxSlider({
+        /**
+         * @see https://bxslider.com/options/
+         */
+        
+        /**
+         * ----------------------------
+         * + General -->> START
+         * ----------------------------
+         */
+        /**
+         * + General
+         * Тип перехода между слайдами
+         * 'horizontal', 'vertical', 'fade'
+         * default : 'horizontal'
+         */
+        mode: (window.outerWidth <= 1024 ? 'horizontal' : 'vertical' ),
+        /**
+         * + General
+         * Продолжительность перехода между слайдами (в мс)
+         * integer
+         * default : 500
+         */
+        // speed: 500,
+        /**
+         * + General
+         * Поле между слайдами
+         * integer
+         * default : 0
+         */
+        slideMargin: 0,
+        /**
+         * + General
+         * Начать слайдер на случайном слайде
+         * boolean
+         * default : false
+         */
+        // randomStart: false,
+        /**
+         * + General
+         * Элемент для использования в качестве слайдов (например, "div.slide").
+         * Примечание: по умолчанию bxSlider будет использовать всех непосредственных
+         * дочерних элементов элемента слайдера.
+         * jQuery selector
+         * default : ''
+         */
+        //slideSelector: '',
+        /**
+         * + General
+         * Если true, бесконечный слайдер .
+         * boolean
+         * default : true
+         */
+        infiniteLoop: false,
+        /**
+         * + General
+         * Если true, элементы управления «Prev» и «Next» получат отключенный класс, когда слайд является
+         * первым или последним.
+         * Примечание. Используется только при infiniteLoop: false.
+         * boolean
+         * default : false
+         */
+        // hideControlOnEnd : false ,
+        /**
+         * + General
+         * Тип «easing» для использования во время переходов.
+         * При использовании переходов CSS включите значение для свойства transition-time-function.
+         * Если переходы CSS не используются, вы можете включить plugins/jquery.easing.1.3.js для многих параметров.
+         * См. http://gsgd.co.uk/sandbox/jquery/easing/ для получения дополнительной информации.
+         *
+         *  if using CSS: 'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'cubic-bezier(n,n,n,n)'.
+         *  If not using CSS: 'swing', 'linear' (see the above file for more options)
+         * default : null
+         */
+        // easing : null ,
+        /**
+         * + General
+         * Включите подписи к изображениям.
+         * Подписи являются производными от атрибута title изображения.
+         * boolean
+         * default : false
+         */
+        // captions : false ,
+        /**
+         * + General
+         * (Бегущая строка) Используйте ползунок в режиме тикера (аналогично ленте новостей)
+         * boolean
+         * default : false
+         */
+        // ticker : false ,
+        /**
+         * + General
+         * Тикер приостанавливается при наведении курсора мыши на ползунок.
+         * Примечание: эта функция НЕ работает при использовании переходов CSS!
+         * boolean
+         * default : false
+         */
+        // tickerHover : false ,
+        /**
+         * + General
+         * Динамически регулируйте высоту слайдера в зависимости от высоты каждого слайда
+         * boolean
+         * default : false
+         */
+        // adaptiveHeight : false ,
+        /**
+         * + General
+         * Продолжительность смены высоты слайда (в мс).
+         * Примечание: используется только если adaptiveHeight: true
+         * integer
+         * default : 500
+         */
+        // adaptiveHeightSpeed : 500 ,
+        /**
+         * + General
+         * Если какие-либо слайды содержат видео, установите значение true.
+         * Также включите плагины / jquery.fitvids.js
+         * См. Http://fitvidsjs.com/ для получения дополнительной информации.
+         * boolean
+         * default : false
+         */
+        // video : false ,
+        /**
+         * + General
+         * Включите или отключите автоматическое изменение размера слайдера.
+         * Полезно, если вам нужно использовать слайдеры фиксированной ширины.
+         * boolean
+         * default : true
+         */
+        responsive : false ,
+        /**
+         * + General
+         * Если true, переходы CSS будут использоваться для горизонтальной и вертикальной анимации слайдов
+         * (при этом используется собственное аппаратное ускорение).
+         * Если false, будет использоваться jQuery animate ().
+         * boolean
+         * default : true
+         */
+        // useCSS : true ,
+        /**
+         * + General
+         * Если «all», предварительно загружает все изображения перед запуском слайдера.
+         * Если "visible", предварительно загружает только изображения на изначально видимых слайдах
+         * перед запуском слайдера (совет: используйте "видимый", если все слайды имеют одинаковые размеры)
+         * 'all', 'visible'
+         * default : 'visible'
+         */
+        // preloadImages : 'visible' ,
+        /**
+         * + General
+         * Если true, переходы при касании.
+         * boolean
+         * default : true
+         */
+        // touchEnabled : true ,
+        /**
+         * + General
+         * Если true, сенсорный экран не будет перемещаться по оси x при смахивании пальцем.
+         * boolean
+         * default : true
+         */
+        // preventDefaultSwipeX : true ,
+        /**
+         * + General
+         * Если true, сенсорный экран не будет перемещаться по оси Y при смахивании пальцем.
+         * boolean
+         * default : false
+         */
+        // preventDefaultSwipeY : false ,
+        /**
+         * + General
+         * Класс для обертывания ползунка.
+         * Измените, чтобы запретить использование стилей bxSlider по умолчанию.
+         * string
+         * default : 'bx-wrapper'
+         */
+        // wrapperClass : 'bx-wrapper' ,
+        /**
+         * ----------------------------
+         * + General -->> END
+         * ----------------------------
+         */
+        
+        /**
+         * + Pager
+         * Если true, будет добавлены точки навигации
+         * boolean
+         * default : true
+         */
+        pager:false ,
+        
+        /**
+         * + Auto
+         * Слайды автоматически переходят
+         * boolean
+         * default : false
+         */
+        auto:false,
+        
+        
+        /**
+         * ----------------------------
+         * + Carousel -->> START
+         * ----------------------------
+         */
+        /**
+         * + Carousel
+         * Минимальное количество слайдов для показа.
+         * Размер слайдов будет уменьшен, если размер карусели станет меньше исходного.
+         * integer
+         * default : 1
+         */
+        minSlides: 3,
+        /**
+         * + Carousel
+         * Максимальное количество слайдов для показа.
+         * Слайды будут увеличены, если карусель станет больше исходного размера.
+         * integer
+         * default : 1
+         */
+        maxSlides: (window.outerWidth <= 1024 ? 3 : 1 ),
+        /**
+         * + Carousel
+         * Количество слайдов, которые нужно переместить при переходе.
+         * Это значение должно быть >= minSlides и <= maxSlides.
+         * Если ноль (по умолчанию), будет использовано количество полностью видимых слайдов.
+         * integer
+         * default : 0
+         */
+        moveSlides : 1,
+        /**
+         * + Carousel
+         * Ширина каждого слайда.
+         * Эта настройка обязательна для всех горизонтальных каруселей!
+         * integer
+         * default : 0
+         */
+        slideWidth : (window.outerWidth <= 1024 ? 350 : 0 ) ,
+        /**
+         * + Carousel
+         * Карусель будет показывать только целые элементы и сжимать изображения,
+         * чтобы они соответствовали области просмотра на основе maxSlides / minSlides.
+         * boolean
+         * default : false
+         */
+        shrinkItems : true ,
+      
+        /**
+         * ----------------------------
+         * + Carousel -->> END
+         * ----------------------------
+         */
+        
+        
+        
+        
+        
+        
+        /**
+         * ----------------------------
+         * + Controls -->> START
+         * ----------------------------
+         */
+        /**
+         * + Controls
+         * Если true, будут добавлены элементы управления "Далее" / "Назад".
+         * boolean
+         * default : true
+         */
+        controls:true,
+        /**
+         * + Controls
+         * Текст, который будет использоваться для элемента управления «Далее»
+         * string
+         * default : 'Next'
+         */
+        nextText : 'Next' ,
+        /**
+         * + Controls
+         * Текст, который будет использоваться для элемента управления "Назад"
+         * string
+         * default : 'Prev'
+         */
+        prevText : 'Prev' ,
+        /**
+         * + Controls
+         * Элемент, используемый для заполнения элемента управления «Next»
+         * jQuery selector
+         * default : null
+         */
+        nextSelector : null ,
+        /**
+         * + Controls
+         * Элемент, используемый для заполнения элемента управления "Prev"
+         * jQuery selector
+         * default : null
+         */
+        prevSelector : null ,
+        /**
+         * + Controls
+         * Если true, будут добавлены элементы управления "Start" / "Stop".
+         * boolean
+         * default : false
+         */
+        autoControls : false ,
+        /**
+         * + Controls
+         * Текст, который будет использоваться для элемента управления "Start"
+         * string
+         * default : 'Start'
+         */
+        startText : 'Start' ,
+        /**
+         * + Controls
+         * Текст, который будет использоваться для элемента управления "Stop"
+         * string
+         * default : 'Stop'
+         */
+        stopText : 'Stop' ,
+        /**
+         * + Controls
+         * При воспроизведении слайд-шоу отображается только элемент управления «Stop» и наоборот.
+         * boolean
+         * default : false
+         */
+        autoControlsCombine : false ,
+        /**
+         * + Controls
+         * Элемент, используемый для заполнения автоматических элементов управления
+         * jQuery selector
+         * default : null
+         */
+        autoControlsSelector : null ,
+        /**
+         * + Controls
+         * Включить навигацию с клавиатуры для видимых слайдеров
+         * boolean
+         * default : false
+         */
+        keyboardEnabled : false ,
+        /**
+         * ----------------------------
+         * + Controls -->> END
+         * ----------------------------
+         */
+        
+        
+        onSliderLoad : function ( currentIndex ){
+            $( '.thumbnail__link' ).on('mousedown', function(){
+                console.log('Hello Word');
+            })
+        },
+    
+    });
+
+
+})
+ ```
+ [Содержание](#top)
+ ***
 
    ### Noty Сообщения <a name="notyСообщения"></a> (2021-04-18, 21:4)
    [https://ned.im/noty](https://ned.im/noty/#/api)
