@@ -124,7 +124,7 @@ catch( Exception $e )
 {
     if( !\Joomla\CMS\Filesystem\Folder::exists( $this->patchGnz11 ) && $this->app->isClient('administrator') )
     {
-        $this->app->enqueueMessage('Должна быть установлена библиотека GNZ11' , 'error');
+        $this->app->enqueueMessage('The GNZ11 library must be installed' , 'error');
     }#END IF
 }
 ?>
