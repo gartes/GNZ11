@@ -58,6 +58,9 @@
 
         /**
          * Транслетирация строки
+         *
+         * @use $valueCustomTranslite = \GNZ11\Document\Text::rus2translite($valueCustom) ;
+         *
          * @param $string
          *
          * @return string
