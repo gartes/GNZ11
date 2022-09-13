@@ -6,6 +6,9 @@
 
 ## Содержание
  
+-----------------------------------  
+
+
 1. [Javascript and jQuery.](#JavascriptjQuery)
     + [Text - текстовые операции в JS.](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
