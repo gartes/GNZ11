@@ -90,9 +90,9 @@ GNZ11Ajax = function () {
      */
 
     /**
-     *
-     * @param obj
-     * @param namespace
+     * Отправить AJAX запрос
+     * @param obj - Объект с данными
+     * @param namespace - пространства имен будет добавлен к URL
      * @param params
      * @returns {Promise<unknown>}
      */
@@ -101,6 +101,7 @@ GNZ11Ajax = function () {
 
         var paramsDef = {
             method : 'POST' ,
+            dataType : 'json' ,
             Loader : self.Loader ,
         };
 
@@ -108,14 +109,12 @@ GNZ11Ajax = function () {
             self._startLoader();
         }
 
-
         var paramsAjax = Joomla.extend(paramsDef , params ) ;
+        // console.log( paramsAjax );
 
         if ( paramsAjax.Loader ){
 
         }
-
-
 
 
 
@@ -141,13 +140,27 @@ GNZ11Ajax = function () {
             var Uri = window.location.pathname + '?' ;
 
             if ( typeof paramsAjax.URL !== 'undefined' ){
-                Uri = paramsAjax.URL + '?' ;
+
+                // console.log( paramsAjax.URL.indexOf('?') );
+                
+                if ( paramsAjax.URL.indexOf('?') !== -1 ){
+                    Uri = paramsAjax.URL + '&' ;
+                }else{
+                    Uri = paramsAjax.URL + '?' ;
+                }
+                // console.log(  paramsAjax.URL );
+
+
             }
+
+            // console.log( paramsAjax );
+            // console.log( Uri );
+
 
             $.ajax({
                 type: paramsAjax.method,
                 cache: false,
-                dataType: "json",
+                dataType: typeof paramsAjax.dataType !== 'undefined' ? paramsAjax.dataType : "json" ,
                 timeout: "20000",
                 url: Uri
                     + (typeof namespace !== 'undefined' ? "namespace=" + namespace + '&' : '')

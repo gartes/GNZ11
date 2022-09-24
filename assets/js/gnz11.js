@@ -28,7 +28,7 @@ if(!window.console)var console={trace:function(){},info:function(){},log:functio
 // Browser Support IE8+, Chrome, Firefox, IOS 4+, Safari 5+, Opera
 // https://www.npmjs.com/package/promise-polyfill
 
-console.log('gnz11:->document.createElement >>> ' , document.createElement );
+// console.log('gnz11:->document.createElement >>> ' , document.createElement );
 
 Joomla = window.Joomla || {};
 Jpro = window.Jpro || {};
@@ -111,7 +111,7 @@ Jpro = window.Jpro || {};
         return destination;
     };
 
-    console.log('gnz11:->Joomla >>> ' , Joomla );
+    // console.log('gnz11:->Joomla >>> ' , Joomla );
 
     Joomla.loadOptions();
 
@@ -209,7 +209,7 @@ window.GNZ11 = function (options_setting) {
         if ( typeof options_setting === 'undefined') options_setting = {} ;
         self.WGNZ11INIT_OPTS = Object.assign({}  , self._defaults , options_setting  );
 
-        console.log('gnz11:WGNZ11INIT->this._siteUrl >>> ' , this._siteUrl );
+        //  console.log('gnz11:WGNZ11INIT->this._siteUrl >>> ' , this._siteUrl );
 
 
 
