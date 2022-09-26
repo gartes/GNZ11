@@ -134,7 +134,7 @@ catch( Exception $e )
 ```
 ```php
 /**
-* Добавить в отложенную загрузку файлы рессурсов ( CSS or JS )
+* Добавить в отложенную загрузку файлы ресурсов ( CSS or JS )
 * @param $Assets   string Url - ресурса
 * @param $Callback string|null Callback после загрузки ( для JS файлов )
 * @param bool $Trigger string  Trigger - для ожидания загрузки
