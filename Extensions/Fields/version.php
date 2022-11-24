@@ -62,7 +62,6 @@ class JFormFieldVersion extends JFormField {
     public function getInput() {
 
         $xml_file = JPATH_ROOT .  $this->element['path_xml'] ;
-
         $dom = new DOMDocument("1.0", "utf-8");
         $dom->load($xml_file);
         $version = $dom->getElementsByTagName('version')->item(0)->textContent;

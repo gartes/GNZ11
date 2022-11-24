@@ -57,7 +57,7 @@
         }
 
         /**
-         * Транслетирация строки
+         * Транслитерация строки
          *
          * @use $valueCustomTranslite = \GNZ11\Document\Text::rus2translite($valueCustom) ;
          *
@@ -67,7 +67,7 @@
          *
          * @since version
          */
-        public static function rus2translite ( $string )
+        public static function rus2translite ( $string ): string
         {
             $converter = array(
                 'а' => 'a', 'б' => 'b', 'в' => 'v',

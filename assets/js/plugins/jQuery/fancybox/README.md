@@ -2,15 +2,15 @@
 [Home](https://github.com/gartes/GNZ11/blob/master/README.md#%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5)
 
 ### Содержание
-
+1. [Option](#Option)
+2. [Version](#Version)
 -----------------------------------
 
 -----------------------------------
 
 
 
-
-### Опции 
+### <a name="#Option"></a> Option
 ```javascript
 baseClass : "quickorderForm"    // Класс оновного элемента
 touch : false ,                 // полностью отключить сенсорные жесты (смавхивание) default : true
@@ -42,10 +42,13 @@ self.__loadModul.Fancybox().then(function (Modal) {
 });
 ```
 
-[Version](#Version)
-### <a name="#Version"></a> Version 
+ 
 
+### <a name="#Version"></a> Version 
+ 
 - 0.6.4 - Добавлена поддержка Joomla SubForm Repeatable при создании модального окно если в нем находиться SubForm
   Repeatable она будет автоматически запущена
 
-[Содержание](#top)
+[В начало](#top) <hr>
+
+ 

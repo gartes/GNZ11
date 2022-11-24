@@ -3,7 +3,7 @@
 
 ## Instal : 
 1. Joomla : https://github.com/gartes/GNZ11/archive/master.zip
-
+ 
 ## Содержание
  
 -----------------------------------  
@@ -13,33 +13,26 @@
     + [Text - текстовые операции в JS.](#JavascriptjQueryText)
     + [Отложенная загрузка ресурсов из js.](#JavascriptjQueryLoad)
  
-
-1. [\GNZ11\Document\Text  текстовые операции .](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)
-    
-      
-1. [Плагины]()
+2. [\GNZ11\Document\Text  текстовые операции .](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)
+   
+3. [Плагины]()
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox) 
-    +  [Noty Сообщения.](#notyСообщения)
+    + [Noty Сообщения.](#notyСообщения)
 
-1. [Модули.](#модули)<!-- @IGNORE PREVIOUS: link -->
+4. [Модули.](#модули)<!-- @IGNORE PREVIOUS: link -->
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
     + [Fancybox](#Fancybox)<!-- @IGNORE PREVIOUS: link -->
     + [bxSlider.](#bxSlider)
     + [Noty Сообщения](#notyСообщения)<!-- @IGNORE PREVIOUS: link -->
     + [Mini Menu.](#miniMenu)
-      
-
-   + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
-
-1. [Joomla](Joomla)
-1. [Core](Core)
+    + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
+5. [Joomla](Joomla)
+6. [Core](Core)
     + [Backup](Core\Backup)
     + [Joomla\com_jshopping](Core\Backup\Joomla\com_jshopping)<!-- @IGNORE PREVIOUS: link -->
-1. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md) 
-    +
- 
- 
- [Содержание](#top)
+7. [Document](https://github.com/gartes/GNZ11/blob/master/Document/DOCUMENT-README.md) 
+
+[Содержание](#top)
  ***
 **************************************************
 ## <a name="Core"></a> Core
@@ -173,7 +166,7 @@ document.addEventListener('GNZ11Loaded', function () {
 ```javascript
 wgnz11.getPlugin('Inputmask' , {} );
 ```
-список доступных плагинов :
+Список доступных плагинов:
 * Inputmask
 
 ## Плагины

@@ -308,7 +308,7 @@
         afterLoad: $.noop, // When the content of a slide is done loading
 
         beforeShow: $.noop, // Before open animation starts
-        afterShow: $.noop, // When content is done loading and animating
+        afterShow: $.noop, // Когда содержимое загружено и анимируется / When content is done loading and animating
 
         beforeClose: $.noop, // Before the instance attempts to close. Return false to cancel the close.
         afterClose: $.noop, // After instance has been closed
@@ -588,6 +588,7 @@
                 $("body").addClass("compensate-for-scrollbar");
             }
 
+            // Создайте html-разметку и установите ссылки
             // Build html markup and set references
             // ====================================
 
@@ -629,12 +630,14 @@
 
             // Build slides, load and reveal content
             self.jumpTo(self.currIndex);
+            
+            // console.log( 'jquery.fancybox' , $container );
+
         },
 
-        // Simple i18n support - replaces object keys found in template
-        // with corresponding values
+        // Простая поддержка i18n - заменяет ключи объекта, найденные в шаблоне, соответствующими значениями.
+        // Simple i18n support - replaces object keys found in template  with corresponding values
         // ============================================================
-
         translate: function (obj, str) {
             var arr = obj.opts.i18n[obj.opts.lang] || obj.opts.i18n.en;
 
@@ -643,10 +646,11 @@
             });
         },
 
+        // Наполнить текущую группу свежим контентом
+        // Проверяем, имеет ли каждый объект допустимый тип и содержимое
         // Populate current group with fresh content
         // Check if each object has valid type and content
         // ===============================================
-
         addContent: function (content) {
             var self = this,
                 items = $.makeArray(content),
@@ -867,7 +871,6 @@
         //   - keyboard
         //   - detecting inactivity
         // ======================================
-
         addEvents: function () {
             var self = this;
 
@@ -1013,7 +1016,6 @@
 
         // Remove events added by the core
         // ===============================
-
         removeEvents: function () {
             var self = this;
 
@@ -1031,21 +1033,18 @@
 
         // Change to previous gallery item
         // ===============================
-
         previous: function (duration) {
             return this.jumpTo(this.currPos - 1, duration);
         },
 
         // Change to next gallery item
         // ===========================
-
         next: function (duration) {
             return this.jumpTo(this.currPos + 1, duration);
         },
 
         // Switch to selected gallery item
         // ===============================
-
         jumpTo: function (pos, duration) {
             var self = this,
                 groupLen = self.group.length,
@@ -1225,7 +1224,6 @@
         // Create new "slide" element
         // These are gallery items  that are actually added to DOM
         // =======================================================
-
         createSlide: function (pos) {
             var self = this,
                 $slide,
@@ -1252,7 +1250,6 @@
         // Scale image to the actual size of the image;
         // x and y values should be relative to the slide
         // ==============================================
-
         scaleToActual: function (x, y, duration) {
             var self = this,
                 current = self.current,
@@ -1338,7 +1335,6 @@
 
         // Scale image to fit inside parent element
         // ========================================
-
         scaleToFit: function (duration) {
             var self = this,
                 current = self.current,
@@ -1373,7 +1369,6 @@
 
         // Calculate image size to fit inside viewport
         // ===========================================
-
         getFitPos: function (slide) {
             var self = this,
                 $content = slide.$content,
@@ -1447,7 +1442,6 @@
 
         // Update content size and position for all slides
         // ==============================================
-
         update: function (e) {
             var self = this;
 
@@ -1458,7 +1452,6 @@
 
         // Update slide content position and size
         // ======================================
-
         updateSlide: function (slide, e) {
             var self = this,
                 $content = slide && slide.$content,
@@ -1500,7 +1493,6 @@
 
         // Horizontally center slide
         // =========================
-
         centerSlide: function (duration) {
             var self = this,
                 current = self.current,
@@ -1544,7 +1536,6 @@
 
         // Check if current slide is moved (swiped)
         // ========================================
-
         isMoved: function (slide) {
             var current = slide || this.current,
                 slidePos,
@@ -1565,7 +1556,6 @@
 
         // Update cursor style depending if content can be zoomed
         // ======================================================
-
         updateCursor: function (nextWidth, nextHeight) {
             var self = this,
                 current = self.current,
@@ -1601,7 +1591,6 @@
 
         // Check if current slide is zoomable
         // ==================================
-
         isZoomable: function () {
             var self = this,
                 current = self.current,
@@ -1627,7 +1616,6 @@
 
         // Check if current image dimensions are smaller than actual
         // =========================================================
-
         isScaledDown: function (nextWidth, nextHeight) {
             var self = this,
                 rez = false,
@@ -1646,7 +1634,6 @@
 
         // Check if image dimensions exceed parent element
         // ===============================================
-
         canPan: function (nextWidth, nextHeight) {
             var self = this,
                 current = self.current,
@@ -1675,7 +1662,6 @@
 
         // Load content into the slide
         // ===========================
-
         loadSlide: function (slide) {
             var self = this,
                 type,
@@ -1775,7 +1761,6 @@
 
         // Use thumbnail image, if possible
         // ================================
-
         setImage: function (slide) {
             var self = this,
                 ghost;
@@ -1898,7 +1883,6 @@
 
         // Create full-size image
         // ======================
-
         setBigImage: function (slide) {
             var self = this,
                 img = document.createElement("img"),
@@ -1957,7 +1941,6 @@
 
         // Computes the slide size from image size and maxWidth/maxHeight
         // ==============================================================
-
         resolveImageSlideSize: function (slide, imgWidth, imgHeight) {
             var maxWidth = parseInt(slide.opts.width, 10),
                 maxHeight = parseInt(slide.opts.height, 10);
@@ -1979,7 +1962,6 @@
 
         // Create iframe wrapper, iframe and bindings
         // ==========================================
-
         setIframe: function (slide) {
             var self = this,
                 opts = slide.opts.iframe,
@@ -2087,7 +2069,6 @@
 
         // Wrap and append content to the slide
         // ======================================
-
         setContent: function (slide, content) {
             var self = this;
 
@@ -2201,7 +2182,6 @@
 
         // Display error message
         // =====================
-
         setError: function (slide) {
             slide.hasError = true;
 
@@ -2221,7 +2201,6 @@
 
         // Show loading icon inside the slide
         // ==================================
-
         showLoading: function (slide) {
             var self = this;
 
@@ -2237,7 +2216,6 @@
 
         // Remove loading icon from the slide
         // ==================================
-
         hideLoading: function (slide) {
             var self = this;
 
@@ -2252,7 +2230,6 @@
 
         // Adjustments after slide content has been loaded
         // ===============================================
-
         afterLoad: function (slide) {
             var self = this;
 
@@ -2303,7 +2280,6 @@
         // Prevent caption overlap,
         // fix css inconsistency across browsers
         // =====================================
-
         adjustCaption: function (slide) {
             var self = this,
                 current = slide || self.current,
@@ -2339,7 +2315,6 @@
         // Simple hack to fix inconsistency across browsers, described here (affects Edge, too):
         // https://bugzilla.mozilla.org/show_bug.cgi?id=748518
         // ====================================================================================
-
         adjustLayout: function (slide) {
             var self = this,
                 current = slide || self.current,
@@ -2378,7 +2353,6 @@
         // This method is called right after content has been loaded or
         // user navigates gallery and transition should start
         // ============================================================
-
         revealContent: function (slide) {
             var self = this,
                 $slide = slide.$slide,
@@ -2502,7 +2476,6 @@
 
         // Check if we can and have to zoom from thumbnail
         //================================================
-
         getThumbPos: function (slide) {
             var rez = false,
                 $thumb = slide.$thumb,
@@ -2535,10 +2508,9 @@
             return thumbPos.width > 0 && thumbPos.height > 0 ? rez : false;
         },
 
-        // Final adjustments after current gallery item is moved to position
-        // and it`s content is loaded
+        // Окончательные корректировки после перемещения текущего элемента галереи на позицию и его содержимое загружено
+        // Final adjustments after current gallery item is moved to position and it`s content is loaded
         // ==================================================================
-
         complete: function () {
             var self = this,
                 current = self.current,
@@ -2567,7 +2539,6 @@
                         slides[slide.pos] = slide;
                     } else if (slide) {
                         $.fancyboxqqq.stop(slide.$slide);
-
                         slide.$slide.off().remove();
                     }
                 });
@@ -2612,11 +2583,40 @@
 
             // Avoid jumping
             current.$slide.scrollTop(0).scrollLeft(0);
+            self.initSubFormRepeatable( current );
+
+            
+        },
+        // Поддержка Joomla SubFormRepeatable в модальном окне
+        // ==================================================================
+        initSubFormRepeatable : function ( current ){
+           var $subform =  $(current.$content).find('div.subform-repeatable')
+           if ( !$subform[0] ) return ;
+           if( jQuery.fn.subformRepeatable !== 'undefined') {
+               var _load = [
+                   wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/jquery.ui.core.min.js'),
+                   wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/external/sortable/jquery.ui.sortable.min.js') ,
+                   wgnz11.load.js('/libraries/GNZ11/assets/js/modules/gnz11.SubformRepeatable.js') ,
+                   wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/external/sortable/sortablelist.css') ,
+               ];
+               Promise.all(_load).then(function (r) {
+                   initSubformRepeatable()
+               },function (err) {  console.log( 'jquery.fancybox' , err ); })
+
+           }else{
+               initSubformRepeatable()
+           }
+           function initSubformRepeatable() {
+               $subform.subformRepeatable();
+           }
+           console.log( 'jquery.fancybox' , '-- Установлена поддержка ' ); 
+            
+
+
         },
 
         // Preload next and previous slides
         // ================================
-
         preload: function (type) {
             var self = this,
                 prev,
@@ -2638,9 +2638,9 @@
             }
         },
 
+        // Попробуйте найти и сфокусироваться на первом фокусируемом элементе. /
         // Try to find and focus on the first focusable element
         // ====================================================
-
         focus: function (e, firstRun) {
             var self = this,
                 focusableStr = [
@@ -2702,10 +2702,11 @@
             }
         },
 
+        // Активирует текущий экземпляр — выводит контейнер на передний план и включает клавиатуру,
+        // уведомляет другие экземпляры о деактивации
         // Activates current instance - brings container to the front and enables keyboard,
         // notifies other instances about deactivating
         // =================================================================================
-
         activate: function () {
             var self = this;
 
@@ -2739,7 +2740,6 @@
         // Start closing procedure
         // This will start "zoom-out" animation if needed and clean everything up afterwards
         // =================================================================================
-
         close: function (e, d) {
             var self = this,
                 current = self.current,
@@ -2834,7 +2834,7 @@
                 // Check if we need to animate opacity
                 opacity = current.opts.zoomOpacity;
 
-                if (opacity == "auto") {
+                if (opacity === "auto") {
                     opacity = Math.abs(current.width / current.height - end.width / end.height) > 0.1;
                 }
 
@@ -3775,6 +3775,8 @@
 
     $(document).on({
         "afterShow.fb": function (e, instance, current) {
+            console.log( 'jquery.fancybox' , current );
+            
             if (instance.group.length > 1 && (current.contentSource === "youtube" || current.contentSource === "vimeo")) {
                 VideoAPILoader.load(current.contentSource);
             }
@@ -4868,6 +4870,7 @@
         },
 
         "afterShow.fb": function (e, instance, current) {
+
             var SlideShow = instance && instance.SlideShow;
 
             if (SlideShow && SlideShow.isActive) {

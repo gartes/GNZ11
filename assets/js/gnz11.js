@@ -301,12 +301,7 @@ window.GNZ11 = function (options_setting) {
 
         // Function which returns a function: https://davidwalsh.name/javascript-functions
         function _load(tag) {
-
-
             return function ( url , media ) {
-
-
-
 
                 // This promise will be used by Promise.all to determine success or failure
                 return new Promise(function(resolve, reject) {
