@@ -249,8 +249,10 @@ fancybox, вероятно, самый популярный в мире скри
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (Modal) {
    Modal.open(html, {
-      baseClass: "gjContactPhones", // Класс основного элемента 
-      touch: false, 				 // полностью отключить сенсорные жесты default : true
+       // Класс основного элемента 
+       baseClass: "gjContactPhones",
+       // полностью отключить сенсорные жесты default : true
+       touch: false, 				 
 
       // Эффект перехода между слайдами false - disable
       // "fade" "slide" "circular" "tube" "zoom-in-out" "rotate"
