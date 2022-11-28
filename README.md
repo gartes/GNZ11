@@ -251,6 +251,8 @@ wgnz11.__loadModul.Fancybox().then(function (Modal) {
    Modal.open(html, {
        // Класс основного элемента 
        baseClass: "gjContactPhones",
+       // предотвращает закрытие при нажатии overlay fancybox(v3) default : true
+       clickSlide : false,
        // полностью отключить сенсорные жесты default : true
        touch: false, 				 
 
