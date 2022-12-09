@@ -646,14 +646,6 @@ window.GNZ11 = function (options_setting) {
         var returnModule ;
 
 
-
-
-        // console.log('gnz11:getModul' , typeof Module );
-        // console.log('gnz11:getModul window.moduleName' , window[moduleName] );
-        // console.log('gnz11:getModul typeof moduleName' , typeof window[moduleName] );
-        // console.log('gnz11:getModul' , typeof Storage_class );
-        // console.log('gnz11:getModul' ,   Module );
-
         //
         // Если модуль еще не был загружен
         if ( typeof Module !== "function" || typeof moduleName !== "function"  ) {
@@ -725,7 +717,7 @@ window.GNZ11 = function (options_setting) {
         }
     };
     /**
-     * Загрузка елементов API
+     * Загрузка элементов API
      * @param classApi
      * @param nameApi str Имя API  e.t. NovaPoshta
      * @param options obj ?????
@@ -1014,6 +1006,84 @@ window.GNZ11 = function (options_setting) {
             },100)
         });
     };
+
+    /**
+     * Парсим сообщения из ответа APP - и вывод в Noty
+     * для переопределения стандартного в метод this.Init добавить :
+     *  - Joomla.renderMessages = self.renderMessages
+     *  для переопределения за пределами obj
+     *  - Joomla.renderMessages = PlgVmshipmentVmsdekCore.renderMessages
+     *
+     * @param messages - obj - c массивами сообщений от App
+     * @param debug
+     */
+    this.renderMessages = function (messages , debug ) {
+        if (typeof debug === "undefined") debug = false ;
+        // Типы сообщений Joomla
+        var TypesJoomla = ['error', 'message', 'notice', 'warning',];
+
+        self.__loadModul.Noty({}).then(function () {
+            var TypesMes, mess, indexTypesJoomla = 0;
+            render();
+
+            function render() {
+                TypesMes = TypesJoomla[indexTypesJoomla];
+                if (!messages.hasOwnProperty(TypesMes) && indexTypesJoomla < TypesJoomla.length - 1) {
+                    indexTypesJoomla++;
+                    render();
+                    return;
+                }
+                if (messages[TypesMes].length){
+                    printNoty(messages[TypesMes]);
+                }
+
+            }
+            // Собрать из массива сообщений строку
+            function printNoty(mess) {
+                if (typeof mess === "undefined") return ;
+                var _nType,
+                    messageWrapper = ''
+                ;
+                // Add messages to the message box
+                for (var i = mess.length - 1; i >= 0; i--) {
+                    messageWrapper += mess[i] + "<br>\n";
+                }
+
+                switch (TypesMes) {
+                    case 'notice':
+                        // _nType = 'alert';
+                        // _nType = 'success';
+                        _nType = 'info';
+                        break;
+                    case 'warning':
+                        _nType = 'warning'
+                        break;
+                    case 'error':
+                        _nType = 'error'
+                        break;
+                    default :
+                        _nType = 'success'
+                }
+                new window.Noty({
+                    type: _nType,
+                    text: (!debug?'': TypesMes + ' => ') + messageWrapper,
+                    layout: 'bottomRight',
+                    timeout: 8000,
+                }).show();
+
+                if (indexTypesJoomla < TypesJoomla.length - 1) {
+                    indexTypesJoomla++;
+                    setTimeout(render, 1000)
+                }
+            }
+        })
+    }
+
+
+
+
+
+
     /**
      * Вывод отладочной информации
      * Перед использованием включаем отладку для объекта wgnz11
@@ -1322,11 +1392,6 @@ window.GNZ11 = function (options_setting) {
 
 
 
-
-
-
-
-
     /**
      * Обекты ---------------------------------------------------------------------------------------------------
      *
@@ -1361,7 +1426,6 @@ window.GNZ11 = function (options_setting) {
             return basename.slice(pos + 1);            // extract extension ignoring `.`
         }
     }
-
     /**
      * Обект работы с текстом
      */
@@ -1591,27 +1655,6 @@ window.GNZ11 = function (options_setting) {
 
 
 })();
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*//*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*//*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
-/*===========================================================*/
 /*===========================================================*//*===========================================================*/
 /*===========================================================*/
 /*===========================================================*/

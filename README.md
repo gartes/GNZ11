@@ -284,7 +284,7 @@ wgnz11.__loadModul.Fancybox().then(function (Modal) {
       // Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
       beforeClose: function () {
       },
-      // После того, как экземпляр был закрыт
+      // После того как экземпляр был закрыт 
       afterClose: function () {
       },
    });

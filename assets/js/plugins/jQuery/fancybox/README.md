@@ -24,7 +24,7 @@ beforeShow   : function(instance, current)   {},    // Перед началом
 afterShow   : function(instance, current)   {},     // Когда контент загружен и анимирован
 
 beforeClose  : function () {},                      // Прежде чем экземпляр пытается закрыть. Верните false, чтобы отменить закрытие.
-afterClose  : function () {},                       // После того, как экземпляр был закрыт
+afterClose  : function () {},                       // После того как экземпляр был закрыт
 
 onInit  : function () {},                           // Когда экземпляр был инициализирован
 onActivate  : function () {},                       // Когда экземпляр вынесен на фронт
