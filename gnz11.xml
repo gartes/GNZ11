@@ -3,12 +3,12 @@
     <name>GNZ11</name>
     <libraryname>GNZ11</libraryname>
     <author>Gartes</author>
-    <creationDate>24.11.22-11:29</creationDate>
+    <creationDate>09.12.22-16:04</creationDate>
     <copyright>2021 (C) Gartes</copyright>
     <license>GNU/GPLv3</license>
     <authorEmail>sad.net79@gmail.com</authorEmail>
     <authorUrl>https://github.com/gartes/GNZ11#readme</authorUrl>
-    <version>0.6.5</version>
+    <version>0.6.6</version>
     <debug>1</debug>
     <description>Library GN-z11 by Gartes</description>
     <files>
