@@ -210,7 +210,7 @@ var Settings = {
 
 
  ***
-   ### Ajax <a name="ajax"></a>
+### Ajax <a name="ajax"></a>
 ```javascript
 /*
 AjaxDefaul для плагина
@@ -225,15 +225,13 @@ this.AjaxDefaultData = {
 
 
 wgnz11.getModul("Ajax").then(function (Ajax) {
-    var DATA = {
-        param1 : 'test1',
-        param2 : 'test2',
-    }
-    var requestData = $.extend(true, self.AjaxDefaultData, DATA );
-    // Не обрабатывать сообщения
-    Ajax.ReturnRespond = true ;
+    var DATA = JSON.parse(JSON.stringify( self.AjaxDefaultData ));
+    DATA.param1 = 'test1';
+    DATA.param2 = 'test2';
     // Отправить запрос 
     Ajax.send(requestData).then(function (r) {
+        // Noty Render Messages
+        self.renderMessages(r.messages)
         console.log(r)
     },function(err) {
         console.error(err)
