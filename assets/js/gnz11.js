@@ -1033,7 +1033,7 @@ window.GNZ11 = function (options_setting) {
                     render();
                     return;
                 }
-                if (messages[TypesMes].length){
+                if ( typeof messages[TypesMes] !== 'undefined' &&  messages[TypesMes].length){
                     printNoty(messages[TypesMes]);
                 }
 
@@ -1078,11 +1078,6 @@ window.GNZ11 = function (options_setting) {
             }
         })
     }
-
-
-
-
-
 
     /**
      * Вывод отладочной информации
@@ -1143,47 +1138,58 @@ window.GNZ11 = function (options_setting) {
             return null;
         }*/
     };
-    // radio btn - init
-    this.checkBoxRadioInit = function  (){
-        var $=jQuery;
-        // Turn radios into btn-group
-        $('.radio.btn-group label').addClass('btn');
 
-        $('fieldset.btn-group').each(function() {
+
+    /**
+     * Init radio Input btn - yes no
+     * @param parenEl - Родительский элемент
+     */
+    this.checkBoxRadioInit = function  (parenEl){
+        if (typeof parenEl === 'undefined' ){
+            parenEl = document
+        }
+        // Turn radios into btn-group
+        $(parenEl).find('.radio.btn-group label').addClass('btn')
+
+        var $fieldsetBtnGroup = $(parenEl).find('fieldset.btn-group')
+        $fieldsetBtnGroup.each(function() {
             // Handle disabled, prevent clicks on the container, and add disabled style to each button
             if ($(this).prop('disabled')) {
                 $(this).css('pointer-events', 'none').off('click');
                 $(this).find('.btn').addClass('disabled');
             }
         });
-
-        $(".btn-group label:not(.active)").click(function()
+        var $labelNotActive = $(parenEl).find('.btn-group label:not(.active)')
+        $labelNotActive.click(function(i,label)
         {
-            var label = $(this);
-            var input = $('#' + label.attr('for'));
+            var $label = $(label);
+            var input = $('#' + $label.attr('for'));
 
             if (!input.prop('checked')) {
-                label.closest('.btn-group').find("label")
+                $label.closest('.btn-group').find("label")
                     .removeClass('active btn-success btn-danger btn-primary');
                 if (input.val() === '') {
-                    label.addClass('active btn-primary');
+                    $label.addClass('active btn-primary');
                 } else if (input.val() === 0) {
-                    label.addClass('active btn-danger');
+                    $label.addClass('active btn-danger');
                 } else {
-                    label.addClass('active btn-success');
+                    $label.addClass('active btn-success');
                 }
                 input.prop('checked', true);
                 input.trigger('change');
             }
         });
-        $(".btn-group input[checked=checked]").each(function()
+        var $inputChecked = $(parenEl).find('.btn-group input[checked=checked]')
+        $inputChecked.each(function( i, inputChecked )
         {
-            if ($(this).val() === '') {
-                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
-            } else if ($(this).val() === 0) {
-                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
+            console.log( 'gnz11::' , inputChecked );
+            
+            if ($( inputChecked ).val() === '') {
+                $("label[for=" + $(inputChecked).attr('id') + "]").addClass('active btn-primary');
+            } else if ( +$(this).val() === 0 ) {
+                $("label[for=" + $(inputChecked).attr('id') + "]").addClass('active btn-danger');
             } else {
-                $("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
+                $("label[for=" + $(inputChecked).attr('id') + "]").addClass('active btn-success');
             }
         });
     };

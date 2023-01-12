@@ -45,7 +45,8 @@ self.__loadModul.Fancybox().then(function (Modal) {
  
 
 ### <a name="#Version"></a> Version 
- 
+- 0.6.8 - Добавлена поддержка jQuery Chosen в модальном окне для элементов `<select/>`. Элемент должен иметь класс `chosen-select` <br>
+- 
 - 0.6.4 - Добавлена поддержка Joomla SubForm Repeatable при создании модального окно если в нем находиться SubForm
   Repeatable она будет автоматически запущена
 

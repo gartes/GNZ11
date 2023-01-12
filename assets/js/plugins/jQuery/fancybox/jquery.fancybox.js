@@ -2583,13 +2583,54 @@
 
             // Avoid jumping
             current.$slide.scrollTop(0).scrollLeft(0);
+
+
+
+            // поддержка Joomla SubForm Repeatable
             self.initSubFormRepeatable( current );
+            // поддержка - html <select> - 
+            self.initChosenSelect( current );
 
             
+        },
+        /**
+         * Для Табов !
+         * TODO - Переделать !!!
+         * @param current
+         */
+        initTabs: function (current){
+            // var $ChosenSelect = $(current.$content).find('select.chosen-select');
+        },
+        /**
+         * поддержка - html <select> -
+         * @param current
+         */
+        initChosenSelect: function (current) {
+            var $ChosenSelect = $(current.$content).find('select.chosen-select');
+            if ( !$ChosenSelect[0]) return ;
+
+            if ( typeof jQuery().chosen !== 'function'){
+                wgnz11.getPlugin('Chosen').then(function (r){
+                    initChosenSelect()
+                },function (err){console.log(err)});;
+            }else{
+                initChosenSelect()
+            }
+
+            function initChosenSelect(){
+                $ChosenSelect.chosen()
+            }
+            console.log( 'jquery.fancybox::initChosenSelect' , $(current.$content) );
+            console.log( 'jquery.fancybox::initChosenSelect' , $ChosenSelect );
+
+
         },
         // Поддержка Joomla SubFormRepeatable в модальном окне
         // ==================================================================
         initSubFormRepeatable : function ( current ){
+           console.log( 'jquery.fancybox::initSubFormRepeatable' , current );
+            
+            
            var $subform =  $(current.$content).find('div.subform-repeatable')
            if ( !$subform[0] ) return ;
            if( jQuery.fn.subformRepeatable !== 'undefined') {
