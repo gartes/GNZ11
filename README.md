@@ -15,7 +15,7 @@
  
 2. [\GNZ11\Document\Text  текстовые операции .](https://github.com/gartes/GNZ11/blob/master/Document/Text.md)
    
-3. [Плагины]()
+3. Плагины jQuery
     + [GNZ11 Fancybox](https://github.com/gartes/GNZ11/blob/master/assets/js/plugins/jQuery/fancybox/README.md#gnz11-fancybox) 
     + [Noty Сообщения.](#notyСообщения)
 
@@ -23,7 +23,7 @@
     + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
     + [Fancybox](#Fancybox)<!-- @IGNORE PREVIOUS: link -->
     + [bxSlider.](#bxSlider)
-    + [Noty Сообщения](#notyСообщения)<!-- @IGNORE PREVIOUS: link -->
+    + [Noty Сообщения](#notyСообщения) 
     + [Mini Menu.](#miniMenu)
     + [Storage Class](#storage-class-)<!-- @IGNORE PREVIOUS: anchor,link --> (Локальное хранилище браузера).
 5. [Joomla](Joomla)
@@ -84,7 +84,6 @@ var sting = wgnz11.TEXT.implode(',' , arr )
 ###  <a name="JavascriptjQueryLoad"></a>Отложенная загрузка ресурсов из js ( после загрузки DOM )
 + [Simple application](#JavascriptjQuerySimpleLoad)<!-- @IGNORE PREVIOUS: anchor -->
 1.  Simple application
-`javascript`
 ```javascript
 wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css');
 ```
@@ -92,10 +91,12 @@ wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.c
 ```javascript
 wgnz11.load.css('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/inputmask.css' , 'only screen and (max-width:480px)' );
 ```
+
 ```javascript
 wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js');
 ```
-Если для javascript файлов нужен конкретный CallBack после загрузки его можно получить как Promise : 
+
+#### Если для javascript файлов нужен конкретный CallBack после загрузки его можно получить как Promise : 
 ```javascript
 wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/inputmask/jquery.mask.min.js').then(function (r){
     alert('Файл ' + r + ' загружен');            
@@ -133,16 +134,6 @@ catch( Exception $e )
 * @param bool $Trigger string  Trigger - для ожидания загрузки
 */
 \GNZ11\Core\Js::addJproLoad(\Joomla\CMS\Uri\Uri::root().'assets/file.core.js' ,   false ,   false );
-
-//@depecated  
-$doc = \Joomla\CMS\Factory::getDocument();
-$Jpro = $doc->getScriptOptions('Jpro') ;
-$Jpro['load'][] = [
-    'u' => '/libraries/GNZ11/assets/js/alert_test.js' , // Путь к файлу
-    't' => 'js' ,                                       // Тип загружаемого ресурса
-    'c' => 'testCallback' ,                             // метод после завершения загрузки
-];
-$doc->addScriptOptions('Jpro' , $Jpro ) ;
 ```
 
 
@@ -198,8 +189,6 @@ var Settings = {
  [comment]: <> (----------------------------------------------------------)
    ## Модули <a name="модули"></a>
    * [Ajax.](#ajax)
-   * [Fancybox](Fancybox)
-     
    * [Mini Menu.](#miniMenu)
 
  [comment]: <> (* []&#40;#&#41;)
@@ -242,7 +231,6 @@ wgnz11.getModul("Ajax").then(function (Ajax) {
    ***
 
    ### Fancybox <a name="Fancybox"></a>
-fancybox, вероятно, самый популярный в мире скрипт лайтбокса.
 ```javascript
 var html = $('#npw-map-wrapper');
 wgnz11.__loadModul.Fancybox().then(function (Modal) {
@@ -319,7 +307,7 @@ this.onClickGalleryContainer = function (){
     var $imgCollection = $('ul.gallery-thumbnails img')
 
     var _srcArr = [];
-
+    // Проходим по списку (UL) - с изображениями - добавляем их в галерею 
     $imgCollection.each(function(i,a){
         // Находим Активный Слайд
         var $parentLi = $(a).closest('li.gallery-thumbnails__item')
