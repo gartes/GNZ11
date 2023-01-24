@@ -20,7 +20,7 @@
     + [Noty Сообщения.](#notyСообщения)
 
 4. [Модули.](#модули)<!-- @IGNORE PREVIOUS: link -->
-    + [Ajax](#ajax)<!-- @IGNORE PREVIOUS: link -->
+    + [Ajax](#ajax) 
     + [Fancybox](#Fancybox)<!-- @IGNORE PREVIOUS: link -->
     + [bxSlider.](#bxSlider)
     + [Noty Сообщения](#notyСообщения) 

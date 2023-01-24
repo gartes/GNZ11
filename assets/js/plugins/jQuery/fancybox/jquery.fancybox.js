@@ -84,6 +84,7 @@
         // Detect "idle" time in seconds
         idleTime: 3,
 
+        // Отключите щелчок правой кнопкой мыши и используйте простую защиту изображений для изображений
         // Disable right-click and use simple image protection for images
         protect: false,
 
@@ -99,10 +100,10 @@
         },
 
         ajax: {
-            // Object containing settings for ajax request
+            // Объект, содержащий настройки для ajax-запроса / Object containing settings for ajax request
             settings: {
-                // This helps to indicate that request comes from the modal
-                // Feel free to change naming
+                // Это помогает указать, что запрос исходит от модального окна. Смело меняйте название
+                // This helps to indicate that request comes from the modal. Feel free to change naming
                 data: {
                     fancyboxqqqqqq: true
                 }
@@ -246,7 +247,6 @@
 
         // Module specific options
         // =======================
-
         fullScreen: {
             autoStart: false
         },
@@ -302,6 +302,8 @@
       }
     */
 
+        onInitAutoComplete : $.noop , // Init  Auto Complete
+
         onInit: $.noop, // When instance has been initialized
 
         beforeLoad: $.noop, // Before the content of a slide is being loaded
@@ -347,9 +349,8 @@
         dblclickSlide: false,
         dblclickOutside: false,
 
-        // Custom options when mobile device is detected
+        // Пользовательские параметры при обнаружении мобильного устройства /  Custom options when mobile device is detected
         // =============================================
-
         mobile: {
             preventCaptionOverlap: false,
             idleTime: false,
@@ -409,7 +410,7 @@
 
     var called = 0;
 
-    // Check if an object is a jQuery object and not a native JavaScript object
+    // Проверьте, является ли объект объектом jQuery, а не собственным объектом JavaScript. / Check if an object is a jQuery object and not a native JavaScript object
     // ========================================================================
     var isQuery = function (obj) {
         return obj && obj.hasOwnProperty && obj instanceof $;
@@ -485,9 +486,8 @@
         return rez;
     };
 
-    // How much of an element is visible in viewport
+    // Какая часть элемента видна в окне просмотра / How much of an element is visible in viewport
     // =============================================
-
     var inViewport = function (elem) {
         var elemCenter, rez;
 
@@ -599,6 +599,9 @@
                 buttonStr += firstItemOpts.btnTpl[value] || "";
             });
 
+            // Создаем разметку из базового шаблона, изначально она будет скрыта
+            // избегайте ненужной работы, такой как рисование, пока инициализация не завершена
+            // --------
             // Create markup from base template, it will be initially hidden to
             // avoid unnecessary work like painting while initializing is not complete
             $container = $(
@@ -2584,14 +2587,31 @@
             // Avoid jumping
             current.$slide.scrollTop(0).scrollLeft(0);
 
-
-
             // поддержка Joomla SubForm Repeatable
             self.initSubFormRepeatable( current );
+
             // поддержка - html <select> - 
             self.initChosenSelect( current );
 
+            // поддержка AutoComplete Input
+            self.initAutoCompleteInput( current );
+
+
             
+        },
+        initAutoCompleteInput : function (){
+            var self = this,
+                current = self.current ;
+
+            if ($( current.$content[0] ).closest('.fancybox-container').hasClass('devBridge-AutoComplete')){
+                wgnz11.load.js('/libraries/GNZ11/assets/js/plugins/jQuery/jquery-ui/external/Autocomplete/devbridgeAutocomplete.js').then(function (r){
+                    self.trigger("onInitAutoComplete" , current );
+                    // current.opts.onInitAutoComplete(current);
+                },function (err){console.log(err)});
+            }
+
+
+
         },
         /**
          * Для Табов !
@@ -2628,9 +2648,7 @@
         // Поддержка Joomla SubFormRepeatable в модальном окне
         // ==================================================================
         initSubFormRepeatable : function ( current ){
-           console.log( 'jquery.fancybox::initSubFormRepeatable' , current );
-            
-            
+
            var $subform =  $(current.$content).find('div.subform-repeatable')
            if ( !$subform[0] ) return ;
            if( jQuery.fn.subformRepeatable !== 'undefined') {
@@ -5561,6 +5579,7 @@
             return;
         }
 
+        // Обновлять хеш при открытии/закрытии fancyBox
         // Update hash when opening/closing fancyBox
         $(document).on({
             "onInit.fb": function (e, instance) {
